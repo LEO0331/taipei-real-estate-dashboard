@@ -1,0 +1,65 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - text: TAIPEI OPEN DATA · PUBLIC RECORDS
+      - heading "台北實價與人口趨勢儀表板" [level=1] [ref=e6]
+      - paragraph [ref=e7]: 結合實價登錄、每季動態分析與人口年齡資料，探索臺北房市與區域脈絡
+    - group "Language" [ref=e8]:
+      - button "中" [ref=e9] [cursor=pointer]
+      - button "EN" [ref=e10] [cursor=pointer]
+  - navigation "Main sections" [ref=e11]:
+    - button "市場總覽" [ref=e12] [cursor=pointer]
+    - button "行政區比較" [ref=e13] [cursor=pointer]
+    - button "每季動態" [ref=e14] [cursor=pointer]
+    - button "人口脈絡" [ref=e15] [cursor=pointer]
+    - button "資料表" [ref=e16] [cursor=pointer]
+    - button "資料說明" [ref=e17] [cursor=pointer]
+  - main [ref=e18]:
+    - group [ref=e19]:
+      - generic "篩選條件" [ref=e20] [cursor=pointer]
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]: 行政區
+          - combobox "行政區" [ref=e24]:
+            - option "全部行政區" [selected]
+            - option "中正區"
+            - option "大同區"
+            - option "中山區"
+            - option "松山區"
+            - option "大安區"
+            - option "萬華區"
+            - option "信義區"
+            - option "士林區"
+            - option "北投區"
+            - option "內湖區"
+            - option "南港區"
+            - option "文山區"
+        - generic [ref=e25]:
+          - generic [ref=e26]: 交易類型
+          - combobox "交易類型" [ref=e27]:
+            - option "全部類型" [selected]
+            - option "買賣"
+            - option "預售屋"
+            - option "租賃"
+            - option "未分類"
+        - generic [ref=e28]:
+          - generic [ref=e29]: 建物型態
+          - combobox "建物型態" [ref=e30]:
+            - option "全部類型" [selected]
+            - option "公寓"
+            - option "大樓／華廈"
+            - option "透天"
+            - option "辦公"
+            - option "店面"
+            - option "工廠"
+            - option "車位"
+            - option "土地"
+            - option "其他"
+            - option "未分類"
+        - generic [ref=e31]:
+          - generic [ref=e32]: 搜尋
+          - searchbox "搜尋" [ref=e33]
+    - paragraph [ref=e34]: 載入公開資料中…
+  - contentinfo [ref=e35]:
+    - text: 資料來源：臺北市實價周報、臺北市實價登錄每季動態分析、臺北市各里人口數按年齡分。
+    - text: 最新官方資訊請以臺北市資料大平臺及主管機關公告為準。

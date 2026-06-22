@@ -1,0 +1,83 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - text: TAIPEI OPEN DATA · PUBLIC RECORDS
+        - heading "Taipei Real Estate & Demographics Dashboard" [level=1] [ref=e590]
+        - paragraph [ref=e7]: Explore Taipei real-price records, quarterly market analysis, and demographic context
+      - group "Language" [ref=e8]:
+        - button "中" [ref=e9] [cursor=pointer]
+        - button "EN" [ref=e10] [cursor=pointer]
+    - navigation "Main sections" [ref=e11]:
+      - button "Market Overview" [ref=e591] [cursor=pointer]
+      - button "District Comparison" [ref=e592] [cursor=pointer]
+      - button "Quarterly Analysis" [ref=e593] [cursor=pointer]
+      - button "Demographic Context" [ref=e594] [cursor=pointer]
+      - button "Data Table" [ref=e595] [cursor=pointer]
+      - button "Data Notes" [active] [ref=e596] [cursor=pointer]
+    - main [ref=e18]:
+      - group [ref=e19]:
+        - generic "Filters" [ref=e597] [cursor=pointer]
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - generic [ref=e23]: District
+            - combobox "District" [ref=e598]:
+              - option "All districts" [selected]
+              - option "Zhongzheng"
+              - option "Datong"
+              - option "Zhongshan"
+              - option "Songshan"
+              - option "Da'an"
+              - option "Wanhua"
+              - option "Xinyi"
+              - option "Shilin"
+              - option "Beitou"
+              - option "Neihu"
+              - option "Nangang"
+              - option "Wenshan"
+          - generic [ref=e25]:
+            - generic [ref=e26]: Record type
+            - combobox "Record type" [ref=e599]:
+              - option "All types" [selected]
+              - option "Sale"
+              - option "Pre-sale"
+              - option "Rent"
+              - option "Unknown"
+          - generic [ref=e28]:
+            - generic [ref=e29]: Building type
+            - combobox "Building type" [ref=e600]:
+              - option "All types" [selected]
+              - option "Apartment"
+              - option "Elevator building"
+              - option "House"
+              - option "Office"
+              - option "Shop"
+              - option "Factory"
+              - option "Parking"
+              - option "Land"
+              - option "Other"
+              - option "Unknown"
+          - generic [ref=e31]:
+            - generic [ref=e32]: Search
+            - searchbox "Search" [ref=e601]
+      - article [ref=e835]:
+        - heading "Data and methods" [level=2] [ref=e836]
+        - paragraph [ref=e837]: This site organizes Taipei public real-price records, quarterly market analysis, and population-by-age data for exploration and district comparison only. It is not a property appraisal, investment recommendation, or price prediction tool. Population data provides regional context and does not imply causation. Refer to official systems for authoritative records.
+        - list [ref=e838]:
+          - listitem [ref=e839]: Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.
+          - listitem [ref=e840]: ROC years are converted by adding 1911. Unparsed values remain in the report.
+          - listitem [ref=e841]: District total population rows avoid double-counting district, village, male, and female levels.
+          - listitem [ref=e842]: Real-estate and population data are compared only at district level.
+        - generic [ref=e843]:
+          - link "臺北市實價周報" [ref=e844] [cursor=pointer]:
+            - /url: https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc
+          - link "每季動態分析" [ref=e845] [cursor=pointer]:
+            - /url: https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa
+          - link "人口年齡資料" [ref=e846] [cursor=pointer]:
+            - /url: https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3
+          - link "Conversion report" [ref=e847] [cursor=pointer]:
+            - /url: /taipei-real-estate-dashboard/data/conversion-report.json
+    - contentinfo [ref=e35]:
+      - text: "Sources: Taipei real-price weekly report, quarterly market analysis, and population-by-age data."
+      - text: Refer to Taipei Open Data and official authorities for authoritative information.
+  - generic [ref=e378]: Zhongzheng

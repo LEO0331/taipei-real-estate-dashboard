@@ -1,0 +1,28 @@
+{
+  "name": "taipei-real-estate-dashboard",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "test": "node --import tsx --test scripts/data.test.ts src/dashboard.test.ts",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "data:fetch": "tsx scripts/fetchRealEstateData.ts",
+    "data:convert": "tsx scripts/convertRealPriceWeekly.ts && tsx scripts/convertQuarterlyMarketAnalysis.ts && tsx scripts/convertPopulationByAge.ts && tsx scripts/buildRealEstateSummary.ts && tsx scripts/buildDistrictComparison.ts"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.5.1",
+    "tsx": "^4.20.3",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5"
+  }
+}

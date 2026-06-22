@@ -1,0 +1,326 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - text: TAIPEI OPEN DATA · PUBLIC RECORDS
+        - heading "Taipei Real Estate & Demographics Dashboard" [level=1] [ref=e775]
+        - paragraph [ref=e7]: Explore Taipei real-price records, quarterly market analysis, and demographic context
+      - group "Language" [ref=e8]:
+        - button "中" [ref=e9] [cursor=pointer]
+        - button "EN" [ref=e10] [cursor=pointer]
+    - navigation "Main sections" [ref=e11]:
+      - button "Market Overview" [ref=e776] [cursor=pointer]
+      - button "District Comparison" [ref=e777] [cursor=pointer]
+      - button "Quarterly Analysis" [ref=e778] [cursor=pointer]
+      - button "Demographic Context" [ref=e779] [cursor=pointer]
+      - button "Data Table" [active] [ref=e780] [cursor=pointer]
+      - button "Data Notes" [ref=e781] [cursor=pointer]
+    - main [ref=e18]:
+      - group [ref=e19]:
+        - generic "Filters" [ref=e782] [cursor=pointer]
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - generic [ref=e23]: District
+            - combobox "District" [ref=e783]:
+              - option "All districts" [selected]
+              - option "Zhongzheng"
+              - option "Datong"
+              - option "Zhongshan"
+              - option "Songshan"
+              - option "Da'an"
+              - option "Wanhua"
+              - option "Xinyi"
+              - option "Shilin"
+              - option "Beitou"
+              - option "Neihu"
+              - option "Nangang"
+              - option "Wenshan"
+          - generic [ref=e25]:
+            - generic [ref=e26]: Record type
+            - combobox "Record type" [ref=e784]:
+              - option "All types" [selected]
+              - option "Sale"
+              - option "Pre-sale"
+              - option "Rent"
+              - option "Unknown"
+          - generic [ref=e28]:
+            - generic [ref=e29]: Building type
+            - combobox "Building type" [ref=e785]:
+              - option "All types" [selected]
+              - option "Apartment"
+              - option "Elevator building"
+              - option "House"
+              - option "Office"
+              - option "Shop"
+              - option "Factory"
+              - option "Parking"
+              - option "Land"
+              - option "Other"
+              - option "Unknown"
+          - generic [ref=e31]:
+            - generic [ref=e32]: Search
+            - searchbox "Search" [ref=e786]
+      - paragraph [ref=e1000]: 998 records
+      - table [ref=e1002]:
+        - rowgroup [ref=e1003]:
+          - row "District Date Record type Target Building type Location Total price Unit price / ping Area Building age Remarks" [ref=e1004]:
+            - columnheader "District" [ref=e1005]
+            - columnheader "Date" [ref=e1006]
+            - columnheader "Record type" [ref=e1007]
+            - columnheader "Target" [ref=e1008]
+            - columnheader "Building type" [ref=e1009]
+            - columnheader "Location" [ref=e1010]
+            - columnheader "Total price" [ref=e1011]
+            - columnheader "Unit price / ping" [ref=e1012]
+            - columnheader "Area" [ref=e1013]
+            - columnheader "Building age" [ref=e1014]
+            - columnheader "Remarks" [ref=e1015]
+        - rowgroup [ref=e1016]:
+          - row "Zhongshan 1150121 Sale 車位 Unknown 復興南路一段36之6號等 NT$13,800,000 NT$0 / ping 59.1 坪 24 yr 僅車位交易。" [ref=e1017]:
+            - cell "Zhongshan" [ref=e1018]
+            - cell "1150121" [ref=e1019]
+            - cell "Sale" [ref=e1020]
+            - cell "車位" [ref=e1021]
+            - cell "Unknown" [ref=e1022]
+            - cell "復興南路一段36之6號等" [ref=e1023]
+            - cell "NT$13,800,000" [ref=e1024]
+            - cell "NT$0 / ping" [ref=e1025]
+            - cell "59.1 坪" [ref=e1026]
+            - cell "24 yr" [ref=e1027]
+            - cell "僅車位交易。" [ref=e1028]
+          - row "Wenshan 1150504 Rent 房屋 公寓(無電梯) 興隆路三段185巷7弄4號二樓 NT$22,000 838.41 NTD/坪/月 26.2 坪 — 其他：續租案件。" [ref=e1029]:
+            - cell "Wenshan" [ref=e1030]
+            - cell "1150504" [ref=e1031]
+            - cell "Rent" [ref=e1032]
+            - cell "房屋" [ref=e1033]
+            - cell "公寓(無電梯)" [ref=e1034]
+            - cell "興隆路三段185巷7弄4號二樓" [ref=e1035]
+            - cell "NT$22,000" [ref=e1036]
+            - cell "838.41 NTD/坪/月" [ref=e1037]
+            - cell "26.2 坪" [ref=e1038]
+            - cell "—" [ref=e1039]
+            - cell "其他：續租案件。" [ref=e1040]
+          - row "Wanhua 1150501 Rent 房屋 公寓(無電梯) 雙園街40巷7號二樓 NT$32,000 1,766.98 NTD/坪/月 18.1 坪 — 其他：續租案件。" [ref=e1041]:
+            - cell "Wanhua" [ref=e1042]
+            - cell "1150501" [ref=e1043]
+            - cell "Rent" [ref=e1044]
+            - cell "房屋" [ref=e1045]
+            - cell "公寓(無電梯)" [ref=e1046]
+            - cell "雙園街40巷7號二樓" [ref=e1047]
+            - cell "NT$32,000" [ref=e1048]
+            - cell "1,766.98 NTD/坪/月" [ref=e1049]
+            - cell "18.1 坪" [ref=e1050]
+            - cell "—" [ref=e1051]
+            - cell "其他：續租案件。" [ref=e1052]
+          - row "Wanhua 1150312 Sale 房地(土地+建物) 大樓(11層含以上有電梯) 長沙街二段88號十四樓之1 NT$16,000,000 NT$692,900 / ping 23.1 坪 — 關係人間交易：親友、員工、共有人或其他特殊關係間之交易。" [ref=e1053]:
+            - cell "Wanhua" [ref=e1054]
+            - cell "1150312" [ref=e1055]
+            - cell "Sale" [ref=e1056]
+            - cell "房地(土地+建物)" [ref=e1057]
+            - cell "大樓(11層含以上有電梯)" [ref=e1058]
+            - cell "長沙街二段88號十四樓之1" [ref=e1059]
+            - cell "NT$16,000,000" [ref=e1060]
+            - cell "NT$692,900 / ping" [ref=e1061]
+            - cell "23.1 坪" [ref=e1062]
+            - cell "—" [ref=e1063]
+            - cell "關係人間交易：親友、員工、共有人或其他特殊關係間之交易。" [ref=e1064]
+          - row "Da'an 1150505 Rent 房屋 公寓(無電梯) 敦化南路一段190巷33號二樓 NT$62,053 3,599.36 NTD/坪/月 17.2 坪 — 租金：含下列其他衍生費用：管理費、水費、電費、瓦斯費、網路費、其他-清潔服務費。2樓B室" [ref=e1065]:
+            - cell "Da'an" [ref=e1066]
+            - cell "1150505" [ref=e1067]
+            - cell "Rent" [ref=e1068]
+            - cell "房屋" [ref=e1069]
+            - cell "公寓(無電梯)" [ref=e1070]
+            - cell "敦化南路一段190巷33號二樓" [ref=e1071]
+            - cell "NT$62,053" [ref=e1072]
+            - cell "3,599.36 NTD/坪/月" [ref=e1073]
+            - cell "17.2 坪" [ref=e1074]
+            - cell "—" [ref=e1075]
+            - cell "租金：含下列其他衍生費用：管理費、水費、電費、瓦斯費、網路費、其他-清潔服務費。2樓B室" [ref=e1076]
+          - row "Datong 1150501 Rent 房屋 透天厝 重慶北路三段274號 NT$140,000 0 NTD/坪/月 89.7 坪 — 租賃標的：含增建或未登記建物。" [ref=e1077]:
+            - cell "Datong" [ref=e1078]
+            - cell "1150501" [ref=e1079]
+            - cell "Rent" [ref=e1080]
+            - cell "房屋" [ref=e1081]
+            - cell "透天厝" [ref=e1082]
+            - cell "重慶北路三段274號" [ref=e1083]
+            - cell "NT$140,000" [ref=e1084]
+            - cell "0 NTD/坪/月" [ref=e1085]
+            - cell "89.7 坪" [ref=e1086]
+            - cell "—" [ref=e1087]
+            - cell "租賃標的：含增建或未登記建物。" [ref=e1088]
+          - row "Da'an 1150501 Rent 房屋 華廈(10層含以下有電梯) 通化街38號八樓 NT$58,000 2,298.85 NTD/坪/月 25.2 坪 — —" [ref=e1089]:
+            - cell "Da'an" [ref=e1090]
+            - cell "1150501" [ref=e1091]
+            - cell "Rent" [ref=e1092]
+            - cell "房屋" [ref=e1093]
+            - cell "華廈(10層含以下有電梯)" [ref=e1094]
+            - cell "通化街38號八樓" [ref=e1095]
+            - cell "NT$58,000" [ref=e1096]
+            - cell "2,298.85 NTD/坪/月" [ref=e1097]
+            - cell "25.2 坪" [ref=e1098]
+            - cell "—" [ref=e1099]
+            - cell "—" [ref=e1100]
+          - row "Shilin 1150405 Sale 房地(土地+建物)+車位 華廈(10層含以下有電梯) 福港街19巷3號四樓 NT$26,180,000 NT$653,800 / ping 40.0 坪 — —" [ref=e1101]:
+            - cell "Shilin" [ref=e1102]
+            - cell "1150405" [ref=e1103]
+            - cell "Sale" [ref=e1104]
+            - cell "房地(土地+建物)+車位" [ref=e1105]
+            - cell "華廈(10層含以下有電梯)" [ref=e1106]
+            - cell "福港街19巷3號四樓" [ref=e1107]
+            - cell "NT$26,180,000" [ref=e1108]
+            - cell "NT$653,800 / ping" [ref=e1109]
+            - cell "40.0 坪" [ref=e1110]
+            - cell "—" [ref=e1111]
+            - cell "—" [ref=e1112]
+          - row "Xinyi 1150505 Rent 房屋 公寓(無電梯) 忠孝東路五段790巷70弄1號四樓 NT$12,000 3,636.36 NTD/坪/月 3.3 坪 — 租金：含下列其他衍生費用：網路費。租賃標的：租賃建物部分範圍，且未計入共有部分面積。" [ref=e1113]:
+            - cell "Xinyi" [ref=e1114]
+            - cell "1150505" [ref=e1115]
+            - cell "Rent" [ref=e1116]
+            - cell "房屋" [ref=e1117]
+            - cell "公寓(無電梯)" [ref=e1118]
+            - cell "忠孝東路五段790巷70弄1號四樓" [ref=e1119]
+            - cell "NT$12,000" [ref=e1120]
+            - cell "3,636.36 NTD/坪/月" [ref=e1121]
+            - cell "3.3 坪" [ref=e1122]
+            - cell "—" [ref=e1123]
+            - cell "租金：含下列其他衍生費用：網路費。租賃標的：租賃建物部分範圍，且未計入共有部分面積。" [ref=e1124]
+          - row "Zhongshan 1140817 Sale 房地(土地+建物) 大樓(11層含以上有電梯) 市民大道三段9號八樓 NT$17,750,000 NT$1,451,300 / ping 12.2 坪 — 預售屋、或土地及建物分件登記案件。" [ref=e1125]:
+            - cell "Zhongshan" [ref=e1126]
+            - cell "1140817" [ref=e1127]
+            - cell "Sale" [ref=e1128]
+            - cell "房地(土地+建物)" [ref=e1129]
+            - cell "大樓(11層含以上有電梯)" [ref=e1130]
+            - cell "市民大道三段9號八樓" [ref=e1131]
+            - cell "NT$17,750,000" [ref=e1132]
+            - cell "NT$1,451,300 / ping" [ref=e1133]
+            - cell "12.2 坪" [ref=e1134]
+            - cell "—" [ref=e1135]
+            - cell "預售屋、或土地及建物分件登記案件。" [ref=e1136]
+          - row "Songshan 1150508 Pre-sale 0棟A號 住宅大樓(11層含以上有電梯) 臺北市松山區南京東路五段253號 NT$58,110,000 NT$1,608,400 / ping 44.6 坪 — —" [ref=e1137]:
+            - cell "Songshan" [ref=e1138]
+            - cell "1150508" [ref=e1139]
+            - cell "Pre-sale" [ref=e1140]
+            - cell "0棟A號" [ref=e1141]
+            - cell "住宅大樓(11層含以上有電梯)" [ref=e1142]
+            - cell "臺北市松山區南京東路五段253號" [ref=e1143]
+            - cell "NT$58,110,000" [ref=e1144]
+            - cell "NT$1,608,400 / ping" [ref=e1145]
+            - cell "44.6 坪" [ref=e1146]
+            - cell "—" [ref=e1147]
+            - cell "—" [ref=e1148]
+          - row "Wanhua 1150518 Sale 土地 Unknown 雙園段一小段0252-0000地號 NT$210,000 NT$173,600 / ping — — 特殊交易標的類型：(包含)公共設施保留地(用地)。與政府有關之交易：協議價購。115年度臺北市政府以容積代金基金採購私有公共設施保留地之交易" [ref=e1149]:
+            - cell "Wanhua" [ref=e1150]
+            - cell "1150518" [ref=e1151]
+            - cell "Sale" [ref=e1152]
+            - cell "土地" [ref=e1153]
+            - cell "Unknown" [ref=e1154]
+            - cell "雙園段一小段0252-0000地號" [ref=e1155]
+            - cell "NT$210,000" [ref=e1156]
+            - cell "NT$173,600 / ping" [ref=e1157]
+            - cell "—" [ref=e1158]
+            - cell "—" [ref=e1159]
+            - cell "特殊交易標的類型：(包含)公共設施保留地(用地)。與政府有關之交易：協議價購。115年度臺北市政府以容積代金基金採購私有公共設施保留地之交易" [ref=e1160]
+          - row "Shilin 1150519 Sale 車位 Unknown 天母西路65號地下室 NT$2,500,000 NT$0 / ping 10.6 坪 — 關係人間交易：親友、員工、共有人或其他特殊關係間之交易。僅車位交易。" [ref=e1161]:
+            - cell "Shilin" [ref=e1162]
+            - cell "1150519" [ref=e1163]
+            - cell "Sale" [ref=e1164]
+            - cell "車位" [ref=e1165]
+            - cell "Unknown" [ref=e1166]
+            - cell "天母西路65號地下室" [ref=e1167]
+            - cell "NT$2,500,000" [ref=e1168]
+            - cell "NT$0 / ping" [ref=e1169]
+            - cell "10.6 坪" [ref=e1170]
+            - cell "—" [ref=e1171]
+            - cell "關係人間交易：親友、員工、共有人或其他特殊關係間之交易。僅車位交易。" [ref=e1172]
+          - row "Da'an 1150430 Rent 房屋 公寓(無電梯) 敦化南路二段81巷53號四樓 NT$27,500 2,626.55 NTD/坪/月 10.5 坪 — 第 40B 室" [ref=e1173]:
+            - cell "Da'an" [ref=e1174]
+            - cell "1150430" [ref=e1175]
+            - cell "Rent" [ref=e1176]
+            - cell "房屋" [ref=e1177]
+            - cell "公寓(無電梯)" [ref=e1178]
+            - cell "敦化南路二段81巷53號四樓" [ref=e1179]
+            - cell "NT$27,500" [ref=e1180]
+            - cell "2,626.55 NTD/坪/月" [ref=e1181]
+            - cell "10.5 坪" [ref=e1182]
+            - cell "—" [ref=e1183]
+            - cell "第 40B 室" [ref=e1184]
+          - row "Songshan 1150320 Sale 房地(土地+建物) 大樓(11層含以上有電梯) 南京東路五段234號十二樓 NT$22,000,000 NT$825,800 / ping 26.6 坪 — 建築物含有：陽台外推。" [ref=e1185]:
+            - cell "Songshan" [ref=e1186]
+            - cell "1150320" [ref=e1187]
+            - cell "Sale" [ref=e1188]
+            - cell "房地(土地+建物)" [ref=e1189]
+            - cell "大樓(11層含以上有電梯)" [ref=e1190]
+            - cell "南京東路五段234號十二樓" [ref=e1191]
+            - cell "NT$22,000,000" [ref=e1192]
+            - cell "NT$825,800 / ping" [ref=e1193]
+            - cell "26.6 坪" [ref=e1194]
+            - cell "—" [ref=e1195]
+            - cell "建築物含有：陽台外推。" [ref=e1196]
+          - row "Beitou 1150506 Pre-sale D棟D2-14F號 廠辦 臺北市北投區八仙里北投路一段11號 NT$104,440,000 NT$712,100 / ping 158.6 坪 — —" [ref=e1197]:
+            - cell "Beitou" [ref=e1198]
+            - cell "1150506" [ref=e1199]
+            - cell "Pre-sale" [ref=e1200]
+            - cell "D棟D2-14F號" [ref=e1201]
+            - cell "廠辦" [ref=e1202]
+            - cell "臺北市北投區八仙里北投路一段11號" [ref=e1203]
+            - cell "NT$104,440,000" [ref=e1204]
+            - cell "NT$712,100 / ping" [ref=e1205]
+            - cell "158.6 坪" [ref=e1206]
+            - cell "—" [ref=e1207]
+            - cell "—" [ref=e1208]
+          - row "Zhongshan 1150505 Pre-sale 0棟H-14F號 住宅大樓(11層含以上有電梯) 臺北市中山區民權東路二段22號 NT$25,260,000 NT$1,380,300 / ping 18.3 坪 — —" [ref=e1209]:
+            - cell "Zhongshan" [ref=e1210]
+            - cell "1150505" [ref=e1211]
+            - cell "Pre-sale" [ref=e1212]
+            - cell "0棟H-14F號" [ref=e1213]
+            - cell "住宅大樓(11層含以上有電梯)" [ref=e1214]
+            - cell "臺北市中山區民權東路二段22號" [ref=e1215]
+            - cell "NT$25,260,000" [ref=e1216]
+            - cell "NT$1,380,300 / ping" [ref=e1217]
+            - cell "18.3 坪" [ref=e1218]
+            - cell "—" [ref=e1219]
+            - cell "—" [ref=e1220]
+          - row "Songshan 1150504 Rent 房屋 住宅大樓(11層含以上有電梯) 敦化北路100號 NT$19,500 2,131.15 NTD/坪/月 9.2 坪 — 租金：含下列其他衍生費用：電費。租賃標的：租賃建物部分範圍，且未計入共有部分面積。" [ref=e1221]:
+            - cell "Songshan" [ref=e1222]
+            - cell "1150504" [ref=e1223]
+            - cell "Rent" [ref=e1224]
+            - cell "房屋" [ref=e1225]
+            - cell "住宅大樓(11層含以上有電梯)" [ref=e1226]
+            - cell "敦化北路100號" [ref=e1227]
+            - cell "NT$19,500" [ref=e1228]
+            - cell "2,131.15 NTD/坪/月" [ref=e1229]
+            - cell "9.2 坪" [ref=e1230]
+            - cell "—" [ref=e1231]
+            - cell "租金：含下列其他衍生費用：電費。租賃標的：租賃建物部分範圍，且未計入共有部分面積。" [ref=e1232]
+          - row "Beitou 1150501 Pre-sale 0棟A2號 住宅大樓(11層含以上有電梯) 臺北市北投區洲美里洲美街 NT$66,380,000 NT$1,417,200 / ping 55.7 坪 — 毛胚屋。" [ref=e1233]:
+            - cell "Beitou" [ref=e1234]
+            - cell "1150501" [ref=e1235]
+            - cell "Pre-sale" [ref=e1236]
+            - cell "0棟A2號" [ref=e1237]
+            - cell "住宅大樓(11層含以上有電梯)" [ref=e1238]
+            - cell "臺北市北投區洲美里洲美街" [ref=e1239]
+            - cell "NT$66,380,000" [ref=e1240]
+            - cell "NT$1,417,200 / ping" [ref=e1241]
+            - cell "55.7 坪" [ref=e1242]
+            - cell "—" [ref=e1243]
+            - cell "毛胚屋。" [ref=e1244]
+          - row "Neihu 1150411 Sale 房地(土地+建物)+車位 大樓(11層含以上有電梯) 星雲街160號五樓 NT$31,500,000 NT$658,400 / ping 47.8 坪 — —" [ref=e1245]:
+            - cell "Neihu" [ref=e1246]
+            - cell "1150411" [ref=e1247]
+            - cell "Sale" [ref=e1248]
+            - cell "房地(土地+建物)+車位" [ref=e1249]
+            - cell "大樓(11層含以上有電梯)" [ref=e1250]
+            - cell "星雲街160號五樓" [ref=e1251]
+            - cell "NT$31,500,000" [ref=e1252]
+            - cell "NT$658,400 / ping" [ref=e1253]
+            - cell "47.8 坪" [ref=e1254]
+            - cell "—" [ref=e1255]
+            - cell "—" [ref=e1256]
+      - navigation "Pagination" [ref=e1257]:
+        - button "Previous" [disabled] [ref=e1258]
+        - generic [ref=e1259]: Page 1 / 50
+        - button "Next" [ref=e1260] [cursor=pointer]
+    - contentinfo [ref=e35]:
+      - text: "Sources: Taipei real-price weekly report, quarterly market analysis, and population-by-age data."
+      - text: Refer to Taipei Open Data and official authorities for authoritative information.
+  - generic [ref=e409]: Zhongzheng

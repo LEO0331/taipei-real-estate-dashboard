@@ -1,0 +1,16 @@
+{
+  "name": "台北實價與人口趨勢儀表板",
+  "short_name": "台北實價儀表板",
+  "start_url": "./",
+  "display": "standalone",
+  "theme_color": "#16211d",
+  "background_color": "#f4efe6",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

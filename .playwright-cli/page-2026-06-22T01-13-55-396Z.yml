@@ -1,0 +1,142 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - text: TAIPEI OPEN DATA · PUBLIC RECORDS
+        - heading "Taipei Real Estate & Demographics Dashboard" [level=1] [ref=e590]
+        - paragraph [ref=e7]: Explore Taipei real-price records, quarterly market analysis, and demographic context
+      - group "Language" [ref=e8]:
+        - button "中" [ref=e9] [cursor=pointer]
+        - button "EN" [active] [ref=e10] [cursor=pointer]
+    - navigation "Main sections" [ref=e11]:
+      - button "Market Overview" [ref=e591] [cursor=pointer]
+      - button "District Comparison" [ref=e592] [cursor=pointer]
+      - button "Quarterly Analysis" [ref=e593] [cursor=pointer]
+      - button "Demographic Context" [ref=e594] [cursor=pointer]
+      - button "Data Table" [ref=e595] [cursor=pointer]
+      - button "Data Notes" [ref=e596] [cursor=pointer]
+    - main [ref=e18]:
+      - group [ref=e19]:
+        - generic "Filters" [ref=e597] [cursor=pointer]
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - generic [ref=e23]: District
+            - combobox "District" [ref=e598]:
+              - option "All districts" [selected]
+              - option "Zhongzheng"
+              - option "Datong"
+              - option "Zhongshan"
+              - option "Songshan"
+              - option "Da'an"
+              - option "Wanhua"
+              - option "Xinyi"
+              - option "Shilin"
+              - option "Beitou"
+              - option "Neihu"
+              - option "Nangang"
+              - option "Wenshan"
+          - generic [ref=e25]:
+            - generic [ref=e26]: Record type
+            - combobox "Record type" [ref=e599]:
+              - option "All types" [selected]
+              - option "Sale"
+              - option "Pre-sale"
+              - option "Rent"
+              - option "Unknown"
+          - generic [ref=e28]:
+            - generic [ref=e29]: Building type
+            - combobox "Building type" [ref=e600]:
+              - option "All types" [selected]
+              - option "Apartment"
+              - option "Elevator building"
+              - option "House"
+              - option "Office"
+              - option "Shop"
+              - option "Factory"
+              - option "Parking"
+              - option "Land"
+              - option "Other"
+              - option "Unknown"
+          - generic [ref=e31]:
+            - generic [ref=e32]: Search
+            - searchbox "Search" [ref=e601]
+      - generic [ref=e36]:
+        - generic [ref=e602]:
+          - term [ref=e603]: Latest data period
+          - definition [ref=e604]: 2026-05
+        - generic [ref=e605]:
+          - term [ref=e606]: Total records
+          - definition [ref=e607]: "998"
+        - generic [ref=e608]:
+          - term [ref=e609]: Sale records
+          - definition [ref=e610]: "556"
+        - generic [ref=e611]:
+          - term [ref=e612]: Rental records
+          - definition [ref=e613]: "442"
+        - generic [ref=e614]:
+          - term [ref=e615]: Median unit price per ping
+          - definition [ref=e616]: NT$786,700 / ping
+        - generic [ref=e617]:
+          - term [ref=e618]: Median total price
+          - definition [ref=e619]: NT$24,340,000
+        - generic [ref=e620]:
+          - term [ref=e621]: Most active district
+          - definition [ref=e622]: Zhongshan
+        - generic [ref=e623]:
+          - term [ref=e624]: Highest median unit-price district
+          - definition [ref=e625]: Zhongzheng
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - heading "Transaction count by month" [level=2] [ref=e626]
+          - application [ref=e67]:
+            - generic [ref=e208]:
+              - generic [ref=e209]:
+                - generic [ref=e211]: 2021-06
+                - generic [ref=e213]: 2023-03
+                - generic [ref=e215]: 2024-12
+                - generic [ref=e217]: 2026-05
+              - generic [ref=e218]:
+                - generic [ref=e220]: "0"
+                - generic [ref=e222]: "200"
+                - generic [ref=e224]: "400"
+                - generic [ref=e226]: "600"
+                - generic [ref=e228]: "800"
+        - generic [ref=e229]:
+          - heading "Median unit price by month" [level=2] [ref=e754]
+          - application [ref=e234]:
+            - generic [ref=e249]:
+              - generic [ref=e250]:
+                - generic [ref=e252]: 2021-06
+                - generic [ref=e254]: 2023-01
+                - generic [ref=e256]: 2024-09
+                - generic [ref=e258]: 2026-05
+              - generic [ref=e259]:
+                - generic [ref=e261]: 0k
+                - generic [ref=e263]: 400k
+                - generic [ref=e265]: 800k
+                - generic [ref=e267]: 1200k
+                - generic [ref=e269]: 1600k
+        - generic [ref=e270]:
+          - heading "Median unit price by district" [level=2] [ref=e757]
+          - application [ref=e275]:
+            - generic [ref=e326]:
+              - generic [ref=e327]:
+                - generic [ref=e329]: 0k
+                - generic [ref=e331]: 350k
+                - generic [ref=e333]: 700k
+                - generic [ref=e335]: 1050k
+                - generic [ref=e796]: 1400k
+              - generic [ref=e338]:
+                - generic [ref=e340]: Datong
+                - generic [ref=e342]: Songshan
+                - generic [ref=e344]: Wanhua
+                - generic [ref=e346]: Shilin
+                - generic [ref=e348]: Neihu
+                - generic [ref=e350]: Wenshan
+        - generic [ref=e351]:
+          - heading "Building type distribution" [level=2] [ref=e797]
+          - application [ref=e356]
+    - contentinfo [ref=e35]:
+      - text: "Sources: Taipei real-price weekly report, quarterly market analysis, and population-by-age data."
+      - text: Refer to Taipei Open Data and official authorities for authoritative information.
+  - generic [ref=e378]: Zhongzheng
