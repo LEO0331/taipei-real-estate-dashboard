@@ -3,8 +3,8 @@ import type { BuildingType, Language, RealPriceRecordType, ResidentialRentIndexC
 export const copy = {
   zh: {
     appTitle: '台北實價與人口趨勢儀表板',
-    appSubtitle: '結合實價登錄、每季動態分析、住宅租金指數與人口年齡資料，探索臺北房市與區域脈絡',
-    tabs: ['市場總覽', '行政區比較', '每季動態', '租金指數', '人口脈絡', '資料表', '資料說明'],
+    appSubtitle: '結合實價登錄、每季動態分析、住宅租金指數、使用執照摘要與人口年齡資料，探索臺北房市與區域脈絡',
+    tabs: ['市場總覽', '行政區比較', '每季動態', '租金指數', '使用執照', '土地現值', '人口脈絡', '資料表', '資料說明'],
     filters: '篩選條件',
     allDistricts: '全部行政區',
     allTypes: '全部類型',
@@ -83,6 +83,8 @@ export const copy = {
     rentIndexInterpretationNote: '住宅租金指數為歷史趨勢指標，並非個別物件租金估價。標準租金單價為資料集提供之統計指標，實際租金會因地點、屋況、坪數、樓層、屋齡、設備與租約條件而異。',
     rentIndexDisclaimer: '住宅租金指數資料為依實價登錄資料編製之歷史租金指標，僅供租金趨勢觀察與資料探索使用，並非租金估價、租屋建議、投資建議或未來租金預測。實際租金會因地點、屋況、坪數、樓層、屋齡、設備、租約條件與市場情況而異。',
     rentIndexSearchPlaceholder: '搜尋類別或期別',
+    buildingUsePermits: '使用執照摘要', buildingUsePermitSubtitle: '探索臺北市歷年使用執照摘要，觀察建物完工與使用執照核發趨勢、行政區分布、建造類別、構造種類、戶數、樓層與停車空間等建物供給背景。', buildingUsePermitDisclaimer: '使用執照摘要資料為公開資料中的建築使用執照摘要紀錄，僅供建物供給、建築年代、建造類別、構造種類與區域趨勢等資料探索使用，並非不動產估價、建物安全判定、產權查證、合法使用認定、投資建議或官方執照證明。最新與正式資料請以臺北市影像存根查詢系統、主管機關及官方文件為準。',
+    usePermitRecordCount: '使用執照紀錄數', dataYearRange: '資料年度範圍', latestIssueDate: '最新發照日期', permitDistrictsCovered: '涵蓋行政區數', totalHouseholdCount: '戶數合計', totalBuildingArea: '建築面積合計', medianAboveGroundFloors: '地上層數中位數', medianBuildingHeight: '建物高度中位數', usePermitRecordsByYear: '各年使用執照紀錄數', householdCountByPermitYear: '各年戶數合計', usePermitRecordsByDistrict: '各行政區使用執照紀錄數', householdCountByDistrict: '各行政區戶數合計', permitTable: '使用執照資料表', permitYear: '執照年度', permitNumber: '執照號碼', issueDate: '發照日期', primaryAddress: '主要地址', constructionType: '建造類別', structureType: '構造種類', aboveGroundFloors: '地上層數', householdCount: '戶數', projectCostNtd: '工程金額', remarksCount: '備註數', newConstruction: '新建', addition: '增建', repair: '修建', reconstruction: '改建', recordCount: '紀錄數', buildingUsePermitChartNotice: '此圖僅比較公開資料中的使用執照摘要紀錄與統計欄位，不代表現況建物數量、合法使用狀態、建物安全、現值、不動產價格、租金或投資價值。', buildingUsePermitDetailNotice: '此明細為來源資料摘要整理，不等同正式使用執照謄本或最新建管資料。', buildingUsePermitSearchPlaceholder: '搜尋執照號碼、行政區、主要地址、建造類別或構造種類',
     date: '交易日期',
     recordType: '交易類型',
     target: '交易標的',
@@ -100,12 +102,12 @@ export const copy = {
     officialText: '官方動態分析原文',
     loading: '載入公開資料中…',
     loadError: '無法載入本機資料檔。',
-    footer: '資料來源：臺北市實價周報、臺北市實價登錄每季動態分析、臺北市住宅租金指數、臺北市各里人口數按年齡分等公開資料。資料僅供市場與區域趨勢觀察，不構成不動產估價、租金估價、投資建議或價格預測。',
+    footer: '資料來源：臺北市實價周報、臺北市實價登錄每季動態分析、臺北市住宅租金指數、臺北市歷年使用執照摘要、臺北市土地筆數面積及公告土地現值統計、臺北市各里人口數按年齡分等公開資料。資料僅供市場、區域、土地存量、建物供給與人口背景趨勢觀察，不構成不動產估價、租金估價、土地估價、建物安全判定、產權查證、投資建議或價格預測。公告土地現值為官方行政參考指標，不代表市場成交價格或個別不動產價值。',
   },
   en: {
     appTitle: 'Taipei Real Estate & Demographics Dashboard',
-    appSubtitle: 'Explore Taipei real-price records, quarterly market analysis, residential rent index, and demographic context',
-    tabs: ['Market Overview', 'District Comparison', 'Quarterly Analysis', 'Rent Index', 'Demographic Context', 'Data Table', 'Data Notes'],
+    appSubtitle: 'Explore Taipei real-price records, quarterly market analysis, residential rent index, building use permits, and demographic context',
+    tabs: ['Market Overview', 'District Comparison', 'Quarterly Analysis', 'Rent Index', 'Use Permits', 'Land Value', 'Demographic Context', 'Data Table', 'Data Notes'],
     filters: 'Filters',
     allDistricts: 'All districts',
     allTypes: 'All types',
@@ -184,6 +186,8 @@ export const copy = {
     rentIndexInterpretationNote: 'The residential rent index is a historical trend indicator, not an appraisal of individual property rent. The standard rent unit price is a statistical indicator provided by the dataset. Actual rent may vary by location, property condition, floor area, floor level, building age, equipment, and lease terms.',
     rentIndexDisclaimer: 'Residential rent index data is a historical rent indicator compiled from real-price registration data. It is provided for rental trend observation and data exploration only, and is not rent appraisal, rental advice, investment advice, or future rent prediction. Actual rent may vary by location, property condition, floor area, floor level, building age, equipment, lease terms, and market conditions.',
     rentIndexSearchPlaceholder: 'Search category or period',
+    buildingUsePermits: 'Building Use Permit Summary', buildingUsePermitSubtitle: 'Explore Taipei historical building use-permit summaries to understand permit issue trends, district distribution, construction types, structure types, household counts, floors, and parking-space context.', buildingUsePermitDisclaimer: "Building use-permit summary data is a public-data record of building use-permit summaries for exploring building supply, building age, construction type, structure type, and regional trends. It is not real-estate appraisal, building-safety assessment, title verification, legal-use determination, investment advice, or an official permit certificate. Latest and official information should be verified through Taipei's official image-stub query system, relevant authorities, and official documents.",
+    usePermitRecordCount: 'Use-permit record count', dataYearRange: 'Data year range', latestIssueDate: 'Latest issue date', permitDistrictsCovered: 'Districts covered', totalHouseholdCount: 'Total household count', totalBuildingArea: 'Total building area', medianAboveGroundFloors: 'Median above-ground floors', medianBuildingHeight: 'Median building height', usePermitRecordsByYear: 'Use-permit records by year', householdCountByPermitYear: 'Household count by permit year', usePermitRecordsByDistrict: 'Use-permit records by district', householdCountByDistrict: 'Household count by district', permitTable: 'Permit Table', permitYear: 'Permit year', permitNumber: 'Permit number', issueDate: 'Issue date', primaryAddress: 'Primary address', constructionType: 'Construction type', structureType: 'Structure type', aboveGroundFloors: 'Above-ground floors', householdCount: 'Household count', projectCostNtd: 'Project cost', remarksCount: 'Remarks count', newConstruction: 'New construction', addition: 'Addition', repair: 'Repair', reconstruction: 'Reconstruction', recordCount: 'Record count', buildingUsePermitChartNotice: 'This chart only compares public-data use-permit summary records and statistical fields. It does not represent current building count, legal-use status, building safety, current value, real-estate price, rent, or investment value.', buildingUsePermitDetailNotice: 'This detail view is a summarized version of source data and is not an official use-permit transcript or the latest building-management record.', buildingUsePermitSearchPlaceholder: 'Search permit number, district, primary address, construction type, or structure type',
     date: 'Date',
     recordType: 'Record type',
     target: 'Target',
@@ -201,7 +205,7 @@ export const copy = {
     officialText: 'Official analysis text',
     loading: 'Loading public data…',
     loadError: 'Unable to load local data files.',
-    footer: 'Data sources: Taipei real-price weekly dataset, Taipei quarterly real-price market analysis dataset, Taipei residential rent index dataset, Taipei population-by-age dataset, and related public-data records. The data is for market and regional trend observation only and does not constitute real-estate appraisal, rent appraisal, investment advice, or price prediction.',
+    footer: 'Data sources: Taipei real-price weekly dataset, Taipei quarterly real-price market analysis dataset, Taipei residential rent index dataset, Taipei historical building use-permit summary dataset, Taipei land parcel, area, and announced land current value statistics, Taipei population-by-age dataset, and related public-data records. The data is for market, regional, land-stock, building-supply, and demographic trend observation only and does not constitute real-estate appraisal, rent appraisal, land appraisal, building-safety assessment, title verification, investment advice, or price prediction. Announced land current value is an official administrative reference indicator, not market transaction price or individual property value.',
   },
 } as const;
 

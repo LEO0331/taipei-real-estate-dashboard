@@ -12,6 +12,67 @@ export type BuildingType =
   | 'factory' | 'parking' | 'land' | 'other' | 'unknown';
 export type ResidentialRentIndexCategory =
   | 'citywide' | 'elevator_building' | 'apartment' | 'other' | 'unknown';
+export type BuildingConstructionType = 'new_construction' | 'addition' | 'repair' | 'reconstruction' | 'other' | 'unknown';
+export type PublicUseStatus = 'public_use' | 'non_public_use' | 'unspecified';
+export type ZoningCategory = 'residential' | 'commercial' | 'industrial' | 'school' | 'park' | 'government' | 'protection' | 'mixed_or_special' | 'other' | 'unknown';
+export type FloorUseCategory = 'residential' | 'parking' | 'office' | 'retail' | 'school' | 'mechanical' | 'shelter' | 'public_facility' | 'other' | 'unknown';
+
+export type BuildingUsePermitRecord = {
+  id: string; permitYearRaw?: string; permitYearRoc?: number; permitYearGregorian?: number;
+  permitNumber?: string; issueDateRaw?: string; issueDate?: string; originalPermitNumber?: string;
+  constructionTypeRaw?: string; constructionType: BuildingConstructionType;
+  structureTypeRaw?: string; structureTypePrimary?: string; publicUseStatus: PublicUseStatus;
+  zoningRaw?: string; zoningCategory: ZoningCategory;
+  district?: District; primaryAddress?: string; addressCount: number; addressesSample?: string[];
+  landSectionCount: number; landSectionsSample?: string[];
+  buildingInfo?: { buildingCount?: number; blockCount?: number; aboveGroundFloors?: number; undergroundFloors?: number; householdCount?: number };
+  buildingArea?: { arcadeSiteAreaSqm?: number; otherSiteAreaSqm?: number; buildingAreaSqm?: number; legalOpenSpaceAreaSqm?: number; aboveGroundShelterAreaSqm?: number; undergroundShelterAreaSqm?: number };
+  buildingHeightM?: number; projectCostNtd?: number; completionDateRaw?: string; completionDate?: string; startDateRaw?: string; startDate?: string;
+  floorSummary: { floorRecordCount: number; primaryUses: string[]; residentialFloorRecordCount: number; officeFloorRecordCount: number; retailFloorRecordCount: number; parkingFloorRecordCount: number };
+  parkingSummary: { parkingRecordCount: number; carSpaces?: number; motorcycleSpaces?: number; bicycleSpaces?: number; otherSpaces?: number };
+  remarksCount: number; hasChangeSummary: boolean; sourceDetailAvailable: boolean;
+};
+
+export type BuildingUsePermitDetailRecord = BuildingUsePermitRecord & {
+  designerRaw?: string; supervisorRaw?: string; contractorRaw?: string; allAddresses: string[]; allLandSections: string[];
+  floorRecords: Array<{ raw: string; floorLabel?: string; areaSqm?: number; heightM?: number; useRaw?: string; useCategory?: FloorUseCategory }>;
+  parkingRecords: Array<{ raw: string; setupType?: string; vehicleType?: string; reviewType?: string; locationIndoorOutdoor?: string; locationAboveBelowGround?: string; spaceCount?: number; areaSqm?: number }>;
+  miscellaneousWorkItems: string[]; applicableLawItems: string[]; remarks: string[]; changeSummaryItems: string[];
+};
+
+export type BuildingUsePermitSummary = {
+  totalRecords: number; minPermitYearGregorian?: number; maxPermitYearGregorian?: number; minIssueDate?: string; maxIssueDate?: string;
+  districtCount: number; recordsWithDistrict: number; recordsMissingDistrict: number; totalHouseholdCount: number; totalProjectCostNtd: number; totalBuildingAreaSqm: number;
+  totalCarParkingSpaces: number; totalMotorcycleParkingSpaces: number; medianAboveGroundFloors?: number; medianBuildingHeightM?: number;
+  constructionTypeCounts: Array<{ constructionType: BuildingConstructionType; count: number }>;
+  publicUseStatusCounts: Array<{ publicUseStatus: PublicUseStatus; count: number }>;
+};
+export type LandParcelAssessedValueRecord = {
+  id: string; source: string; sourceAgency: string; sourceResourceName?: string; sourceYearRoc?: number; year: number; district: District;
+  totalParcelCount?: number; totalAreaHectares?: number; totalAnnouncedLandCurrentValueThousandNtd?: number; totalAnnouncedLandCurrentValueNtd?: number;
+  urbanPublicParcelCount?: number; urbanPublicAreaHectares?: number; urbanPublicAnnouncedLandCurrentValueThousandNtd?: number; urbanPublicAnnouncedLandCurrentValueNtd?: number;
+  urbanPrivateParcelCount?: number; urbanPrivateAreaHectares?: number; urbanPrivateAnnouncedLandCurrentValueThousandNtd?: number; urbanPrivateAnnouncedLandCurrentValueNtd?: number;
+  urbanJointParcelCount?: number; urbanJointAreaHectares?: number; urbanJointAnnouncedLandCurrentValueThousandNtd?: number; urbanJointAnnouncedLandCurrentValueNtd?: number;
+  announcedLandCurrentValueNtdPerHectare?: number; urbanPublicAreaShare?: number; urbanPrivateAreaShare?: number; urbanJointAreaShare?: number; urbanPublicValueShare?: number; urbanPrivateValueShare?: number; urbanJointValueShare?: number; urbanPublicParcelShare?: number; urbanPrivateParcelShare?: number; urbanJointParcelShare?: number;
+  yearOverYearTotalParcelCountChangePercent?: number; yearOverYearTotalAreaChangePercent?: number; yearOverYearTotalAnnouncedLandCurrentValueChangePercent?: number; yearOverYearValuePerHectareChangePercent?: number;
+};
+export type LandParcelAssessedValueSummary = { totalRecords: number; minYear?: number; maxYear?: number; districtCount: number; latestYear?: number; latestCitywideTotals?: Pick<LandParcelAssessedValueRecord, 'totalParcelCount' | 'totalAreaHectares' | 'totalAnnouncedLandCurrentValueNtd' | 'announcedLandCurrentValueNtdPerHectare' | 'urbanPublicAreaHectares' | 'urbanPrivateAreaHectares' | 'urbanJointAreaHectares'>; latestByDistrict: LandParcelAssessedValueRecord[]; byYear: Array<{ year: number; totalParcelCount: number; totalAreaHectares: number; totalAnnouncedLandCurrentValueNtd: number; announcedLandCurrentValueNtdPerHectare?: number }>; };
+
+export function classifyBuildingConstructionType(raw: string | undefined): BuildingConstructionType {
+  const text = raw?.trim() ?? '';
+  if (!text) return 'unknown'; if (text.includes('新建')) return 'new_construction'; if (text.includes('增建')) return 'addition'; if (text.includes('修建')) return 'repair'; if (text.includes('改建')) return 'reconstruction'; return 'other';
+}
+export function parsePublicUseStatus(raw: string | undefined): PublicUseStatus {
+  const text = raw?.trim() ?? ''; return text.includes('非供公眾使用') ? 'non_public_use' : text.includes('供公眾使用') ? 'public_use' : 'unspecified';
+}
+export function classifyZoning(raw: string | undefined): ZoningCategory {
+  const text = raw?.trim() ?? '';
+  if (!text) return 'unknown'; if (/住|住宅/.test(text)) return 'residential'; if (/商|商業/.test(text)) return 'commercial'; if (/工|工業/.test(text)) return 'industrial'; if (/學校|國小|國中|高中|大學/.test(text)) return 'school'; if (/公園|綠地/.test(text)) return 'park'; if (text.includes('機關')) return 'government'; if (text.includes('保護')) return 'protection'; if (/特定|專用/.test(text)) return 'mixed_or_special'; return 'other';
+}
+export function classifyFloorUse(raw: string | undefined): FloorUseCategory {
+  const text = raw?.trim() ?? '';
+  if (!text) return 'unknown'; if (/住宅|H-?2/.test(text)) return 'residential'; if (text.includes('停車')) return 'parking'; if (/事務所|辦公/.test(text)) return 'office'; if (/零售|商店|商場/.test(text)) return 'retail'; if (/學校|教室/.test(text)) return 'school'; if (/機房|機械|水箱|梯間|樓梯/.test(text)) return 'mechanical'; if (/防空避難|避難/.test(text)) return 'shelter'; return 'other';
+}
 
 export type RealPriceRecord = {
   id: string;

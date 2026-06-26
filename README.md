@@ -1,25 +1,32 @@
 # Taipei Real Estate & Demographics Dashboard / 台北實價與人口趨勢儀表板
 
-Mobile-first bilingual dashboard for exploring Taipei real-price records, quarterly market analysis, residential rent index trends by category / 住宅租金指數與類別租金趨勢, and demographic context.
+Mobile-first bilingual dashboard for exploring Taipei real-price records, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, and demographic context.
 
 ## Purpose
 
-The site combines four Taipei public-data sources:
+The site combines six Taipei public-data sources:
 
 - [臺北市實價周報](https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc)
 - [臺北市實價登錄每季動態分析](https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa)
 - [臺北市住宅租金指數](https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20)
+- [臺北市歷年使用執照摘要](https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733)
+- [臺北市土地筆數面積及公告土地現值統計](https://data.taipei/dataset/detail?id=68c439fc-877a-42bb-9c35-a3701e8fc9c3)
 - [臺北市各里人口數按年齡分](https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3)
 
-It is an informational public-data dashboard, not a property appraisal, rent appraisal, investment recommendation, or price prediction tool. Population data provides district context only and does not imply causation for prices, rent, or transaction volume.
+It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, investment recommendation, or price prediction tool. Population and use-permit data provide district context only and do not imply causation for prices, rent, or transaction volume.
 
 ## Data model and limitations
 
 - The frontend reads static JSON from `public/data`; it does not call Taipei Open Data directly.
+- The use-permit XML is parsed with a Node stream at build time. The raw XML remains under `data/raw/building-use-permits/` and is never served to the browser.
+- Generated use-permit records are chunked by issue year; the dashboard loads a year chunk only when the table needs it and loads detailed records on demand.
+- ROC permit dates become Gregorian ISO dates. Districts are extracted from source addresses; no geocoding or exact-map markers are used in v1.
+- Floor summaries and parking descriptions are parsed for aggregate context only. They do not support safety, legal-use, appraisal, or investment claims.
 - Joins are district-level only.
 - Residential rent index values are citywide or building-category level only. They are not district-level rent estimates and are not included in district comparison metrics.
 - Population files contain city, district, village, male, female, and total rows. Conversion uses district rows where `性別=計` to avoid double counting.
 - ROC dates are converted by adding 1911. Failed parses remain in the conversion report.
+- Land-value CSV resource names provide ROC years. Source thousand-NTD values become NTD; per-hectare and urban public/private/joint ownership metrics are derived for district context only. No parcel-level map, market-price, appraisal, or investment claim is made.
 - Rent index periods parse ROC quarters such as `107Q3` into Gregorian quarters such as `2018-Q3`.
 - Weekly sale totals are in NT$10,000 and become NTD. Sale unit prices are NT$10,000/ping and become NTD/ping.
 - Weekly rental unit prices remain NTD/ping/month. Rental totals are derived from unit price × area when available because the source total is rounded.
@@ -45,6 +52,8 @@ data/raw/real-price-weekly/
 data/raw/quarterly-market-analysis/
 data/raw/residential-rent-index/
 data/raw/population-by-age/
+data/raw/building-use-permits/
+data/raw/land-parcel-assessed-value-statistics/
 ```
 
 Build and preview:
@@ -66,6 +75,9 @@ public/data/residential-rent-index-summary.json
 public/data/population-district-summary.json
 public/data/district-comparison-summary.json
 public/data/conversion-report.json
+public/data/building-use-permits/
+public/data/land-parcel-assessed-value-records.json
+public/data/land-parcel-assessed-value-summary.json
 ```
 
 Rent-index-only workflow:
@@ -73,6 +85,8 @@ Rent-index-only workflow:
 ```bash
 npm run data:fetch:rent-index
 npm run data:convert:rent-index
+npm run data:convert:building-use-permits
+npm run data:convert:land-value
 ```
 
 ## GitHub Pages

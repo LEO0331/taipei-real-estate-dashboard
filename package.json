@@ -5,13 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "node --import tsx --test scripts/data.test.ts src/dashboard.test.ts",
+    "test": "node --import tsx --test scripts/data.test.ts scripts/buildingUsePermits.test.ts src/dashboard.test.ts",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "data:fetch": "tsx scripts/fetchRealEstateData.ts && tsx scripts/fetchResidentialRentIndex.ts",
-    "data:convert": "tsx scripts/convertRealPriceWeekly.ts && tsx scripts/convertQuarterlyMarketAnalysis.ts && tsx scripts/convertPopulationByAge.ts && tsx scripts/convertResidentialRentIndex.ts && tsx scripts/buildRealEstateSummary.ts && tsx scripts/buildResidentialRentIndexSummary.ts && tsx scripts/buildDistrictComparison.ts",
+    "data:fetch": "tsx scripts/fetchRealEstateData.ts && tsx scripts/fetchResidentialRentIndex.ts && tsx scripts/fetchBuildingUsePermits.ts",
+    "data:convert": "tsx scripts/convertRealPriceWeekly.ts && tsx scripts/convertQuarterlyMarketAnalysis.ts && tsx scripts/convertPopulationByAge.ts && tsx scripts/convertResidentialRentIndex.ts && tsx scripts/buildRealEstateSummary.ts && tsx scripts/buildResidentialRentIndexSummary.ts && tsx scripts/buildDistrictComparison.ts && tsx scripts/convertBuildingUsePermits.ts && tsx scripts/validateBuildingUsePermitChunks.ts && tsx scripts/convertLandParcelAssessedValueStatistics.ts",
     "data:fetch:rent-index": "tsx scripts/fetchResidentialRentIndex.ts",
-    "data:convert:rent-index": "tsx scripts/convertResidentialRentIndex.ts && tsx scripts/buildResidentialRentIndexSummary.ts"
+    "data:convert:rent-index": "tsx scripts/convertResidentialRentIndex.ts && tsx scripts/buildResidentialRentIndexSummary.ts",
+    "data:convert:building-use-permits": "tsx scripts/convertBuildingUsePermits.ts && tsx scripts/validateBuildingUsePermitChunks.ts",
+    "data:fetch:building-use-permits": "tsx scripts/fetchBuildingUsePermits.ts",
+    "data:convert:land-value": "tsx scripts/convertLandParcelAssessedValueStatistics.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

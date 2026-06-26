@@ -66,6 +66,10 @@ tbody tr:hover, tbody tr:focus-within { background: rgba(53,111,157,.06); }
 .analysis-list details { border-bottom: 1px solid var(--line); }
 .analysis-list summary { padding: 1rem 0; font-weight: 800; cursor: pointer; }
 .analysis-list p, .notes p, .notes li { max-width: 78ch; color: var(--muted); line-height: 1.8; }
+.detail-list { display: grid; gap: .8rem; margin: 0; }
+.detail-list div { padding-bottom: .8rem; border-bottom: 1px solid var(--line); }
+.detail-list dt { color: var(--muted); font-size: .78rem; font-weight: 700; }
+.detail-list dd { margin: .35rem 0 0; line-height: 1.6; overflow-wrap: anywhere; }
 .analysis-list small { color: var(--muted); }
 .notes { border-top: 2px solid var(--ink); padding-top: 1.2rem; }
 .source-links { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.5rem; }
