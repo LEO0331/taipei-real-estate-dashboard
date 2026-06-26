@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { filterRecords, sortDistricts } from './dashboard';
+import { filterRecords, filterRentIndexRecords, sortDistricts } from './dashboard';
 
 const records = [
   { district: '大安區', recordType: 'sale', buildingType: 'apartment', locationText: '和平東路', totalPriceNtd: 2000 },
@@ -23,4 +23,14 @@ test('sorts district comparison rows numerically with missing values last', () =
     '大安區',
     '文山區',
   ]);
+});
+
+test('filters residential rent index records by category, period, and search', () => {
+  const rows = [
+    { rentIndexCategory: 'citywide', rentIndexCategoryRaw: '全市', periodRaw: '114Q4', quarterKey: '2025-Q4', year: 2025, quarter: 4, quarterlyChangeRatePercent: 1.42 },
+    { rentIndexCategory: 'apartment', rentIndexCategoryRaw: '公寓', periodRaw: '114Q3', quarterKey: '2025-Q3', year: 2025, quarter: 3 },
+  ];
+  assert.equal(filterRentIndexRecords(rows, { category: 'citywide', year: '2025', quarter: '4', search: '全市' }).length, 1);
+  assert.equal(filterRentIndexRecords(rows, { hasQuarterlyChangeRate: true }).length, 1);
+  assert.equal(filterRentIndexRecords(rows, { search: '2025-Q3' }).length, 1);
 });

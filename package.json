@@ -8,8 +8,10 @@
     "test": "node --import tsx --test scripts/data.test.ts src/dashboard.test.ts",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "data:fetch": "tsx scripts/fetchRealEstateData.ts",
-    "data:convert": "tsx scripts/convertRealPriceWeekly.ts && tsx scripts/convertQuarterlyMarketAnalysis.ts && tsx scripts/convertPopulationByAge.ts && tsx scripts/buildRealEstateSummary.ts && tsx scripts/buildDistrictComparison.ts"
+    "data:fetch": "tsx scripts/fetchRealEstateData.ts && tsx scripts/fetchResidentialRentIndex.ts",
+    "data:convert": "tsx scripts/convertRealPriceWeekly.ts && tsx scripts/convertQuarterlyMarketAnalysis.ts && tsx scripts/convertPopulationByAge.ts && tsx scripts/convertResidentialRentIndex.ts && tsx scripts/buildRealEstateSummary.ts && tsx scripts/buildResidentialRentIndexSummary.ts && tsx scripts/buildDistrictComparison.ts",
+    "data:fetch:rent-index": "tsx scripts/fetchResidentialRentIndex.ts",
+    "data:convert:rent-index": "tsx scripts/convertResidentialRentIndex.ts && tsx scripts/buildResidentialRentIndexSummary.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

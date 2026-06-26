@@ -20,6 +20,24 @@ type Filters = {
   maxPrice?: number;
 };
 
+type RentIndexRecord = {
+  rentIndexCategoryRaw?: string;
+  rentIndexCategory?: string;
+  periodRaw?: string;
+  quarterKey?: string;
+  year?: number;
+  quarter?: number;
+  quarterlyChangeRatePercent?: number;
+};
+
+type RentIndexFilters = {
+  category?: string;
+  year?: string;
+  quarter?: string;
+  hasQuarterlyChangeRate?: boolean;
+  search?: string;
+};
+
 export function filterRecords<T extends SearchableRecord>(records: T[], filters: Filters): T[] {
   const search = filters.search?.trim().toLocaleLowerCase();
   const buildingTypeSearch: Record<string, string> | undefined = search ? {
@@ -64,5 +82,18 @@ export function sortDistricts<T extends { district: string }>(
     if (right == null) return -1;
     if (typeof left === 'number' && typeof right === 'number') return (left - right) * sign;
     return String(left).localeCompare(String(right), 'zh-Hant') * sign;
+  });
+}
+
+export function filterRentIndexRecords<T extends RentIndexRecord>(records: T[], filters: RentIndexFilters): T[] {
+  const search = filters.search?.trim().toLocaleLowerCase();
+  return records.filter((record) => {
+    if (filters.category && record.rentIndexCategory !== filters.category) return false;
+    if (filters.year && record.year !== Number(filters.year)) return false;
+    if (filters.quarter && record.quarter !== Number(filters.quarter)) return false;
+    if (filters.hasQuarterlyChangeRate && record.quarterlyChangeRatePercent === undefined) return false;
+    if (!search) return true;
+    return [record.rentIndexCategoryRaw, record.rentIndexCategory, record.periodRaw, record.quarterKey]
+      .some((value) => value?.toLocaleLowerCase().includes(search));
   });
 }

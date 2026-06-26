@@ -3,11 +3,15 @@ import test from 'node:test';
 import {
   aggregateRealPriceByDistrict,
   aggregatePopulationRows,
+  buildResidentialRentIndexSummary,
   classifyBuildingType,
   classifyRealPriceRecordType,
+  classifyResidentialRentIndexCategory,
+  convertResidentialRentIndexRows,
   normalizeDistrict,
   parseCsv,
   parseNumber,
+  parseRentIndexPeriod,
   parseTaiwanDate,
   sqmToPing,
 } from './data.ts';
@@ -47,6 +51,41 @@ test('classifies building and record types', () => {
   assert.equal(classifyBuildingType('公寓(5樓含以下無電梯)'), 'apartment');
   assert.equal(classifyRealPriceRecordType('租賃'), 'rent');
   assert.equal(classifyRealPriceRecordType('買賣'), 'sale');
+});
+
+test('parses residential rent index periods, numbers, and categories', () => {
+  assert.equal(classifyResidentialRentIndexCategory('全市'), 'citywide');
+  assert.deepEqual(parseRentIndexPeriod('107Q3'), {
+    periodRaw: '107Q3',
+    rocYear: 107,
+    year: 2018,
+    quarter: 3,
+    quarterKey: '2018-Q3',
+  });
+  assert.equal(parseRentIndexPeriod('2025-Q4').quarterKey, '2025-Q4');
+  const [record] = convertResidentialRentIndexRows([
+    { 住宅租金指數類別: '全市', 期別: '114Q4', 季指數: '108.78', 季變動率: '1.42', '標準租金單價（新台幣元每坪每月）': '1,444' },
+  ]);
+  assert.equal(record.quarterKey, '2025-Q4');
+  assert.equal(record.quarterlyChangeRatePercent, 1.42);
+  assert.equal(record.standardRentUnitPriceNtdPerPingMonthly, 1444);
+});
+
+test('derives residential rent index year-over-year metrics and skips duplicates', () => {
+  const warnings: string[] = [];
+  const records = convertResidentialRentIndexRows([
+    { 住宅租金指數類別: '全市', 期別: '113Q4', 季指數: '100', 季變動率: '-', '標準租金單價（新台幣元每坪每月）': '1,000' },
+    { 住宅租金指數類別: '全市', 期別: '114Q4', 季指數: '110', 季變動率: '1.5', '標準租金單價（新台幣元每坪每月）': '1,100' },
+    { 住宅租金指數類別: '全市', 期別: '114Q4', 季指數: '111', 季變動率: '2', '標準租金單價（新台幣元每坪每月）': '1,111' },
+  ], warnings);
+  assert.equal(records.length, 2);
+  assert.match(warnings.join('\n'), /Duplicate/);
+  assert.equal(records[1].previousYearSameQuarterKey, '2024-Q4');
+  assert.equal(records[1].yearOverYearRentIndexChangePercent, 10);
+  assert.equal(records[1].yearOverYearStandardRentUnitPriceChangePercent, 10);
+  const summary = buildResidentialRentIndexSummary(records);
+  assert.equal(summary.latestQuarterKey, '2025-Q4');
+  assert.equal(summary.latestByCategory[0].quarterlyChangeRatePercent, 1.5);
 });
 
 test('aggregates district population without double-counting sex rows', () => {

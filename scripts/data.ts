@@ -9,6 +9,9 @@ import {
   type MonthlyRealEstateSummary,
   type PopulationDistrictSummary,
   type QuarterlyMarketRecord,
+  type ResidentialRentIndexCategory,
+  type ResidentialRentIndexRecord,
+  type ResidentialRentIndexSummary,
   type RealEstateSummary,
   type RealPriceRecord,
   type RealPriceRecordType,
@@ -20,6 +23,14 @@ export type ParsedDate = {
   year?: number;
   month?: number;
   quarter?: string;
+  warning?: string;
+};
+export type ParsedRentIndexPeriod = {
+  periodRaw?: string;
+  rocYear?: number;
+  year?: number;
+  quarter?: number;
+  quarterKey?: string;
   warning?: string;
 };
 
@@ -124,6 +135,7 @@ export function parseNumber(raw: unknown): number | undefined {
 }
 
 export const parsePriceNtd = parseNumber;
+export const parseNumericValue = parseNumber;
 export const parseAreaSqm = parseNumber;
 export const sqmToPing = (sqm: number): number => sqm / SQM_PER_PING;
 
@@ -177,6 +189,34 @@ export function classifyRealPriceRecordType(raw: string | undefined): RealPriceR
   if (/租賃|租/.test(raw)) return 'rent';
   if (raw.includes('買賣')) return 'sale';
   return 'unknown';
+}
+
+export function classifyResidentialRentIndexCategory(raw: string | undefined): ResidentialRentIndexCategory {
+  const text = raw?.trim() ?? '';
+  if (!text) return 'unknown';
+  if (text === '全市') return 'citywide';
+  if (text === '大樓') return 'elevator_building';
+  if (text === '公寓') return 'apartment';
+  return 'other';
+}
+
+export function parseRentIndexPeriod(raw: unknown): ParsedRentIndexPeriod {
+  const periodRaw = raw === null || raw === undefined ? undefined : String(raw).trim();
+  if (!periodRaw) return {};
+  const compactValue = periodRaw.replace(/\s/g, '').toUpperCase();
+  const match = compactValue.match(/^(\d{3,4})(?:年)?(?:第)?Q?([1-4])(?:季)?$/)
+    ?? compactValue.match(/^(\d{4})-Q([1-4])$/);
+  if (!match) return { periodRaw, warning: `Unable to parse rent index period: ${periodRaw}` };
+  const parsedYear = Number(match[1]);
+  const quarter = Number(match[2]);
+  const rocYear = parsedYear < 1911 ? parsedYear : undefined;
+  const year = rocYear ? rocYear + 1911 : parsedYear;
+  return { periodRaw, rocYear, year, quarter, quarterKey: `${year}-Q${quarter}` };
+}
+
+export function percentChange(current: number | undefined, previous: number | undefined): number | undefined {
+  if (current === undefined || previous === undefined || previous === 0) return undefined;
+  return ((current - previous) / previous) * 100;
 }
 
 const age = (row: CsvRow, value: number): number =>
@@ -351,6 +391,129 @@ export function convertQuarterlyRows(
       analysisText: getColumn(row, ['實價登錄動態分析', '分析']),
       source: '臺北市實價登錄每季動態分析',
     } satisfies QuarterlyMarketRecord)];
+  });
+}
+
+export function convertResidentialRentIndexRows(rows: CsvRow[], warnings: string[] = []): ResidentialRentIndexRecord[] {
+  const records: ResidentialRentIndexRecord[] = [];
+  const seen = new Map<string, ResidentialRentIndexRecord>();
+
+  rows.forEach((row, index) => {
+    const rentIndexCategoryRaw = getColumn(row, ['住宅租金指數類別']) ?? '';
+    const period = parseRentIndexPeriod(getColumn(row, ['期別']));
+    if (period.warning) warnings.push(period.warning);
+    const key = `${rentIndexCategoryRaw.trim()}|${period.quarterKey ?? period.periodRaw ?? ''}`;
+    const record = compact({
+      id: `residential-rent-index-${index + 1}`,
+      source: '臺北市住宅租金指數',
+      sourceAgency: '臺北市政府地政局',
+      rentIndexCategoryRaw,
+      rentIndexCategory: classifyResidentialRentIndexCategory(rentIndexCategoryRaw),
+      periodRaw: period.periodRaw ?? '',
+      rocYear: period.rocYear,
+      year: period.year,
+      quarter: period.quarter,
+      quarterKey: period.quarterKey,
+      quarterlyRentIndex: parseNumericValue(getColumn(row, ['季指數'])),
+      quarterlyChangeRatePercent: parseNumericValue(getColumn(row, ['季變動率'])),
+      standardRentUnitPriceNtdPerPingMonthly: parseNumericValue(getColumn(row, ['標準租金單價（新台幣元每坪每月）', '標準租金單價新台幣元每坪每月'])),
+    } satisfies ResidentialRentIndexRecord);
+    if (seen.has(key)) {
+      warnings.push(`Duplicate residential rent index row skipped: ${key}`);
+      return;
+    }
+    seen.set(key, record);
+    records.push(record);
+  });
+
+  const byCategory = new Map<ResidentialRentIndexCategory, ResidentialRentIndexRecord[]>();
+  for (const record of records) {
+    byCategory.set(record.rentIndexCategory, [...(byCategory.get(record.rentIndexCategory) ?? []), record]);
+  }
+  for (const group of byCategory.values()) {
+    group.sort((a, b) => (a.quarterKey ?? '').localeCompare(b.quarterKey ?? ''));
+    const byQuarter = new Map(group.map((record) => [record.quarterKey, record]));
+    for (const record of group) {
+      if (!record.year || !record.quarter || !record.quarterKey) continue;
+      const previousQuarter = record.quarter === 1 ? `${record.year - 1}-Q4` : `${record.year}-Q${record.quarter - 1}`;
+      const previousYear = `${record.year - 1}-Q${record.quarter}`;
+      record.previousQuarterKey = byQuarter.has(previousQuarter) ? previousQuarter : undefined;
+      record.previousYearSameQuarterKey = byQuarter.has(previousYear) ? previousYear : undefined;
+      const sameQuarterLastYear = byQuarter.get(previousYear);
+      record.yearOverYearRentIndexChangePercent = percentChange(record.quarterlyRentIndex, sameQuarterLastYear?.quarterlyRentIndex);
+      record.yearOverYearStandardRentUnitPriceChangePercent = percentChange(record.standardRentUnitPriceNtdPerPingMonthly, sameQuarterLastYear?.standardRentUnitPriceNtdPerPingMonthly);
+    }
+  }
+  return records.sort((a, b) =>
+    (a.quarterKey ?? '').localeCompare(b.quarterKey ?? '') || a.rentIndexCategoryRaw.localeCompare(b.rentIndexCategoryRaw, 'zh-Hant'));
+}
+
+export function buildResidentialRentIndexSummary(records: ResidentialRentIndexRecord[]): ResidentialRentIndexSummary {
+  const quarterKeys = records.map((record) => record.quarterKey).filter((value): value is string => !!value).sort();
+  const categories = [...new Set(records.map((record) => record.rentIndexCategory))];
+  const latestQuarterKey = quarterKeys.at(-1);
+  const latestByCategory = categories.flatMap((category) => {
+    const latest = records
+      .filter((record) => record.rentIndexCategory === category && record.quarterKey)
+      .sort((a, b) => (b.quarterKey ?? '').localeCompare(a.quarterKey ?? ''))[0];
+    return latest?.quarterKey ? [compact({
+      rentIndexCategory: latest.rentIndexCategory,
+      rentIndexCategoryRaw: latest.rentIndexCategoryRaw,
+      quarterKey: latest.quarterKey,
+      quarterlyRentIndex: latest.quarterlyRentIndex,
+      quarterlyChangeRatePercent: latest.quarterlyChangeRatePercent,
+      standardRentUnitPriceNtdPerPingMonthly: latest.standardRentUnitPriceNtdPerPingMonthly,
+      yearOverYearRentIndexChangePercent: latest.yearOverYearRentIndexChangePercent,
+      yearOverYearStandardRentUnitPriceChangePercent: latest.yearOverYearStandardRentUnitPriceChangePercent,
+    })] : [];
+  });
+
+  const byCategory = categories.map((category) => {
+    const group = records.filter((record) => record.rentIndexCategory === category && record.quarterKey)
+      .sort((a, b) => (a.quarterKey ?? '').localeCompare(b.quarterKey ?? ''));
+    const first = group[0];
+    const latest = group.at(-1);
+    return compact({
+      rentIndexCategory: category,
+      rentIndexCategoryRaw: latest?.rentIndexCategoryRaw ?? first?.rentIndexCategoryRaw ?? '',
+      recordCount: group.length,
+      minQuarterKey: first?.quarterKey,
+      maxQuarterKey: latest?.quarterKey,
+      firstRentIndex: first?.quarterlyRentIndex,
+      latestRentIndex: latest?.quarterlyRentIndex,
+      firstStandardRentUnitPrice: first?.standardRentUnitPriceNtdPerPingMonthly,
+      latestStandardRentUnitPrice: latest?.standardRentUnitPriceNtdPerPingMonthly,
+      rentIndexChangeSinceFirstPercent: percentChange(latest?.quarterlyRentIndex, first?.quarterlyRentIndex),
+      standardRentUnitPriceChangeSinceFirstPercent: percentChange(latest?.standardRentUnitPriceNtdPerPingMonthly, first?.standardRentUnitPriceNtdPerPingMonthly),
+    });
+  });
+
+  const byQuarter = [...new Set(quarterKeys)].map((quarterKey) => {
+    const items = records.filter((record) => record.quarterKey === quarterKey);
+    const byType = new Map(items.map((record) => [record.rentIndexCategory, record]));
+    const [yearText, quarterText] = quarterKey.split('-Q');
+    return compact({
+      quarterKey,
+      year: Number(yearText),
+      quarter: Number(quarterText),
+      citywideRentIndex: byType.get('citywide')?.quarterlyRentIndex,
+      elevatorBuildingRentIndex: byType.get('elevator_building')?.quarterlyRentIndex,
+      apartmentRentIndex: byType.get('apartment')?.quarterlyRentIndex,
+      citywideStandardRentUnitPrice: byType.get('citywide')?.standardRentUnitPriceNtdPerPingMonthly,
+      elevatorBuildingStandardRentUnitPrice: byType.get('elevator_building')?.standardRentUnitPriceNtdPerPingMonthly,
+      apartmentStandardRentUnitPrice: byType.get('apartment')?.standardRentUnitPriceNtdPerPingMonthly,
+    });
+  });
+
+  return compact({
+    totalRecords: records.length,
+    categoryCount: categories.length,
+    minQuarterKey: quarterKeys[0],
+    maxQuarterKey: quarterKeys.at(-1),
+    latestQuarterKey,
+    latestByCategory,
+    byCategory,
+    byQuarter,
   });
 }
 

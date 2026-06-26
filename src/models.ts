@@ -10,6 +10,8 @@ export type RealPriceRecordType = 'sale' | 'pre_sale' | 'rent' | 'unknown';
 export type BuildingType =
   | 'apartment' | 'elevator_building' | 'house' | 'office' | 'shop'
   | 'factory' | 'parking' | 'land' | 'other' | 'unknown';
+export type ResidentialRentIndexCategory =
+  | 'citywide' | 'elevator_building' | 'apartment' | 'other' | 'unknown';
 
 export type RealPriceRecord = {
   id: string;
@@ -38,6 +40,68 @@ export type RealPriceRecord = {
   rentPriceNtd?: number;
   remarks?: string;
   source: string;
+};
+
+export type ResidentialRentIndexRecord = {
+  id: string;
+  source: string;
+  sourceAgency: string;
+  rentIndexCategoryRaw: string;
+  rentIndexCategory: ResidentialRentIndexCategory;
+  periodRaw: string;
+  rocYear?: number;
+  year?: number;
+  quarter?: number;
+  quarterKey?: string;
+  quarterlyRentIndex?: number;
+  quarterlyChangeRatePercent?: number;
+  standardRentUnitPriceNtdPerPingMonthly?: number;
+  yearOverYearRentIndexChangePercent?: number;
+  yearOverYearStandardRentUnitPriceChangePercent?: number;
+  previousQuarterKey?: string;
+  previousYearSameQuarterKey?: string;
+};
+
+export type ResidentialRentIndexSummary = {
+  totalRecords: number;
+  categoryCount: number;
+  minQuarterKey?: string;
+  maxQuarterKey?: string;
+  latestQuarterKey?: string;
+  latestByCategory: Array<{
+    rentIndexCategory: ResidentialRentIndexCategory;
+    rentIndexCategoryRaw: string;
+    quarterKey: string;
+    quarterlyRentIndex?: number;
+    quarterlyChangeRatePercent?: number;
+    standardRentUnitPriceNtdPerPingMonthly?: number;
+    yearOverYearRentIndexChangePercent?: number;
+    yearOverYearStandardRentUnitPriceChangePercent?: number;
+  }>;
+  byCategory: Array<{
+    rentIndexCategory: ResidentialRentIndexCategory;
+    rentIndexCategoryRaw: string;
+    recordCount: number;
+    minQuarterKey?: string;
+    maxQuarterKey?: string;
+    firstRentIndex?: number;
+    latestRentIndex?: number;
+    firstStandardRentUnitPrice?: number;
+    latestStandardRentUnitPrice?: number;
+    rentIndexChangeSinceFirstPercent?: number;
+    standardRentUnitPriceChangeSinceFirstPercent?: number;
+  }>;
+  byQuarter: Array<{
+    quarterKey: string;
+    year: number;
+    quarter: number;
+    citywideRentIndex?: number;
+    elevatorBuildingRentIndex?: number;
+    apartmentRentIndex?: number;
+    citywideStandardRentUnitPrice?: number;
+    elevatorBuildingStandardRentUnitPrice?: number;
+    apartmentStandardRentUnitPrice?: number;
+  }>;
 };
 
 export type QuarterlyMarketRecord = {
@@ -126,4 +190,12 @@ export type RealEstateSummary = {
   byBuildingType: Array<{ buildingType: BuildingType; count: number }>;
   totalPriceBands: Array<{ label: string; count: number }>;
   unitPriceBands: Array<{ label: string; count: number }>;
+  residentialRentIndex?: {
+    latestQuarterKey?: string;
+    citywideRentIndex?: number;
+    citywideQuarterlyChangeRatePercent?: number;
+    citywideStandardRentUnitPriceNtdPerPingMonthly?: number;
+    citywideYearOverYearRentIndexChangePercent?: number;
+    citywideYearOverYearStandardRentUnitPriceChangePercent?: number;
+  };
 };
