@@ -3,18 +3,22 @@ import test from 'node:test';
 import {
   aggregateRealPriceByDistrict,
   aggregatePopulationRows,
+  buildCommercialOfficeRentIndexSummary,
   buildResidentialRentIndexSummary,
   buildResidentialPriceMonthlyIndexSummary,
   classifyBuildingType,
+  classifyCommercialOfficeRentIndexCategory,
   classifyRealPriceRecordType,
   classifyResidentialRentIndexCategory,
   classifyResidentialPriceIndexCategory,
   convertResidentialRentIndexRows,
+  convertCommercialOfficeRentIndexRows,
   convertResidentialPriceMonthlyIndexRows,
   normalizeDistrict,
   parseCsv,
   parseNumber,
   parseRentIndexPeriod,
+  parseRocQuarter,
   parseRocYearMonth,
   parseTaiwanDate,
   sqmToPing,
@@ -114,6 +118,32 @@ test('parses residential price monthly index rows and derives metrics', () => {
   const summary = buildResidentialPriceMonthlyIndexSummary(records);
   assert.equal(summary.latestPeriod, '2013-08');
   assert.equal(summary.latestByCategory[0].monthlyIndex, 110);
+});
+
+test('parses commercial office rent index rows and derives premium metrics', () => {
+  assert.equal(classifyCommercialOfficeRentIndexCategory('主要路段'), 'major_roads');
+  assert.equal(parseRocQuarter('103Q2').period, '2014Q2');
+  assert.equal(parseRocQuarter('114Q4').periodDate, '2025-10-01');
+  const warnings: string[] = [];
+  const records = convertCommercialOfficeRentIndexRows([
+    { 商辦租金指數類別: '全市', 期別: '103Q2', 季指數: '100', '季變動率（%）': '-', '標準租金單價（元/坪/月）': '1,000' },
+    { 商辦租金指數類別: '主要路段', 期別: '103Q2', 季指數: '110', '季變動率（%）': '-', '標準租金單價（元/坪/月）': '2,000' },
+    { 商辦租金指數類別: '全市', 期別: '104Q2', 季指數: '105', '季變動率（%）': '1.15', '標準租金單價（元/坪/月）': '1,100' },
+    { 商辦租金指數類別: '主要路段', 期別: '104Q2', 季指數: '121', '季變動率（%）': '1.2%', '標準租金單價（元/坪/月）': '2,200' },
+    { 商辦租金指數類別: '全市', 期別: '104Q2', 季指數: '106' },
+  ], warnings);
+  assert.equal(records.length, 4);
+  assert.match(warnings.join('\n'), /Duplicate/);
+  assert.equal(records[0].quarterlyChangePercent, undefined);
+  const citywideLatest = records.find((record) => record.category === 'citywide' && record.period === '2015Q2');
+  const majorRoadLatest = records.find((record) => record.category === 'major_roads' && record.period === '2015Q2');
+  assert.equal(citywideLatest?.quarterlyChangePercent, 1.15);
+  assert.equal(citywideLatest?.yearOverYearQuarterlyIndexChangePercent, 5);
+  assert.equal(majorRoadLatest?.rentGapNtdPerPingPerMonth, 1100);
+  assert.equal(majorRoadLatest?.rentGapPercent, 100);
+  const summary = buildCommercialOfficeRentIndexSummary(records);
+  assert.equal(summary.latestPeriod, '2015Q2');
+  assert.equal(summary.latestMajorRoadPremium?.rentGapNtdPerPingPerMonth, 1100);
 });
 
 test('aggregates district population without double-counting sex rows', () => {

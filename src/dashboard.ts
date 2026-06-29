@@ -65,6 +65,33 @@ type PriceIndexFilters = {
   maxStandardUnitPrice?: number;
 };
 
+type CommercialRentIndexRecord = {
+  categoryRaw?: string;
+  category?: string;
+  categoryLabelZh?: string;
+  categoryLabelEn?: string;
+  periodRaw?: string;
+  period?: string;
+  year?: number;
+  quarterNumber?: number;
+  quarterlyIndex?: number;
+  quarterlyChangePercent?: number;
+  standardRentNtdPerPingPerMonth?: number;
+};
+
+type CommercialRentIndexFilters = {
+  category?: string;
+  year?: string;
+  quarter?: string;
+  search?: string;
+  minQuarterlyIndex?: number;
+  maxQuarterlyIndex?: number;
+  minQuarterlyChange?: number;
+  maxQuarterlyChange?: number;
+  minStandardRent?: number;
+  maxStandardRent?: number;
+};
+
 export function filterRecords<T extends SearchableRecord>(records: T[], filters: Filters): T[] {
   const search = filters.search?.trim().toLocaleLowerCase();
   const buildingTypeSearch: Record<string, string> | undefined = search ? {
@@ -139,6 +166,24 @@ export function filterPriceIndexRecords<T extends PriceIndexRecord>(records: T[]
     if (filters.maxStandardUnitPrice !== undefined && (record.standardUnitPriceTenThousandNtdPerPing ?? Infinity) > filters.maxStandardUnitPrice) return false;
     if (!search) return true;
     return [record.categoryRaw, record.category, record.categoryLabelZh, record.categoryLabelEn, record.periodRaw, record.period, record.year?.toString()]
+      .some((value) => value?.toLocaleLowerCase().includes(search));
+  });
+}
+
+export function filterCommercialRentIndexRecords<T extends CommercialRentIndexRecord>(records: T[], filters: CommercialRentIndexFilters): T[] {
+  const search = filters.search?.trim().toLocaleLowerCase();
+  return records.filter((record) => {
+    if (filters.category && record.category !== filters.category) return false;
+    if (filters.year && record.year !== Number(filters.year)) return false;
+    if (filters.quarter && record.quarterNumber !== Number(filters.quarter)) return false;
+    if (filters.minQuarterlyIndex !== undefined && (record.quarterlyIndex ?? -Infinity) < filters.minQuarterlyIndex) return false;
+    if (filters.maxQuarterlyIndex !== undefined && (record.quarterlyIndex ?? Infinity) > filters.maxQuarterlyIndex) return false;
+    if (filters.minQuarterlyChange !== undefined && (record.quarterlyChangePercent ?? -Infinity) < filters.minQuarterlyChange) return false;
+    if (filters.maxQuarterlyChange !== undefined && (record.quarterlyChangePercent ?? Infinity) > filters.maxQuarterlyChange) return false;
+    if (filters.minStandardRent !== undefined && (record.standardRentNtdPerPingPerMonth ?? -Infinity) < filters.minStandardRent) return false;
+    if (filters.maxStandardRent !== undefined && (record.standardRentNtdPerPingPerMonth ?? Infinity) > filters.maxStandardRent) return false;
+    if (!search) return true;
+    return [record.categoryRaw, record.category, record.categoryLabelZh, record.categoryLabelEn, record.periodRaw, record.period, record.year?.toString(), record.quarterNumber ? `q${record.quarterNumber}` : undefined]
       .some((value) => value?.toLocaleLowerCase().includes(search));
   });
 }

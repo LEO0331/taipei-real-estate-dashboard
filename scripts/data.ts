@@ -3,6 +3,9 @@ import { basename, dirname, join } from 'node:path';
 import {
   DISTRICTS,
   type BuildingType,
+  type CommercialOfficeRentIndexCategory,
+  type CommercialOfficeRentIndexRecord,
+  type CommercialOfficeRentIndexSummary,
   type District,
   type DistrictComparisonSummary,
   type DistrictRealEstateSummary,
@@ -43,6 +46,16 @@ export type ParsedPriceIndexPeriod = {
   year?: number;
   month?: number;
   quarter?: string;
+  warning?: string;
+};
+export type ParsedRocQuarter = {
+  periodRaw?: string;
+  period?: string;
+  periodDate?: string;
+  rocYear?: number;
+  year?: number;
+  quarter?: string;
+  quarterNumber?: number;
   warning?: string;
 };
 
@@ -230,11 +243,26 @@ export function classifyResidentialPriceIndexCategory(raw: string | undefined): 
   return 'other';
 }
 
+export function classifyCommercialOfficeRentIndexCategory(raw: string | undefined): CommercialOfficeRentIndexCategory {
+  const text = raw?.trim() ?? '';
+  if (!text) return 'unknown';
+  if (text === '全市') return 'citywide';
+  if (text === '主要路段') return 'major_roads';
+  return 'other';
+}
+
 const priceCategoryLabels: Record<ResidentialPriceIndexCategory, { zh: string; en: string }> = {
   citywide: { zh: '全市', en: 'Citywide' },
   citywide_apartment: { zh: '全市公寓', en: 'Citywide apartment' },
   citywide_building: { zh: '全市大樓', en: 'Citywide building' },
   citywide_small_unit: { zh: '全市小宅', en: 'Citywide small unit' },
+  other: { zh: '其他', en: 'Other' },
+  unknown: { zh: '未知', en: 'Unknown' },
+};
+
+const commercialRentCategoryLabels: Record<CommercialOfficeRentIndexCategory, { zh: string; en: string }> = {
+  citywide: { zh: '全市', en: 'Citywide' },
+  major_roads: { zh: '主要路段', en: 'Major roads' },
   other: { zh: '其他', en: 'Other' },
   unknown: { zh: '未知', en: 'Unknown' },
 };
@@ -264,6 +292,20 @@ export function parseRocYearMonth(raw: unknown): ParsedPriceIndexPeriod {
   if (month < 1 || month > 12) return { periodRaw, warning: `Invalid residential price index month: ${periodRaw}` };
   const period = `${year}-${String(month).padStart(2, '0')}`;
   return { periodRaw, period, periodDate: `${period}-01`, year, month, quarter: `${year}-Q${Math.ceil(month / 3)}` };
+}
+
+export function parseRocQuarter(raw: unknown): ParsedRocQuarter {
+  const periodRaw = raw === null || raw === undefined ? undefined : String(raw).trim();
+  if (!periodRaw) return {};
+  const match = periodRaw.replace(/\s/g, '').toUpperCase().match(/^(\d{2,4})(?:年)?(?:第)?Q?([1-4])(?:季)?$/);
+  if (!match) return { periodRaw, warning: `Unable to parse commercial office rent index period: ${periodRaw}` };
+  const parsedYear = Number(match[1]);
+  const quarterNumber = Number(match[2]);
+  const rocYear = parsedYear < 1911 ? parsedYear : undefined;
+  const year = rocYear ? rocYear + 1911 : parsedYear;
+  const month = (quarterNumber - 1) * 3 + 1;
+  const period = `${year}Q${quarterNumber}`;
+  return { periodRaw, period, periodDate: `${year}-${String(month).padStart(2, '0')}-01`, rocYear, year, quarter: `${year}-Q${quarterNumber}`, quarterNumber };
 }
 
 export function percentChange(current: number | undefined, previous: number | undefined): number | undefined {
@@ -569,6 +611,81 @@ export function convertResidentialPriceMonthlyIndexRows(rows: CsvRow[], warnings
   return records.sort((a, b) => a.period.localeCompare(b.period) || a.categoryRaw!.localeCompare(b.categoryRaw!, 'zh-Hant'));
 }
 
+export function convertCommercialOfficeRentIndexRows(rows: CsvRow[], warnings: string[] = []): CommercialOfficeRentIndexRecord[] {
+  const records: CommercialOfficeRentIndexRecord[] = [];
+  const seen = new Map<string, CommercialOfficeRentIndexRecord>();
+
+  rows.forEach((row, index) => {
+    const categoryRaw = getColumn(row, ['商辦租金指數類別']) ?? '';
+    const category = classifyCommercialOfficeRentIndexCategory(categoryRaw);
+    const labels = commercialRentCategoryLabels[category];
+    const period = parseRocQuarter(getColumn(row, ['期別']));
+    if (period.warning) warnings.push(period.warning);
+    if (!period.period || !period.periodDate || !period.year || !period.quarter || !period.quarterNumber) return;
+    const standardRentNtdPerPingPerMonth = parseNumericValue(getColumn(row, ['標準租金單價（元/坪/月）', '標準租金單價元坪月']));
+    const record = compact({
+      id: `commercial-office-rent-index-${index + 1}`,
+      source: '臺北市商辦租金指數',
+      sourceAgency: '臺北市政府地政局',
+      categoryRaw,
+      category,
+      categoryLabelZh: labels.zh,
+      categoryLabelEn: labels.en,
+      periodRaw: period.periodRaw,
+      period: period.period,
+      periodDate: period.periodDate,
+      rocYear: period.rocYear,
+      year: period.year,
+      quarter: period.quarter,
+      quarterNumber: period.quarterNumber,
+      quarterlyIndex: parseNumericValue(getColumn(row, ['季指數'])),
+      quarterlyChangePercent: parsePercentValue(getColumn(row, ['季變動率（%）', '季變動率(%)', '季變動率'])),
+      standardRentNtdPerPingPerMonth,
+      standardRentNtdPerSqmPerMonth: ntdPerPingToNtdPerSqm(standardRentNtdPerPingPerMonth),
+      isLatestPeriod: false,
+    } satisfies CommercialOfficeRentIndexRecord);
+    const key = `${categoryRaw.trim()}|${period.periodRaw ?? period.period}`;
+    if (seen.has(key)) {
+      warnings.push(`Duplicate commercial office rent index row skipped: ${key}`);
+      return;
+    }
+    seen.set(key, record);
+    records.push(record);
+  });
+
+  const byCategory = new Map<CommercialOfficeRentIndexCategory, CommercialOfficeRentIndexRecord[]>();
+  for (const record of records) byCategory.set(record.category, [...(byCategory.get(record.category) ?? []), record]);
+  for (const group of byCategory.values()) {
+    group.sort((a, b) => a.period.localeCompare(b.period));
+    const first = group.find((record) => record.quarterlyIndex !== undefined);
+    const byQuarter = new Map(group.map((record) => [record.quarter, record]));
+    const latestPeriod = group.at(-1)?.period;
+    for (const record of group) {
+      const previousYear = `${record.year - 1}-Q${record.quarterNumber}`;
+      const sameQuarterLastYear = byQuarter.get(previousYear);
+      record.yearOverYearQuarterlyIndexChangePercent = percentChange(record.quarterlyIndex, sameQuarterLastYear?.quarterlyIndex);
+      record.yearOverYearStandardRentChangePercent = percentChange(record.standardRentNtdPerPingPerMonth, sameQuarterLastYear?.standardRentNtdPerPingPerMonth);
+      record.indexFromStartChangePercent = percentChange(record.quarterlyIndex, first?.quarterlyIndex);
+      record.isLatestPeriod = record.period === latestPeriod;
+    }
+  }
+
+  const byPeriod = new Map<string, CommercialOfficeRentIndexRecord[]>();
+  for (const record of records) byPeriod.set(record.period, [...(byPeriod.get(record.period) ?? []), record]);
+  for (const group of byPeriod.values()) {
+    const citywide = group.find((record) => record.category === 'citywide')?.standardRentNtdPerPingPerMonth;
+    const major = group.find((record) => record.category === 'major_roads')?.standardRentNtdPerPingPerMonth;
+    const gap = citywide !== undefined && major !== undefined ? major - citywide : undefined;
+    const gapPercent = percentChange(major, citywide);
+    for (const record of group) {
+      record.rentGapNtdPerPingPerMonth = gap;
+      record.rentGapPercent = gapPercent;
+    }
+  }
+
+  return records.sort((a, b) => a.period.localeCompare(b.period) || a.categoryRaw!.localeCompare(b.categoryRaw!, 'zh-Hant'));
+}
+
 export function buildResidentialRentIndexSummary(records: ResidentialRentIndexRecord[]): ResidentialRentIndexSummary {
   const quarterKeys = records.map((record) => record.quarterKey).filter((value): value is string => !!value).sort();
   const categories = [...new Set(records.map((record) => record.rentIndexCategory))];
@@ -693,6 +810,77 @@ export function buildResidentialPriceMonthlyIndexSummary(records: ResidentialPri
         citywideBuildingMonthlyIndex: byType.get('citywide_building')?.monthlyIndex,
         citywideSmallUnitMonthlyIndex: byType.get('citywide_small_unit')?.monthlyIndex,
         citywideStandardUnitPriceTenThousandNtdPerPing: byType.get('citywide')?.standardUnitPriceTenThousandNtdPerPing,
+      });
+    }),
+  });
+}
+
+export function buildCommercialOfficeRentIndexSummary(records: CommercialOfficeRentIndexRecord[]): CommercialOfficeRentIndexSummary {
+  const periods = [...new Set(records.map((record) => record.period))].sort();
+  const categories = [...new Set(records.map((record) => record.category))];
+  const latestPeriod = periods.at(-1);
+  const latestByCategory = categories.flatMap((category) => {
+    const latest = records.filter((record) => record.category === category).sort((a, b) => b.period.localeCompare(a.period))[0];
+    return latest ? [compact({
+      category: latest.category,
+      categoryLabelZh: latest.categoryLabelZh,
+      categoryLabelEn: latest.categoryLabelEn,
+      period: latest.period,
+      quarterlyIndex: latest.quarterlyIndex,
+      quarterlyChangePercent: latest.quarterlyChangePercent,
+      yearOverYearQuarterlyIndexChangePercent: latest.yearOverYearQuarterlyIndexChangePercent,
+      standardRentNtdPerPingPerMonth: latest.standardRentNtdPerPingPerMonth,
+      standardRentNtdPerSqmPerMonth: latest.standardRentNtdPerSqmPerMonth,
+      indexFromStartChangePercent: latest.indexFromStartChangePercent,
+    })] : [];
+  });
+  const latestRows = latestPeriod ? records.filter((record) => record.period === latestPeriod) : [];
+  const latestCitywide = latestRows.find((record) => record.category === 'citywide');
+  const latestMajor = latestRows.find((record) => record.category === 'major_roads');
+  return compact({
+    totalRecords: records.length,
+    categoryCount: categories.length,
+    periodCount: periods.length,
+    minPeriod: periods[0],
+    maxPeriod: latestPeriod,
+    latestPeriod,
+    latestByCategory,
+    latestMajorRoadPremium: latestPeriod ? compact({
+      period: latestPeriod,
+      citywideRentNtdPerPingPerMonth: latestCitywide?.standardRentNtdPerPingPerMonth,
+      majorRoadRentNtdPerPingPerMonth: latestMajor?.standardRentNtdPerPingPerMonth,
+      rentGapNtdPerPingPerMonth: latestMajor?.rentGapNtdPerPingPerMonth,
+      rentGapPercent: latestMajor?.rentGapPercent,
+    }) : undefined,
+    byCategory: categories.map((category) => {
+      const group = records.filter((record) => record.category === category).sort((a, b) => a.period.localeCompare(b.period));
+      const first = group[0];
+      const latest = group.at(-1);
+      return compact({
+        category,
+        categoryLabelZh: latest?.categoryLabelZh ?? first?.categoryLabelZh ?? category,
+        categoryLabelEn: latest?.categoryLabelEn ?? first?.categoryLabelEn ?? category,
+        recordCount: group.length,
+        minPeriod: first?.period,
+        maxPeriod: latest?.period,
+        startQuarterlyIndex: first?.quarterlyIndex,
+        latestQuarterlyIndex: latest?.quarterlyIndex,
+        indexFromStartChangePercent: latest?.indexFromStartChangePercent,
+        latestStandardRentNtdPerPingPerMonth: latest?.standardRentNtdPerPingPerMonth,
+        latestStandardRentNtdPerSqmPerMonth: latest?.standardRentNtdPerSqmPerMonth,
+      });
+    }),
+    byPeriod: periods.map((period) => {
+      const items = records.filter((record) => record.period === period);
+      const byType = new Map(items.map((record) => [record.category, record]));
+      return compact({
+        period,
+        citywideQuarterlyIndex: byType.get('citywide')?.quarterlyIndex,
+        majorRoadQuarterlyIndex: byType.get('major_roads')?.quarterlyIndex,
+        citywideStandardRentNtdPerPingPerMonth: byType.get('citywide')?.standardRentNtdPerPingPerMonth,
+        majorRoadStandardRentNtdPerPingPerMonth: byType.get('major_roads')?.standardRentNtdPerPingPerMonth,
+        rentGapNtdPerPingPerMonth: byType.get('major_roads')?.rentGapNtdPerPingPerMonth,
+        rentGapPercent: byType.get('major_roads')?.rentGapPercent,
       });
     }),
   });

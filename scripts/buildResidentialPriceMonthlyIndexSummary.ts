@@ -15,7 +15,11 @@ try {
   const previous = await readFile('public/data/real-price-summary.json', 'utf8')
     .then((text) => JSON.parse(text) as RealEstateSummary)
     .catch(() => undefined);
-  const realEstateSummary = { ...buildRealEstateSummary(realPriceRecords), residentialRentIndex: previous?.residentialRentIndex } as RealEstateSummary;
+  const realEstateSummary = {
+    ...buildRealEstateSummary(realPriceRecords),
+    residentialRentIndex: previous?.residentialRentIndex,
+    commercialOfficeRentIndex: previous?.commercialOfficeRentIndex,
+  } as RealEstateSummary;
   const citywide = summary.latestByCategory.find((item) => item.category === 'citywide');
   realEstateSummary.residentialPriceMonthlyIndex = {
     latestPeriod: citywide?.period,

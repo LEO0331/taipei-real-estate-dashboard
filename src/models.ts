@@ -14,6 +14,7 @@ export type ResidentialRentIndexCategory =
   | 'citywide' | 'elevator_building' | 'apartment' | 'other' | 'unknown';
 export type ResidentialPriceIndexCategory =
   | 'citywide' | 'citywide_apartment' | 'citywide_building' | 'citywide_small_unit' | 'other' | 'unknown';
+export type CommercialOfficeRentIndexCategory = 'citywide' | 'major_roads' | 'other' | 'unknown';
 export type BuildingConstructionType = 'new_construction' | 'addition' | 'repair' | 'reconstruction' | 'other' | 'unknown';
 export type PublicUseStatus = 'public_use' | 'non_public_use' | 'unspecified';
 export type ZoningCategory = 'residential' | 'commercial' | 'industrial' | 'school' | 'park' | 'government' | 'protection' | 'mixed_or_special' | 'other' | 'unknown';
@@ -232,6 +233,75 @@ export type ResidentialPriceMonthlyIndexSummary = {
   }>;
 };
 
+export type CommercialOfficeRentIndexRecord = {
+  id: string;
+  source: string;
+  sourceAgency: string;
+  categoryRaw?: string;
+  category: CommercialOfficeRentIndexCategory;
+  categoryLabelZh: string;
+  categoryLabelEn: string;
+  periodRaw?: string;
+  period: string;
+  periodDate: string;
+  rocYear?: number;
+  year: number;
+  quarter: string;
+  quarterNumber: number;
+  quarterlyIndex?: number;
+  quarterlyChangePercent?: number;
+  standardRentNtdPerPingPerMonth?: number;
+  standardRentNtdPerSqmPerMonth?: number;
+  yearOverYearQuarterlyIndexChangePercent?: number;
+  yearOverYearStandardRentChangePercent?: number;
+  indexFromStartChangePercent?: number;
+  rentGapNtdPerPingPerMonth?: number;
+  rentGapPercent?: number;
+  isLatestPeriod: boolean;
+};
+
+export type CommercialOfficeRentIndexSummary = {
+  totalRecords: number;
+  categoryCount: number;
+  periodCount: number;
+  minPeriod?: string;
+  maxPeriod?: string;
+  latestPeriod?: string;
+  latestByCategory: Array<Pick<CommercialOfficeRentIndexRecord,
+    'category' | 'categoryLabelZh' | 'categoryLabelEn' | 'period' | 'quarterlyIndex' | 'quarterlyChangePercent' |
+    'yearOverYearQuarterlyIndexChangePercent' | 'standardRentNtdPerPingPerMonth' | 'standardRentNtdPerSqmPerMonth' |
+    'indexFromStartChangePercent'>>;
+  latestMajorRoadPremium?: {
+    period: string;
+    citywideRentNtdPerPingPerMonth?: number;
+    majorRoadRentNtdPerPingPerMonth?: number;
+    rentGapNtdPerPingPerMonth?: number;
+    rentGapPercent?: number;
+  };
+  byCategory: Array<{
+    category: CommercialOfficeRentIndexCategory;
+    categoryLabelZh: string;
+    categoryLabelEn: string;
+    recordCount: number;
+    minPeriod?: string;
+    maxPeriod?: string;
+    startQuarterlyIndex?: number;
+    latestQuarterlyIndex?: number;
+    indexFromStartChangePercent?: number;
+    latestStandardRentNtdPerPingPerMonth?: number;
+    latestStandardRentNtdPerSqmPerMonth?: number;
+  }>;
+  byPeriod: Array<{
+    period: string;
+    citywideQuarterlyIndex?: number;
+    majorRoadQuarterlyIndex?: number;
+    citywideStandardRentNtdPerPingPerMonth?: number;
+    majorRoadStandardRentNtdPerPingPerMonth?: number;
+    rentGapNtdPerPingPerMonth?: number;
+    rentGapPercent?: number;
+  }>;
+};
+
 export type QuarterlyMarketRecord = {
   id: string;
   year?: number;
@@ -333,5 +403,16 @@ export type RealEstateSummary = {
     citywideYearOverYearMonthlyIndexChangePercent?: number;
     citywideStandardTotalPriceTenThousandNtd?: number;
     citywideStandardUnitPriceTenThousandNtdPerPing?: number;
+  };
+  commercialOfficeRentIndex?: {
+    latestPeriod?: string;
+    citywideQuarterlyIndex?: number;
+    citywideQuarterlyChangePercent?: number;
+    citywideStandardRentNtdPerPingPerMonth?: number;
+    majorRoadQuarterlyIndex?: number;
+    majorRoadQuarterlyChangePercent?: number;
+    majorRoadStandardRentNtdPerPingPerMonth?: number;
+    majorRoadRentGapNtdPerPingPerMonth?: number;
+    majorRoadRentGapPercent?: number;
   };
 };

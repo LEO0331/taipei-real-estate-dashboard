@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { filterPriceIndexRecords, filterRecords, filterRentIndexRecords, sortDistricts } from './dashboard';
+import { filterCommercialRentIndexRecords, filterPriceIndexRecords, filterRecords, filterRentIndexRecords, sortDistricts } from './dashboard';
 
 const records = [
   { district: '大安區', recordType: 'sale', buildingType: 'apartment', locationText: '和平東路', totalPriceNtd: 2000 },
@@ -43,4 +43,14 @@ test('filters residential price monthly index records by category, period, and s
   assert.equal(filterPriceIndexRecords(rows, { category: 'citywide', year: '2026', month: '2', search: '115/02' }).length, 1);
   assert.equal(filterPriceIndexRecords(rows, { minMonthlyIndex: 120 }).length, 1);
   assert.equal(filterPriceIndexRecords(rows, { search: '2025' }).length, 1);
+});
+
+test('filters commercial office rent index records by category, period, and search', () => {
+  const rows = [
+    { category: 'citywide', categoryRaw: '全市', periodRaw: '114Q4', period: '2025Q4', year: 2025, quarterNumber: 4, quarterlyIndex: 119.08, standardRentNtdPerPingPerMonth: 1656 },
+    { category: 'major_roads', categoryRaw: '主要路段', periodRaw: '113Q2', period: '2024Q2', year: 2024, quarterNumber: 2, quarterlyIndex: 120 },
+  ];
+  assert.equal(filterCommercialRentIndexRecords(rows, { category: 'citywide', year: '2025', quarter: '4', search: '114Q4' }).length, 1);
+  assert.equal(filterCommercialRentIndexRecords(rows, { minStandardRent: 1600 }).length, 1);
+  assert.equal(filterCommercialRentIndexRecords(rows, { search: 'major' }).length, 1);
 });

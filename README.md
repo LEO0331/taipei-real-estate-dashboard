@@ -1,13 +1,14 @@
 # Taipei Real Estate & Demographics Dashboard / 台北實價與人口趨勢儀表板
 
-Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price monthly index trends by housing category / 各住宅類別住宅價格月指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, and demographic context.
+Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price monthly index trends by housing category / 各住宅類別住宅價格月指數趨勢, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, and demographic context.
 
 ## Purpose
 
-The site combines seven Taipei public-data sources:
+The site combines eight Taipei public-data sources:
 
 - [臺北市實價周報](https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc)
 - [臺北市住宅價格月指數](https://data.taipei/dataset/detail?id=ce4ea2c6-6334-44f8-945a-5705492b187d)
+- [臺北市商辦租金指數](https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3)
 - [臺北市實價登錄每季動態分析](https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa)
 - [臺北市住宅租金指數](https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20)
 - [臺北市歷年使用執照摘要](https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733)
@@ -25,6 +26,9 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 - Floor summaries and parking descriptions are parsed for aggregate context only. They do not support safety, legal-use, appraisal, or investment claims.
 - Joins are district-level only.
 - Residential rent index values are citywide or building-category level only. They are not district-level rent estimates and are not included in district comparison metrics.
+- Commercial office rent index values are citywide or major-road category level only. The `主要路段` category is not a list of mappable roads; no district, coordinate, geocoding, or map-marker behavior is generated.
+- Commercial office rent index CSV files are UTF-8-SIG today, with Big5/CP950 fallback. ROC quarter values such as `103Q2` become Gregorian quarters such as `2014Q2`.
+- Commercial office rent conversion parses quarterly index, quarterly change, standard rent unit price in NTD per ping per month, derives NTD per square meter per month, year-over-year metrics, and major-road premium over citywide rent. It is not office lease appraisal, leasing advice, investment advice, or rent prediction.
 - Residential price monthly index values are citywide or housing-category level only: citywide, citywide apartment, citywide building, and citywide small unit. They are not individual-home appraisals, listing prices, district estimates, investment advice, or forecasts.
 - Residential price monthly index CSV files are CP950 / Big5-family today, with UTF-8-SIG fallback. ROC year/month values such as `101/08` become Gregorian periods such as `2012-08`.
 - Residential price index conversion parses monthly index, 3-month moving average, 6-month moving average, source percent-change fields, standard residential total price in NTD 10,000, and standard residential unit price in NTD 10,000 per ping. It derives NTD, NTD per square meter, year-over-year metrics, and change since the first available category period.
@@ -55,6 +59,7 @@ npm run dev
 data/raw/real-price-weekly/
 data/raw/quarterly-market-analysis/
 data/raw/residential-price-monthly-index/
+data/raw/commercial-office-rent-index/
 data/raw/residential-rent-index/
 data/raw/population-by-age/
 data/raw/building-use-permits/
@@ -78,6 +83,9 @@ public/data/quarterly-market-summary.json
 public/data/residential-price-monthly-index-records.json
 public/data/residential-price-monthly-index-summary.json
 public/data/residential-price-monthly-index-category-series.json
+public/data/commercial-office-rent-index-records.json
+public/data/commercial-office-rent-index-summary.json
+public/data/commercial-office-rent-index-category-series.json
 public/data/residential-rent-index-records.json
 public/data/residential-rent-index-summary.json
 public/data/population-district-summary.json
@@ -93,6 +101,8 @@ Rent-index-only workflow:
 ```bash
 npm run data:fetch:price-index
 npm run data:convert:price-index
+npm run data:fetch:commercial-rent
+npm run data:convert:commercial-rent
 npm run data:fetch:rent-index
 npm run data:convert:rent-index
 npm run data:convert:building-use-permits
