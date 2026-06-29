@@ -12,6 +12,7 @@ The site combines eight Taipei public-data sources:
 - [臺北市實價登錄每季動態分析](https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa)
 - [臺北市住宅租金指數](https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20)
 - [臺北市歷年使用執照摘要](https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733)
+- [臺北市115年度使用執照摘要](https://data.taipei/dataset/detail?id=0816f991-e6c8-4da0-a789-d022fee1462b)
 - [臺北市土地筆數面積及公告土地現值統計](https://data.taipei/dataset/detail?id=68c439fc-877a-42bb-9c35-a3701e8fc9c3)
 - [臺北市各里人口數按年齡分](https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3)
 
@@ -20,7 +21,7 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 ## Data model and limitations
 
 - The frontend reads static JSON from `public/data`; it does not call Taipei Open Data directly.
-- The use-permit XML is parsed with a Node stream at build time. The raw XML remains under `data/raw/building-use-permits/` and is never served to the browser.
+- The use-permit XML files are parsed with a Node stream at build time. The raw XML remains under `data/raw/building-use-permits/`, including current-year files such as `data/raw/building-use-permits/115/Taipei02.xml`, and is never served to the browser.
 - Generated use-permit records are chunked by issue year; the dashboard loads a year chunk only when the table needs it and loads detailed records on demand.
 - ROC permit dates become Gregorian ISO dates. Districts are extracted from source addresses; no geocoding or exact-map markers are used in v1.
 - Floor summaries and parking descriptions are parsed for aggregate context only. They do not support safety, legal-use, appraisal, or investment claims.
