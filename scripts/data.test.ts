@@ -4,14 +4,18 @@ import {
   aggregateRealPriceByDistrict,
   aggregatePopulationRows,
   buildResidentialRentIndexSummary,
+  buildResidentialPriceMonthlyIndexSummary,
   classifyBuildingType,
   classifyRealPriceRecordType,
   classifyResidentialRentIndexCategory,
+  classifyResidentialPriceIndexCategory,
   convertResidentialRentIndexRows,
+  convertResidentialPriceMonthlyIndexRows,
   normalizeDistrict,
   parseCsv,
   parseNumber,
   parseRentIndexPeriod,
+  parseRocYearMonth,
   parseTaiwanDate,
   sqmToPing,
 } from './data.ts';
@@ -86,6 +90,30 @@ test('derives residential rent index year-over-year metrics and skips duplicates
   const summary = buildResidentialRentIndexSummary(records);
   assert.equal(summary.latestQuarterKey, '2025-Q4');
   assert.equal(summary.latestByCategory[0].quarterlyChangeRatePercent, 1.5);
+});
+
+test('parses residential price monthly index rows and derives metrics', () => {
+  assert.equal(classifyResidentialPriceIndexCategory('全市小宅'), 'citywide_small_unit');
+  assert.equal(parseRocYearMonth('101/08').period, '2012-08');
+  assert.equal(parseRocYearMonth('115/02').periodDate, '2026-02-01');
+  const warnings: string[] = [];
+  const records = convertResidentialPriceMonthlyIndexRows([
+    { 住宅價格月指數類別: '全市', 期別: '101/08', 月指數: '100', 季移動平均數: '-', 半年移動平均數: '-', '月指數變動率(%)': '0%', '標準住宅總價（新台幣萬元）': '1,000', '標準住宅單價（新台幣萬元每坪）': '50' },
+    { 住宅價格月指數類別: '全市', 期別: '102/08', 月指數: '110', 季移動平均數: '108', 半年移動平均數: '106', '月指數變動率(%)': '1.23%', '標準住宅總價（新台幣萬元）': '1,100', '標準住宅單價（新台幣萬元每坪）': '55' },
+    { 住宅價格月指數類別: '全市', 期別: '102/08', 月指數: '111' },
+  ], warnings);
+  assert.equal(records.length, 2);
+  assert.match(warnings.join('\n'), /Duplicate/);
+  assert.equal(records[0].period, '2012-08');
+  assert.equal(records[0].threeMonthMovingAverageIndex, undefined);
+  assert.equal(records[1].monthlyIndexChangePercent, 1.23);
+  assert.equal(records[1].standardTotalPriceNtd, 11_000_000);
+  assert.equal(records[1].standardUnitPriceNtdPerPing, 550_000);
+  assert.equal(Number(records[1].yearOverYearMonthlyIndexChangePercent?.toFixed(2)), 10);
+  assert.equal(Number(records[1].indexFromStartChangePercent?.toFixed(2)), 10);
+  const summary = buildResidentialPriceMonthlyIndexSummary(records);
+  assert.equal(summary.latestPeriod, '2013-08');
+  assert.equal(summary.latestByCategory[0].monthlyIndex, 110);
 });
 
 test('aggregates district population without double-counting sex rows', () => {

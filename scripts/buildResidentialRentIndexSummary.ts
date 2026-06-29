@@ -12,7 +12,10 @@ await writeJson('public/data/residential-rent-index-summary.json', summary);
 
 try {
   const realPriceRecords = JSON.parse(await readFile('public/data/real-price-records.json', 'utf8')) as RealPriceRecord[];
-  const realEstateSummary = buildRealEstateSummary(realPriceRecords) as RealEstateSummary;
+  const previous = await readFile('public/data/real-price-summary.json', 'utf8')
+    .then((text) => JSON.parse(text) as RealEstateSummary)
+    .catch(() => undefined);
+  const realEstateSummary = { ...buildRealEstateSummary(realPriceRecords), residentialPriceMonthlyIndex: previous?.residentialPriceMonthlyIndex } as RealEstateSummary;
   const citywide = summary.latestByCategory.find((item) => item.rentIndexCategory === 'citywide');
   realEstateSummary.residentialRentIndex = {
     latestQuarterKey: citywide?.quarterKey,

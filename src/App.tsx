@@ -3,8 +3,8 @@ import {
   Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Line, LineChart,
   Pie, PieChart, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis,
 } from 'recharts';
-import { filterRecords, filterRentIndexRecords, sortDistricts } from './dashboard';
-import { buildingTypeLabel, copy, districtEn, recordTypeLabel, rentIndexCategoryLabel } from './i18n';
+import { filterPriceIndexRecords, filterRecords, filterRentIndexRecords, sortDistricts } from './dashboard';
+import { buildingTypeLabel, copy, districtEn, priceIndexCategoryLabel, recordTypeLabel, rentIndexCategoryLabel } from './i18n';
 import {
   DISTRICTS,
   type BuildingType,
@@ -17,6 +17,9 @@ import {
   type LandParcelAssessedValueSummary,
   type PopulationDistrictSummary,
   type QuarterlyMarketRecord,
+  type ResidentialPriceIndexCategory,
+  type ResidentialPriceMonthlyIndexRecord,
+  type ResidentialPriceMonthlyIndexSummary,
   type ResidentialRentIndexCategory,
   type ResidentialRentIndexRecord,
   type ResidentialRentIndexSummary,
@@ -41,6 +44,8 @@ type DataBundle = {
   quarterlySummary: QuarterlySummary;
   population: PopulationDistrictSummary[];
   comparison: DistrictComparisonSummary[];
+  priceIndexRecords: ResidentialPriceMonthlyIndexRecord[];
+  priceIndexSummary: ResidentialPriceMonthlyIndexSummary;
   rentIndexRecords: ResidentialRentIndexRecord[];
   rentIndexSummary: ResidentialRentIndexSummary;
   landValueRecords: LandParcelAssessedValueRecord[];
@@ -67,12 +72,16 @@ const formatPercent = (value: number | undefined) => value === undefined ? '—'
 const formatSourcePercent = (value: number | undefined) => value === undefined ? '—' : `${value.toFixed(2)}%`;
 const formatRentUnit = (value: number | undefined, language: Language) =>
   value === undefined ? '—' : `${value.toLocaleString(language === 'zh' ? 'zh-TW' : 'en-US', { maximumFractionDigits: 0 })} ${copy[language].standardRentUnitPriceUnit}`;
+const formatWan = (value: number | undefined, language: Language, unit: string) =>
+  value === undefined ? '—' : `${value.toLocaleString(language === 'zh' ? 'zh-TW' : 'en-US', { maximumFractionDigits: 2 })} ${unit}`;
 const formatPriceAxis = (value: number, language: Language) =>
   language === 'zh' ? `${Math.round(value / 10_000)}萬` : `${Math.round(value / 1_000)}k`;
 const districtLabel = (district: string | undefined, language: Language) =>
   !district ? '—' : language === 'zh' ? district : districtEn[district] ?? district;
 const rentCategoryLabel = (category: ResidentialRentIndexCategory, language: Language) =>
   rentIndexCategoryLabel[category]?.[language] ?? category;
+const priceCategoryLabel = (category: ResidentialPriceIndexCategory, language: Language) =>
+  priceIndexCategoryLabel[category]?.[language] ?? category;
 
 function MetricStrip({ items }: { items: Array<{ label: string; value: ReactNode }> }) {
   return <dl className="metric-strip">{items.map((item) =>
@@ -200,7 +209,17 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: t.citywideQuarterlyChange, value: formatSourcePercent(rent.citywideQuarterlyChangeRatePercent) },
         { label: t.citywideStandardRentUnitPrice, value: formatRentUnit(rent.citywideStandardRentUnitPriceNtdPerPingMonthly, language) },
       ]} />
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 3 }))}>{language === 'zh' ? '查看租金指數' : 'View rent index'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 4 }))}>{language === 'zh' ? '查看租金指數' : 'View rent index'}</button>
+    </section>}
+    {summary.residentialPriceMonthlyIndex && <section className="overview-panel">
+      <h2>{t.residentialPriceMonthlyIndex}</h2>
+      <MetricStrip items={[
+        { label: t.latestPeriod, value: summary.residentialPriceMonthlyIndex.latestPeriod ?? '—' },
+        { label: t.citywideLatestMonthlyIndex, value: summary.residentialPriceMonthlyIndex.citywideMonthlyIndex?.toFixed(2) ?? '—' },
+        { label: t.citywideMonthlyIndexChange, value: formatSourcePercent(summary.residentialPriceMonthlyIndex.citywideMonthlyIndexChangePercent) },
+        { label: t.citywideStandardUnitPrice, value: formatWan(summary.residentialPriceMonthlyIndex.citywideStandardUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping') },
+      ]} />
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 1 }))}>{language === 'zh' ? '查看房價指數' : 'View price index'}</button>
     </section>}
     <div className="chart-grid">
       <ChartSection title={t.transactionCountByMonth}><ResponsiveContainer width="100%" height={280}>
@@ -218,6 +237,83 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         </Pie><Tooltip /></PieChart>
       </ResponsiveContainer></ChartSection>
     </div>
+  </>;
+}
+
+function ResidentialPriceMonthlyIndex({ data, language }: { data: DataBundle; language: Language }) {
+  const t = copy[language];
+  const [category, setCategory] = useState('');
+  const [year, setYear] = useState('');
+  const [month, setMonth] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
+  const records = data.priceIndexRecords;
+  const filtered = useMemo(() => filterPriceIndexRecords(records, { category, year, month, search }), [records, category, year, month, search]);
+  useEffect(() => setPage(1), [filtered]);
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const visible = filtered.slice((page - 1) * pageSize, page * pageSize);
+  const latest = data.priceIndexSummary.latestByCategory;
+  const citywide = latest.find((item) => item.category === 'citywide');
+  const highestIndex = [...latest].sort((a, b) => (b.monthlyIndex ?? 0) - (a.monthlyIndex ?? 0))[0];
+  const highestUnitPrice = [...latest].sort((a, b) => (b.standardUnitPriceTenThousandNtdPerPing ?? 0) - (a.standardUnitPriceTenThousandNtdPerPing ?? 0))[0];
+  const years = [...new Set(records.map((record) => record.year))].sort();
+  const categories = [...new Set(records.map((record) => record.category))];
+  const lineData = data.priceIndexSummary.byPeriod;
+  const citywideTrend = records.filter((record) => record.category === 'citywide');
+  const latestChart = latest.map((item) => ({ ...item, categoryLabel: priceCategoryLabel(item.category, language) }));
+
+  return <>
+    <section className="section-intro">
+      <h2>{t.residentialPriceMonthlyIndex}</h2>
+      <p>{t.priceIndexSubtitle}</p>
+      <p className="notice">{t.priceIndexDisclaimer}</p>
+    </section>
+    <MetricStrip items={[
+      { label: t.latestPeriod, value: data.priceIndexSummary.latestPeriod ?? '—' },
+      { label: t.indexCategoryCount, value: data.priceIndexSummary.categoryCount },
+      { label: t.citywideLatestMonthlyIndex, value: citywide?.monthlyIndex?.toFixed(2) ?? '—' },
+      { label: t.citywideMonthlyIndexChange, value: formatSourcePercent(citywide?.monthlyIndexChangePercent) },
+      { label: t.citywideYoyIndexChange, value: formatSourcePercent(citywide?.yearOverYearMonthlyIndexChangePercent) },
+      { label: t.citywideStandardTotalPrice, value: formatWan(citywide?.standardTotalPriceTenThousandNtd, language, language === 'zh' ? '萬元' : 'NTD 10k') },
+      { label: t.citywideStandardUnitPrice, value: formatWan(citywide?.standardUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping') },
+      { label: t.highestMonthlyIndexCategory, value: highestIndex ? priceCategoryLabel(highestIndex.category, language) : '—' },
+      { label: t.highestStandardUnitPriceCategory, value: highestUnitPrice ? priceCategoryLabel(highestUnitPrice.category, language) : '—' },
+    ]} />
+    <div className="chart-grid">
+      <ChartSection title={t.monthlyIndexByCategory} note={t.residentialPriceIndexChartNotice}><ResponsiveContainer width="100%" height={320}>
+        <LineChart data={lineData}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="period" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Line dataKey="citywideMonthlyIndex" name={priceCategoryLabel('citywide', language)} stroke="#b24738" strokeWidth={3} dot={false} /><Line dataKey="citywideApartmentMonthlyIndex" name={priceCategoryLabel('citywide_apartment', language)} stroke="#737d68" strokeWidth={2} dot={false} /><Line dataKey="citywideBuildingMonthlyIndex" name={priceCategoryLabel('citywide_building', language)} stroke="#356f9d" strokeWidth={2} dot={false} /><Line dataKey="citywideSmallUnitMonthlyIndex" name={priceCategoryLabel('citywide_small_unit', language)} stroke="#c58a43" strokeWidth={2} dot={false} /></LineChart>
+      </ResponsiveContainer></ChartSection>
+      <ChartSection title={t.monthlyIndexMovingAverages} note={t.residentialPriceIndexChartNotice}><ResponsiveContainer width="100%" height={320}>
+        <LineChart data={citywideTrend}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="period" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Line dataKey="monthlyIndex" name={t.monthlyIndex} stroke="#b24738" strokeWidth={3} dot={false} /><Line dataKey="threeMonthMovingAverageIndex" name={t.threeMonthMovingAverageIndex} stroke="#356f9d" strokeWidth={2} dot={false} /><Line dataKey="sixMonthMovingAverageIndex" name={t.sixMonthMovingAverageIndex} stroke="#737d68" strokeWidth={2} dot={false} /></LineChart>
+      </ResponsiveContainer></ChartSection>
+      <ChartSection title={t.citywideMonthlyIndexChangeRate} note={t.residentialPriceIndexChartNotice}><ResponsiveContainer width="100%" height={300}>
+        <LineChart data={citywideTrend}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="period" /><YAxis unit="%" /><Tooltip content={<ChartTooltip language={language} />} /><Line dataKey="monthlyIndexChangePercent" name={t.monthlyIndexChangePercent} stroke="#775f86" strokeWidth={3} dot={false} /></LineChart>
+      </ResponsiveContainer></ChartSection>
+      <ChartSection title={t.latestCategoryComparison} note={t.residentialPriceIndexChartNotice}><ResponsiveContainer width="100%" height={300}>
+        <BarChart data={latestChart}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="categoryLabel" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="monthlyIndex" name={t.monthlyIndex} fill="#b24738" /></BarChart>
+      </ResponsiveContainer></ChartSection>
+      <ChartSection title={t.standardTotalPriceByCategory} note={t.residentialPriceIndexChartNotice}><ResponsiveContainer width="100%" height={300}>
+        <BarChart data={latestChart}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="categoryLabel" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="standardTotalPriceTenThousandNtd" name={t.standardTotalPriceTenThousandNtd} fill="#356f9d" /></BarChart>
+      </ResponsiveContainer></ChartSection>
+      <ChartSection title={t.standardUnitPriceByCategory} note={t.residentialPriceIndexChartNotice}><ResponsiveContainer width="100%" height={300}>
+        <BarChart data={latestChart}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="categoryLabel" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="standardUnitPriceTenThousandNtdPerPing" name={t.standardUnitPriceTenThousandNtdPerPing} fill="#737d68" /></BarChart>
+      </ResponsiveContainer></ChartSection>
+    </div>
+    <section className="analysis-list">
+      <h2>{t.priceIndexTable}</h2>
+      <details className="filters" open><summary>{t.filters}</summary><div className="filter-grid">
+        <label><span>{t.category}</span><select value={category} onChange={(event) => setCategory(event.target.value)}><option value="">{t.allTypes}</option>{categories.map((item) => <option key={item} value={item}>{priceCategoryLabel(item, language)}</option>)}</select></label>
+        <label><span>{t.year}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{language === 'zh' ? '全部年份' : 'All years'}</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+        <label><span>{language === 'zh' ? '月份' : 'Month'}</span><select value={month} onChange={(event) => setMonth(event.target.value)}><option value="">{language === 'zh' ? '全部月份' : 'All months'}</option>{Array.from({ length: 12 }, (_, index) => index + 1).map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+        <label className="search-field"><span>{language === 'zh' ? '搜尋' : 'Search'}</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t.residentialPriceIndexSearchPlaceholder} type="search" /></label>
+      </div></details>
+      <p className="table-count">{filtered.length.toLocaleString()} {language === 'zh' ? '筆紀錄' : 'records'}</p>
+      <div className="table-wrap"><table><thead><tr>{[t.period, t.category, t.monthlyIndex, t.threeMonthMovingAverageIndex, t.sixMonthMovingAverageIndex, t.monthlyIndexChangePercent, t.standardTotalPriceTenThousandNtd, t.standardUnitPriceTenThousandNtdPerPing].map((label) => <th key={label}>{label}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}>
+        <td>{record.period}</td><td>{priceCategoryLabel(record.category, language)}</td><td>{record.monthlyIndex?.toFixed(2) ?? '—'}</td><td>{record.threeMonthMovingAverageIndex?.toFixed(2) ?? '—'}</td><td>{record.sixMonthMovingAverageIndex?.toFixed(2) ?? '—'}</td><td>{formatSourcePercent(record.monthlyIndexChangePercent)}</td><td>{formatWan(record.standardTotalPriceTenThousandNtd, language, language === 'zh' ? '萬元' : 'NTD 10k')}</td><td>{formatWan(record.standardUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping')}</td>
+      </tr>)}</tbody></table></div>
+      <nav className="pagination" aria-label="Pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{t.previous}</button><span>{t.page} {page} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{t.next}</button></nav>
+    </section>
   </>;
 }
 
@@ -476,13 +572,14 @@ function DataNotes({ language }: { language: Language }) {
     <h2>{t.dataNotes}</h2>
     {language === 'zh' ? <>
       <p>本網站整理臺北市公開資料中的實價登錄、每季動態分析、住宅租金指數、使用執照摘要與人口年齡資料，僅供資料探索與區域或市場趨勢觀察使用，並非不動產估價、租金估價、建物安全判定、產權查證、合法使用認定、投資建議或價格預測。人口與使用執照資料僅作為區域背景脈絡，不代表房價、租金或交易量之因果解釋。</p>
-      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.rentIndexDataNote}</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
+      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
     </> : <>
       <p>This site organizes Taipei public-data records for real-price registration, quarterly market analysis, residential rent index, building use-permit summaries, and population-by-age data for data exploration and regional or market trend observation only. It is not real-estate appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, investment advice, or price prediction. Population and use-permit data are regional context and do not represent causal explanation for housing prices, rent, or transaction volume.</p>
-      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.rentIndexDataNote}</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
+      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
     </>}
     <div className="source-links">
       <a href="https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc">臺北市實價周報</a>
+      <a href="https://data.taipei/dataset/detail?id=ce4ea2c6-6334-44f8-945a-5705492b187d">臺北市住宅價格月指數</a>
       <a href="https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa">每季動態分析</a>
       <a href="https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20">住宅租金指數</a>
       <a href="https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733">臺北市歷年使用執照摘要</a>
@@ -536,12 +633,14 @@ export default function App() {
       loadJson<QuarterlySummary>('quarterly-market-summary.json'),
       loadJson<PopulationDistrictSummary[]>('population-district-summary.json'),
       loadJson<DistrictComparisonSummary[]>('district-comparison-summary.json'),
+      loadJson<ResidentialPriceMonthlyIndexRecord[]>('residential-price-monthly-index-records.json'),
+      loadJson<ResidentialPriceMonthlyIndexSummary>('residential-price-monthly-index-summary.json'),
       loadJson<ResidentialRentIndexRecord[]>('residential-rent-index-records.json'),
       loadJson<ResidentialRentIndexSummary>('residential-rent-index-summary.json'),
       loadJson<LandParcelAssessedValueRecord[]>('land-parcel-assessed-value-records.json'),
       loadJson<LandParcelAssessedValueSummary>('land-parcel-assessed-value-summary.json'),
-    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary]) =>
-      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary }),
+    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary]) =>
+      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary }),
     ).catch(() => setError(true));
   }, []);
 
@@ -575,14 +674,15 @@ export default function App() {
       {!data && !error && <p className="status">{t.loading}</p>}
       {data && <>
         {tab === 0 && <MarketOverview data={data} language={language} />}
-        {tab === 1 && <DistrictComparison rows={comparisonRows} language={language} />}
-        {tab === 2 && <QuarterlyAnalysis data={data} language={language} />}
-        {tab === 3 && <ResidentialRentIndex data={data} language={language} />}
-        {tab === 4 && <BuildingUsePermits language={language} />}
-        {tab === 5 && <LandValue records={data.landValueRecords} summary={data.landValueSummary} language={language} />}
-        {tab === 6 && <DemographicContext data={data} language={language} />}
-        {tab === 7 && <DataTable records={filteredRecords} language={language} />}
-        {tab === 8 && <DataNotes language={language} />}
+        {tab === 1 && <ResidentialPriceMonthlyIndex data={data} language={language} />}
+        {tab === 2 && <DistrictComparison rows={comparisonRows} language={language} />}
+        {tab === 3 && <QuarterlyAnalysis data={data} language={language} />}
+        {tab === 4 && <ResidentialRentIndex data={data} language={language} />}
+        {tab === 5 && <BuildingUsePermits language={language} />}
+        {tab === 6 && <LandValue records={data.landValueRecords} summary={data.landValueSummary} language={language} />}
+        {tab === 7 && <DemographicContext data={data} language={language} />}
+        {tab === 8 && <DataTable records={filteredRecords} language={language} />}
+        {tab === 9 && <DataNotes language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

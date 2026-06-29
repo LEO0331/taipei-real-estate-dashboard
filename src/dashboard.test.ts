@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { filterRecords, filterRentIndexRecords, sortDistricts } from './dashboard';
+import { filterPriceIndexRecords, filterRecords, filterRentIndexRecords, sortDistricts } from './dashboard';
 
 const records = [
   { district: '大安區', recordType: 'sale', buildingType: 'apartment', locationText: '和平東路', totalPriceNtd: 2000 },
@@ -33,4 +33,14 @@ test('filters residential rent index records by category, period, and search', (
   assert.equal(filterRentIndexRecords(rows, { category: 'citywide', year: '2025', quarter: '4', search: '全市' }).length, 1);
   assert.equal(filterRentIndexRecords(rows, { hasQuarterlyChangeRate: true }).length, 1);
   assert.equal(filterRentIndexRecords(rows, { search: '2025-Q3' }).length, 1);
+});
+
+test('filters residential price monthly index records by category, period, and search', () => {
+  const rows = [
+    { category: 'citywide', categoryRaw: '全市', periodRaw: '115/02', period: '2026-02', year: 2026, month: 2, monthlyIndex: 126.81, monthlyIndexChangePercent: 0.67, standardUnitPriceTenThousandNtdPerPing: 63.98 },
+    { category: 'citywide_apartment', categoryRaw: '全市公寓', periodRaw: '114/12', period: '2025-12', year: 2025, month: 12, monthlyIndex: 111 },
+  ];
+  assert.equal(filterPriceIndexRecords(rows, { category: 'citywide', year: '2026', month: '2', search: '115/02' }).length, 1);
+  assert.equal(filterPriceIndexRecords(rows, { minMonthlyIndex: 120 }).length, 1);
+  assert.equal(filterPriceIndexRecords(rows, { search: '2025' }).length, 1);
 });

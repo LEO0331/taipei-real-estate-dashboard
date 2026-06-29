@@ -1,19 +1,20 @@
 # Taipei Real Estate & Demographics Dashboard / 台北實價與人口趨勢儀表板
 
-Mobile-first bilingual dashboard for exploring Taipei real-price records, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, and demographic context.
+Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price monthly index trends by housing category / 各住宅類別住宅價格月指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, and demographic context.
 
 ## Purpose
 
-The site combines six Taipei public-data sources:
+The site combines seven Taipei public-data sources:
 
 - [臺北市實價周報](https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc)
+- [臺北市住宅價格月指數](https://data.taipei/dataset/detail?id=ce4ea2c6-6334-44f8-945a-5705492b187d)
 - [臺北市實價登錄每季動態分析](https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa)
 - [臺北市住宅租金指數](https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20)
 - [臺北市歷年使用執照摘要](https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733)
 - [臺北市土地筆數面積及公告土地現值統計](https://data.taipei/dataset/detail?id=68c439fc-877a-42bb-9c35-a3701e8fc9c3)
 - [臺北市各里人口數按年齡分](https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3)
 
-It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, investment recommendation, or price prediction tool. Population and use-permit data provide district context only and do not imply causation for prices, rent, or transaction volume.
+It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, transaction advice, investment recommendation, or price prediction tool. Population, use-permit, land-value, rent-index, and price-index data provide context only and do not imply causation.
 
 ## Data model and limitations
 
@@ -24,6 +25,9 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 - Floor summaries and parking descriptions are parsed for aggregate context only. They do not support safety, legal-use, appraisal, or investment claims.
 - Joins are district-level only.
 - Residential rent index values are citywide or building-category level only. They are not district-level rent estimates and are not included in district comparison metrics.
+- Residential price monthly index values are citywide or housing-category level only: citywide, citywide apartment, citywide building, and citywide small unit. They are not individual-home appraisals, listing prices, district estimates, investment advice, or forecasts.
+- Residential price monthly index CSV files are CP950 / Big5-family today, with UTF-8-SIG fallback. ROC year/month values such as `101/08` become Gregorian periods such as `2012-08`.
+- Residential price index conversion parses monthly index, 3-month moving average, 6-month moving average, source percent-change fields, standard residential total price in NTD 10,000, and standard residential unit price in NTD 10,000 per ping. It derives NTD, NTD per square meter, year-over-year metrics, and change since the first available category period.
 - Population files contain city, district, village, male, female, and total rows. Conversion uses district rows where `性別=計` to avoid double counting.
 - ROC dates are converted by adding 1911. Failed parses remain in the conversion report.
 - Land-value CSV resource names provide ROC years. Source thousand-NTD values become NTD; per-hectare and urban public/private/joint ownership metrics are derived for district context only. No parcel-level map, market-price, appraisal, or investment claim is made.
@@ -50,6 +54,7 @@ npm run dev
 ```text
 data/raw/real-price-weekly/
 data/raw/quarterly-market-analysis/
+data/raw/residential-price-monthly-index/
 data/raw/residential-rent-index/
 data/raw/population-by-age/
 data/raw/building-use-permits/
@@ -70,6 +75,9 @@ public/data/real-price-records.json
 public/data/real-price-summary.json
 public/data/quarterly-market-analysis.json
 public/data/quarterly-market-summary.json
+public/data/residential-price-monthly-index-records.json
+public/data/residential-price-monthly-index-summary.json
+public/data/residential-price-monthly-index-category-series.json
 public/data/residential-rent-index-records.json
 public/data/residential-rent-index-summary.json
 public/data/population-district-summary.json
@@ -83,6 +91,8 @@ public/data/land-parcel-assessed-value-summary.json
 Rent-index-only workflow:
 
 ```bash
+npm run data:fetch:price-index
+npm run data:convert:price-index
 npm run data:fetch:rent-index
 npm run data:convert:rent-index
 npm run data:convert:building-use-permits

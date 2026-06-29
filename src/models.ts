@@ -12,6 +12,8 @@ export type BuildingType =
   | 'factory' | 'parking' | 'land' | 'other' | 'unknown';
 export type ResidentialRentIndexCategory =
   | 'citywide' | 'elevator_building' | 'apartment' | 'other' | 'unknown';
+export type ResidentialPriceIndexCategory =
+  | 'citywide' | 'citywide_apartment' | 'citywide_building' | 'citywide_small_unit' | 'other' | 'unknown';
 export type BuildingConstructionType = 'new_construction' | 'addition' | 'repair' | 'reconstruction' | 'other' | 'unknown';
 export type PublicUseStatus = 'public_use' | 'non_public_use' | 'unspecified';
 export type ZoningCategory = 'residential' | 'commercial' | 'industrial' | 'school' | 'park' | 'government' | 'protection' | 'mixed_or_special' | 'other' | 'unknown';
@@ -165,6 +167,71 @@ export type ResidentialRentIndexSummary = {
   }>;
 };
 
+export type ResidentialPriceMonthlyIndexRecord = {
+  id: string;
+  source: string;
+  sourceAgency: string;
+  categoryRaw?: string;
+  category: ResidentialPriceIndexCategory;
+  categoryLabelZh: string;
+  categoryLabelEn: string;
+  periodRaw?: string;
+  period: string;
+  periodDate: string;
+  year: number;
+  month: number;
+  quarter: string;
+  monthlyIndex?: number;
+  threeMonthMovingAverageIndex?: number;
+  sixMonthMovingAverageIndex?: number;
+  monthlyIndexChangePercent?: number;
+  threeMonthMovingAverageChangePercent?: number;
+  sixMonthMovingAverageChangePercent?: number;
+  standardTotalPriceTenThousandNtd?: number;
+  standardTotalPriceNtd?: number;
+  standardUnitPriceTenThousandNtdPerPing?: number;
+  standardUnitPriceNtdPerPing?: number;
+  standardUnitPriceNtdPerSqm?: number;
+  yearOverYearMonthlyIndexChangePercent?: number;
+  yearOverYearStandardUnitPriceChangePercent?: number;
+  indexFromStartChangePercent?: number;
+  isLatestPeriod: boolean;
+};
+
+export type ResidentialPriceMonthlyIndexSummary = {
+  totalRecords: number;
+  categoryCount: number;
+  periodCount: number;
+  minPeriod?: string;
+  maxPeriod?: string;
+  latestPeriod?: string;
+  latestByCategory: Array<Pick<ResidentialPriceMonthlyIndexRecord,
+    'category' | 'categoryLabelZh' | 'categoryLabelEn' | 'period' | 'monthlyIndex' | 'monthlyIndexChangePercent' |
+    'yearOverYearMonthlyIndexChangePercent' | 'threeMonthMovingAverageIndex' | 'sixMonthMovingAverageIndex' |
+    'standardTotalPriceTenThousandNtd' | 'standardUnitPriceTenThousandNtdPerPing'>>;
+  byCategory: Array<{
+    category: ResidentialPriceIndexCategory;
+    categoryLabelZh: string;
+    categoryLabelEn: string;
+    recordCount: number;
+    minPeriod?: string;
+    maxPeriod?: string;
+    startMonthlyIndex?: number;
+    latestMonthlyIndex?: number;
+    indexFromStartChangePercent?: number;
+    latestStandardTotalPriceTenThousandNtd?: number;
+    latestStandardUnitPriceTenThousandNtdPerPing?: number;
+  }>;
+  byPeriod: Array<{
+    period: string;
+    citywideMonthlyIndex?: number;
+    citywideApartmentMonthlyIndex?: number;
+    citywideBuildingMonthlyIndex?: number;
+    citywideSmallUnitMonthlyIndex?: number;
+    citywideStandardUnitPriceTenThousandNtdPerPing?: number;
+  }>;
+};
+
 export type QuarterlyMarketRecord = {
   id: string;
   year?: number;
@@ -258,5 +325,13 @@ export type RealEstateSummary = {
     citywideStandardRentUnitPriceNtdPerPingMonthly?: number;
     citywideYearOverYearRentIndexChangePercent?: number;
     citywideYearOverYearStandardRentUnitPriceChangePercent?: number;
+  };
+  residentialPriceMonthlyIndex?: {
+    latestPeriod?: string;
+    citywideMonthlyIndex?: number;
+    citywideMonthlyIndexChangePercent?: number;
+    citywideYearOverYearMonthlyIndexChangePercent?: number;
+    citywideStandardTotalPriceTenThousandNtd?: number;
+    citywideStandardUnitPriceTenThousandNtdPerPing?: number;
   };
 };

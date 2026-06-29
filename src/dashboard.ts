@@ -38,6 +38,33 @@ type RentIndexFilters = {
   search?: string;
 };
 
+type PriceIndexRecord = {
+  categoryRaw?: string;
+  category?: string;
+  categoryLabelZh?: string;
+  categoryLabelEn?: string;
+  periodRaw?: string;
+  period?: string;
+  year?: number;
+  month?: number;
+  monthlyIndex?: number;
+  monthlyIndexChangePercent?: number;
+  standardUnitPriceTenThousandNtdPerPing?: number;
+};
+
+type PriceIndexFilters = {
+  category?: string;
+  year?: string;
+  month?: string;
+  search?: string;
+  minMonthlyIndex?: number;
+  maxMonthlyIndex?: number;
+  minMonthlyChange?: number;
+  maxMonthlyChange?: number;
+  minStandardUnitPrice?: number;
+  maxStandardUnitPrice?: number;
+};
+
 export function filterRecords<T extends SearchableRecord>(records: T[], filters: Filters): T[] {
   const search = filters.search?.trim().toLocaleLowerCase();
   const buildingTypeSearch: Record<string, string> | undefined = search ? {
@@ -94,6 +121,24 @@ export function filterRentIndexRecords<T extends RentIndexRecord>(records: T[], 
     if (filters.hasQuarterlyChangeRate && record.quarterlyChangeRatePercent === undefined) return false;
     if (!search) return true;
     return [record.rentIndexCategoryRaw, record.rentIndexCategory, record.periodRaw, record.quarterKey]
+      .some((value) => value?.toLocaleLowerCase().includes(search));
+  });
+}
+
+export function filterPriceIndexRecords<T extends PriceIndexRecord>(records: T[], filters: PriceIndexFilters): T[] {
+  const search = filters.search?.trim().toLocaleLowerCase();
+  return records.filter((record) => {
+    if (filters.category && record.category !== filters.category) return false;
+    if (filters.year && record.year !== Number(filters.year)) return false;
+    if (filters.month && record.month !== Number(filters.month)) return false;
+    if (filters.minMonthlyIndex !== undefined && (record.monthlyIndex ?? -Infinity) < filters.minMonthlyIndex) return false;
+    if (filters.maxMonthlyIndex !== undefined && (record.monthlyIndex ?? Infinity) > filters.maxMonthlyIndex) return false;
+    if (filters.minMonthlyChange !== undefined && (record.monthlyIndexChangePercent ?? -Infinity) < filters.minMonthlyChange) return false;
+    if (filters.maxMonthlyChange !== undefined && (record.monthlyIndexChangePercent ?? Infinity) > filters.maxMonthlyChange) return false;
+    if (filters.minStandardUnitPrice !== undefined && (record.standardUnitPriceTenThousandNtdPerPing ?? -Infinity) < filters.minStandardUnitPrice) return false;
+    if (filters.maxStandardUnitPrice !== undefined && (record.standardUnitPriceTenThousandNtdPerPing ?? Infinity) > filters.maxStandardUnitPrice) return false;
+    if (!search) return true;
+    return [record.categoryRaw, record.category, record.categoryLabelZh, record.categoryLabelEn, record.periodRaw, record.period, record.year?.toString()]
       .some((value) => value?.toLocaleLowerCase().includes(search));
   });
 }
