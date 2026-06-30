@@ -28,6 +28,8 @@ import {
   type ResidentialPriceIndexCategory,
   type ResidentialPriceMonthlyIndexRecord,
   type ResidentialPriceMonthlyIndexSummary,
+  type ResidentialPriceQuarterlyIndexRecord,
+  type ResidentialPriceQuarterlyIndexSummary,
   type ResidentialRentIndexCategory,
   type ResidentialRentIndexRecord,
   type ResidentialRentIndexSummary,
@@ -54,6 +56,9 @@ type DataBundle = {
   comparison: DistrictComparisonSummary[];
   priceIndexRecords: ResidentialPriceMonthlyIndexRecord[];
   priceIndexSummary: ResidentialPriceMonthlyIndexSummary;
+  quarterlyPriceIndexRecords: ResidentialPriceQuarterlyIndexRecord[];
+  quarterlyPriceIndexSummary: ResidentialPriceQuarterlyIndexSummary;
+  quarterlyPriceIndexLatest: ResidentialPriceQuarterlyIndexRecord[];
   commercialRentRecords: CommercialOfficeRentIndexRecord[];
   commercialRentSummary: CommercialOfficeRentIndexSummary;
   rentIndexRecords: ResidentialRentIndexRecord[];
@@ -207,6 +212,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
   const t = copy[language];
   const summary = data.realEstate;
   const rent = summary.residentialRentIndex;
+  const quarterlyPrice = summary.residentialPriceQuarterlyIndex;
   const commercialRent = summary.commercialOfficeRentIndex;
   const income = summary.incomePerEarnerByDistrictYear;
   const pledge = summary.movablePropertyPledgeBusinessStatistics;
@@ -229,7 +235,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: t.citywideQuarterlyChange, value: formatSourcePercent(rent.citywideQuarterlyChangeRatePercent) },
         { label: t.citywideStandardRentUnitPrice, value: formatRentUnit(rent.citywideStandardRentUnitPriceNtdPerPingMonthly, language) },
       ]} />
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 2 }))}>{language === 'zh' ? '查看住宅租金' : 'View residential rent'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 3 }))}>{language === 'zh' ? '查看住宅租金' : 'View residential rent'}</button>
     </section>}
     {summary.residentialPriceMonthlyIndex && <section className="overview-panel">
       <h2>{t.residentialPriceMonthlyIndex}</h2>
@@ -241,6 +247,17 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
       ]} />
       <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 1 }))}>{language === 'zh' ? '查看房價指數' : 'View price index'}</button>
     </section>}
+    {quarterlyPrice && <section className="overview-panel">
+      <h2>{language === 'zh' ? '住宅價格季指數' : 'Residential Price Quarterly Index'}</h2>
+      <MetricStrip items={[
+        { label: language === 'zh' ? '最新季別' : 'Latest quarter', value: quarterlyPrice.latestQuarterKey ?? '—' },
+        { label: language === 'zh' ? '全市季指數' : 'Citywide quarterly index', value: quarterlyPrice.citywideQuarterlyIndex?.toFixed(2) ?? '—' },
+        { label: language === 'zh' ? '全市季變動率' : 'Citywide quarterly change', value: formatSourcePercent(quarterlyPrice.citywideQuarterlyChangePercent) },
+        { label: language === 'zh' ? '全市標準單價' : 'Citywide standard unit price', value: formatWan(quarterlyPrice.citywideStandardUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping') },
+      ]} />
+      <p className="notice">{language === 'zh' ? '以實價登錄資料庫為基礎之趨勢指標；不代表個別住宅估價、實際成交價格、交易建議或價格預測。' : 'A real-price-registration-based trend indicator; not individual appraisal, actual transaction price, transaction advice, or price forecast.'}</p>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 2 }))}>{language === 'zh' ? '查看住宅季指數' : 'View quarterly price index'}</button>
+    </section>}
     {commercialRent && <section className="overview-panel">
       <h2>{t.commercialOfficeRentIndex}</h2>
       <MetricStrip items={[
@@ -251,7 +268,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: t.majorRoadStandardRentUnitPrice, value: formatRentUnit(commercialRent.majorRoadStandardRentNtdPerPingPerMonth, language) },
         { label: t.majorRoadRentPremium, value: `${formatRentUnit(commercialRent.majorRoadRentGapNtdPerPingPerMonth, language)} / ${formatSourcePercent(commercialRent.majorRoadRentGapPercent)}` },
       ]} />
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 3 }))}>{language === 'zh' ? '查看商辦租金' : 'View office rent'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 4 }))}>{language === 'zh' ? '查看商辦租金' : 'View office rent'}</button>
     </section>}
     {income && <section className="overview-panel">
       <h2>{language === 'zh' ? '社會經濟背景：所得收入' : 'Socioeconomic Context: Income'}</h2>
@@ -262,7 +279,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: language === 'zh' ? '可支配所得最高行政區' : 'Top disposable-income district', value: districtLabel(income.topDistrictByDisposableIncome, language) },
       ]} />
       <p className="notice">{language === 'zh' ? '所得資料僅作為負擔能力與社會經濟背景，不代表估價、稅務、投資、貸款、財務建議或市場預測。' : 'Income data is affordability and socioeconomic context only, not appraisal, tax, investment, lending, financial advice, or market prediction.'}</p>
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 8 }))}>{language === 'zh' ? '查看所得收入' : 'View income context'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 9 }))}>{language === 'zh' ? '查看所得收入' : 'View income context'}</button>
     </section>}
     {pledge && <section className="overview-panel">
       <h2>{language === 'zh' ? '社會經濟背景：動產質借' : 'Socioeconomic Context: Pledge Loans'}</h2>
@@ -273,7 +290,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: language === 'zh' ? '現金利息收入' : 'Cash interest income', value: formatNtd(pledge.latestYearCashInterestIncomeNtd, language) },
       ]} />
       <p className="notice">{language === 'zh' ? '僅供社會經濟背景觀察，不代表房價、租金、房貸壓力或財務建議。' : 'Socioeconomic context only; not prices, rents, mortgage stress, or financial advice.'}</p>
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 9 }))}>{language === 'zh' ? '查看動產質借' : 'View pledge loans'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 10 }))}>{language === 'zh' ? '查看動產質借' : 'View pledge loans'}</button>
     </section>}
     <div className="chart-grid">
       <ChartSection title={t.transactionCountByMonth}><ResponsiveContainer width="100%" height={280}>
@@ -453,6 +470,79 @@ function ResidentialPriceMonthlyIndex({ data, language }: { data: DataBundle; la
         <td>{record.period}</td><td>{priceCategoryLabel(record.category, language)}</td><td>{record.monthlyIndex?.toFixed(2) ?? '—'}</td><td>{record.threeMonthMovingAverageIndex?.toFixed(2) ?? '—'}</td><td>{record.sixMonthMovingAverageIndex?.toFixed(2) ?? '—'}</td><td>{formatSourcePercent(record.monthlyIndexChangePercent)}</td><td>{formatWan(record.standardTotalPriceTenThousandNtd, language, language === 'zh' ? '萬元' : 'NTD 10k')}</td><td>{formatWan(record.standardUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping')}</td>
       </tr>)}</tbody></table></div>
       <nav className="pagination" aria-label="Pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{t.previous}</button><span>{t.page} {page} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{t.next}</button></nav>
+    </section>
+  </>;
+}
+
+function ResidentialPriceQuarterlyIndex({ data, language }: { data: DataBundle; language: Language }) {
+  const label = (zh: string, en: string) => language === 'zh' ? zh : en;
+  const [categoryType, setCategoryType] = useState('');
+  const [category, setCategory] = useState('');
+  const [year, setYear] = useState('');
+  const [quarter, setQuarter] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
+  const records = data.quarterlyPriceIndexRecords;
+  const summary = data.quarterlyPriceIndexSummary;
+  const filtered = records.filter((record) =>
+    (!categoryType || record.categoryType === categoryType)
+    && (!category || record.category === category)
+    && (!year || record.year === Number(year))
+    && (!quarter || record.quarter === Number(quarter))
+    && (!search || `${record.category} ${record.quarterKey} ${record.district ?? ''} ${record.housingType ?? ''}`.toLowerCase().includes(search.toLowerCase())));
+  useEffect(() => setPage(1), [categoryType, category, year, quarter, search]);
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const visible = filtered.slice((Math.min(page, pages) - 1) * pageSize, Math.min(page, pages) * pageSize);
+  const years = [...new Set(records.map((record) => record.year))].sort();
+  const categories = [...new Set(records.map((record) => record.category))];
+  const cityTrend = records.filter((record) => record.isCitywide);
+  const latestDistricts = data.quarterlyPriceIndexLatest.filter((record) => record.isDistrict).sort((a, b) => (b.standardHousingUnitPriceTenThousandNtdPerPing ?? 0) - (a.standardHousingUnitPriceTenThousandNtdPerPing ?? 0));
+  const topIndex = data.quarterlyPriceIndexLatest.find((record) => record.districtRankByQuarterlyIndex === 1);
+  const lowIndex = [...data.quarterlyPriceIndexLatest].filter((record) => record.isDistrict).sort((a, b) => (a.quarterlyIndex ?? Infinity) - (b.quarterlyIndex ?? Infinity))[0];
+  const topUnit = data.quarterlyPriceIndexLatest.find((record) => record.districtRankByStandardUnitPrice === 1);
+  const lowUnit = [...data.quarterlyPriceIndexLatest].filter((record) => record.isDistrict).sort((a, b) => (a.standardHousingUnitPriceTenThousandNtdPerPing ?? Infinity) - (b.standardHousingUnitPriceTenThousandNtdPerPing ?? Infinity))[0];
+  return <>
+    <section className="section-intro">
+      <h2>{label('住宅價格季指數', 'Residential Price Quarterly Index')}</h2>
+      <p>{label('觀察全市、住宅類型與12行政區住宅價格季指數、季變動率、標準住宅總價與標準住宅單價。', 'Explore quarterly residential price index, quarter-over-quarter change, standard total price, and standard unit price across citywide, housing-type, and 12-district categories.')}</p>
+      <p className="notice">{label('住宅價格季指數為以實價登錄資料庫為基礎編製之住宅價格趨勢指標，僅供觀察趨勢，不代表個別住宅估價、即時市場報價、實際成交價格、購屋建議、售屋建議、投資建議、房貸建議或價格預測。', 'The residential price quarterly index is compiled from the real-price registration database for trend observation only. It is not individual-home appraisal, real-time market quote, actual transaction price, home-buying advice, home-selling advice, investment advice, mortgage advice, or price forecast.')}</p>
+      <p className="notice">{label('本資料未提供個別地址或經緯度；本模組僅呈現行政區層級圖表與排名，不建立精確地圖點位。', 'The source has no individual addresses or coordinates; this module shows district-level charts and rankings only, with no exact map points.')}</p>
+    </section>
+    <MetricStrip items={[
+      { label: label('最新季別', 'Latest quarter'), value: summary.latestQuarterKey ?? '—' },
+      { label: label('類別數', 'Categories'), value: summary.categoryCount },
+      { label: label('行政區數', 'Districts'), value: summary.districtCount },
+      { label: label('全市季指數', 'Citywide quarterly index'), value: summary.latestCitywide?.quarterlyIndex?.toFixed(2) ?? '—' },
+      { label: label('全市季變動率', 'Citywide quarterly change'), value: formatSourcePercent(summary.latestCitywide?.quarterlyChangePercent) },
+      { label: label('全市標準單價', 'Citywide standard unit price'), value: formatWan(summary.latestCitywide?.standardHousingUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping') },
+      { label: label('季指數最高行政區', 'Highest district index'), value: districtLabel(topIndex?.district, language) },
+      { label: label('標準單價最高行政區', 'Highest district unit price'), value: districtLabel(topUnit?.district, language) },
+    ]} />
+    <div className="chart-grid">
+      <ChartSection title={label('全市季指數趨勢', 'Citywide Quarterly Index Trend')} note={label('此圖僅整理季指數公開資料，不代表個別住宅估價、實際成交價格或價格預測。', 'This chart only organizes quarterly index public data and does not represent individual appraisal, actual transaction price, or price forecast.')}><ResponsiveContainer width="100%" height={320}><LineChart data={cityTrend}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="quarterKey" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Line dataKey="quarterlyIndex" name={label('季指數', 'Quarterly index')} stroke="#b24738" strokeWidth={3} dot={false} /><Line dataKey="standardHousingUnitPriceTenThousandNtdPerPing" name={label('標準單價', 'Standard unit price')} stroke="#356f9d" strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('住宅類型季指數趨勢', 'Housing-Type Quarterly Index Trend')}><ResponsiveContainer width="100%" height={320}><LineChart data={summary.byQuarter}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="quarterKey" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Line dataKey="citywideQuarterlyIndex" name={label('全市', 'Citywide')} stroke="#b24738" strokeWidth={3} dot={false} /><Line dataKey="apartmentQuarterlyIndex" name={label('公寓', 'Apartment')} stroke="#737d68" strokeWidth={2} dot={false} /><Line dataKey="buildingQuarterlyIndex" name={label('大樓', 'Building')} stroke="#356f9d" strokeWidth={2} dot={false} /><Line dataKey="smallUnitQuarterlyIndex" name={label('小宅', 'Small unit')} stroke="#c58a43" strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('最新季各行政區季指數', 'Latest District Quarterly Index')}><ResponsiveContainer width="100%" height={300}><BarChart data={latestDistricts}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} tickFormatter={(value) => districtLabel(value, language)} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="quarterlyIndex" name={label('季指數', 'Quarterly index')} fill="#737d68" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('最新季各行政區標準單價', 'Latest District Standard Unit Price')}><ResponsiveContainer width="100%" height={300}><BarChart data={latestDistricts}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} tickFormatter={(value) => districtLabel(value, language)} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="standardHousingUnitPriceTenThousandNtdPerPing" name={label('標準單價', 'Standard unit price')} fill="#c58a43" /></BarChart></ResponsiveContainer></ChartSection>
+    </div>
+    <MetricStrip items={[
+      { label: label('季指數最低行政區', 'Lowest district index'), value: districtLabel(lowIndex?.district, language) },
+      { label: label('標準單價最低行政區', 'Lowest district unit price'), value: districtLabel(lowUnit?.district, language) },
+      { label: label('標準單價最高', 'Highest unit price'), value: formatWan(topUnit?.standardHousingUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping') },
+      { label: label('標準單價最低', 'Lowest unit price'), value: formatWan(lowUnit?.standardHousingUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping') },
+    ]} />
+    <section className="analysis-list">
+      <h2>{label('住宅季指數資料表', 'Quarterly Price Index Table')}</h2>
+      <details className="filters" open><summary>{copy[language].filters}</summary><div className="filter-grid">
+        <label><span>{label('類別型態', 'Category type')}</span><select value={categoryType} onChange={(event) => setCategoryType(event.target.value)}><option value="">{label('全部', 'All')}</option><option value="citywide">{label('全市', 'Citywide')}</option><option value="housing_type">{label('住宅類型', 'Housing type')}</option><option value="district">{label('行政區', 'District')}</option></select></label>
+        <label><span>{label('類別', 'Category')}</span><select value={category} onChange={(event) => setCategory(event.target.value)}><option value="">{label('全部類別', 'All categories')}</option>{categories.map((item) => <option key={item} value={item}>{districtLabel(item, language)}</option>)}</select></label>
+        <label><span>{copy[language].year}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{label('全部年份', 'All years')}</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+        <label><span>{copy[language].quarter}</span><select value={quarter} onChange={(event) => setQuarter(event.target.value)}><option value="">{label('全部季度', 'All quarters')}</option>{[1, 2, 3, 4].map((item) => <option key={item} value={item}>Q{item}</option>)}</select></label>
+        <label className="search-field"><span>{label('搜尋', 'Search')}</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={label('搜尋類別、季別、行政區或住宅類型', 'Search category, quarter, district, or housing type')} type="search" /></label>
+      </div></details>
+      <p className="table-count">{filtered.length.toLocaleString()} {label('筆紀錄', 'records')}</p>
+      <div className="table-wrap"><table><thead><tr>{[label('季別', 'Quarter'), label('類別', 'Category'), label('型態', 'Type'), label('季指數', 'Quarterly index'), label('季變動率', 'Quarterly change'), label('標準總價', 'Standard total price'), label('標準單價', 'Standard unit price'), label('年變動率', 'YoY change')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}><td>{record.quarterKey}</td><th>{districtLabel(record.category, language)}</th><td>{record.categoryType}</td><td>{record.quarterlyIndex?.toFixed(2) ?? '—'}</td><td>{formatSourcePercent(record.quarterlyChangePercent)}</td><td>{formatWan(record.standardHousingTotalPriceTenThousandNtd, language, language === 'zh' ? '萬元' : 'NTD 10k')}</td><td>{formatWan(record.standardHousingUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping')}</td><td>{formatSourcePercent(record.quarterlyIndexYoYChangePercent)}</td></tr>)}</tbody></table></div>
+      <nav className="pagination" aria-label="Pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{copy[language].previous}</button><span>{copy[language].page} {Math.min(page, pages)} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{copy[language].next}</button></nav>
     </section>
   </>;
 }
@@ -711,15 +801,16 @@ function DataNotes({ language }: { language: Language }) {
   return <article className="notes">
     <h2>{t.dataNotes}</h2>
     {language === 'zh' ? <>
-      <p>本網站整理臺北市公開資料中的實價登錄、每季動態分析、住宅租金指數、使用執照摘要、所得收入與人口年齡資料，僅供資料探索與區域或市場趨勢觀察使用，並非不動產估價、租金估價、建物安全判定、產權查證、合法使用認定、稅務判斷、投資建議或價格預測。人口、所得與使用執照資料僅作為區域背景脈絡，不代表房價、租金或交易量之因果解釋。</p>
-      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>所得收入資料以 Big5/CP950 解碼，行政區排名排除「總平均」列；僅供所得與負擔能力背景觀察，不代表個別所得、稅務、貸款、投資、財務建議或市場預測，也不建立精確地圖點位。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>動產質借處營業概況提供年度營運統計，欄位包含分處別、項目、本年質借件數、本金、現金利息收入與變賣金額；僅供社會經濟背景觀察，不代表房價、租金、房貸壓力、個人信用、貧窮程度、投資訊號、借貸建議或財務決策依據。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
+      <p>本網站整理臺北市公開資料中的實價登錄、每季動態分析、住宅價格指數、住宅租金指數、使用執照摘要、所得收入與人口年齡資料，僅供資料探索與區域或市場趨勢觀察使用，並非不動產估價、租金估價、建物安全判定、產權查證、合法使用認定、稅務判斷、投資建議或價格預測。人口、所得與使用執照資料僅作為區域背景脈絡，不代表房價、租金或交易量之因果解釋。</p>
+      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>住宅價格季指數以實價登錄資料庫為基礎，整理全市、公寓、大樓、小宅與12行政區季資料；欄位包含季指數、季變動率、標準住宅總價與標準住宅單價。季指數不代表個別住宅估價、實際成交價格、購屋建議、售屋建議、投資建議、房貸建議或價格預測。</li><li>住宅價格季指數未提供個別地址或經緯度；本網站不建立精確地圖點位，行政區排名排除全市與住宅類型列。</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>所得收入資料以 Big5/CP950 解碼，行政區排名排除「總平均」列；僅供所得與負擔能力背景觀察，不代表個別所得、稅務、貸款、投資、財務建議或市場預測，也不建立精確地圖點位。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>動產質借處營業概況提供年度營運統計，欄位包含分處別、項目、本年質借件數、本金、現金利息收入與變賣金額；僅供社會經濟背景觀察，不代表房價、租金、房貸壓力、個人信用、貧窮程度、投資訊號、借貸建議或財務決策依據。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
     </> : <>
-      <p>This site organizes Taipei public-data records for real-price registration, quarterly market analysis, residential rent index, building use-permit summaries, income, and population-by-age data for data exploration and regional or market trend observation only. It is not real-estate appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, investment advice, or price prediction. Population, income, and use-permit data are regional context and do not represent causal explanation for housing prices, rent, or transaction volume.</p>
-      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Income data is decoded as Big5/CP950, district rankings exclude the city-average row, and the data is income and affordability context only. It is not individual income, tax, lending, investment, financial advice, or market prediction, and no exact map points are generated.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>Movable-property pledge business statistics are annual operating statistics for socioeconomic context only. They do not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, lending advice, or financial decisions.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
+      <p>This site organizes Taipei public-data records for real-price registration, quarterly market analysis, residential price indexes, residential rent index, building use-permit summaries, income, and population-by-age data for data exploration and regional or market trend observation only. It is not real-estate appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, investment advice, or price prediction. Population, income, and use-permit data are regional context and do not represent causal explanation for housing prices, rent, or transaction volume.</p>
+      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>The residential price quarterly index is compiled from real-price registration data and organizes citywide, apartment, building, small-unit, and 12-district quarterly records. It includes quarterly index, quarterly change, standard total price, and standard unit price. It is not individual-home appraisal, actual transaction price, home-buying advice, home-selling advice, investment advice, mortgage advice, or price forecast.</li><li>The residential price quarterly index has no individual address or coordinate fields. No exact map points are generated, and district rankings exclude citywide and housing-type rows.</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Income data is decoded as Big5/CP950, district rankings exclude the city-average row, and the data is income and affordability context only. It is not individual income, tax, lending, investment, financial advice, or market prediction, and no exact map points are generated.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>Movable-property pledge business statistics are annual operating statistics for socioeconomic context only. They do not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, lending advice, or financial decisions.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
     </>}
     <div className="source-links">
       <a href="https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc">臺北市實價周報</a>
       <a href="https://data.taipei/dataset/detail?id=ce4ea2c6-6334-44f8-945a-5705492b187d">臺北市住宅價格月指數</a>
+      <a href="https://data.taipei/dataset/detail?id=954911b5-896d-4ae1-9ebe-87c4ba8a191e">臺北市住宅價格季指數</a>
       <a href="https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa">每季動態分析</a>
       <a href="https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20">住宅租金指數</a>
       <a href="https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3">商辦租金指數</a>
@@ -938,6 +1029,9 @@ export default function App() {
       loadJson<DistrictComparisonSummary[]>('district-comparison-summary.json'),
       loadJson<ResidentialPriceMonthlyIndexRecord[]>('residential-price-monthly-index-records.json'),
       loadJson<ResidentialPriceMonthlyIndexSummary>('residential-price-monthly-index-summary.json'),
+      loadJson<ResidentialPriceQuarterlyIndexRecord[]>('residential-price-quarterly-index-records.json'),
+      loadJson<ResidentialPriceQuarterlyIndexSummary>('residential-price-quarterly-index-summary.json'),
+      loadJson<ResidentialPriceQuarterlyIndexRecord[]>('residential-price-quarterly-index-latest.json'),
       loadJson<CommercialOfficeRentIndexRecord[]>('commercial-office-rent-index-records.json'),
       loadJson<CommercialOfficeRentIndexSummary>('commercial-office-rent-index-summary.json'),
       loadJson<ResidentialRentIndexRecord[]>('residential-rent-index-records.json'),
@@ -949,8 +1043,8 @@ export default function App() {
       loadJson<IncomePerEarnerByDistrictYearRecord[]>('income-per-earner-by-district-year-latest.json'),
       loadJson<MovablePropertyPledgeBusinessRecord[]>('movable-property-pledge-business-records.json'),
       loadJson<MovablePropertyPledgeBusinessSummary>('movable-property-pledge-business-summary.json'),
-    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary]) =>
-      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary }),
+    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary]) =>
+      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary }),
     ).catch(() => setError(true));
   }, []);
 
@@ -985,17 +1079,18 @@ export default function App() {
       {data && <>
         {tab === 0 && <MarketOverview data={data} language={language} />}
         {tab === 1 && <ResidentialPriceMonthlyIndex data={data} language={language} />}
-        {tab === 2 && <ResidentialRentIndex data={data} language={language} />}
-        {tab === 3 && <CommercialOfficeRentIndex data={data} language={language} />}
-        {tab === 4 && <DistrictComparison rows={comparisonRows} language={language} />}
-        {tab === 5 && <QuarterlyAnalysis data={data} language={language} />}
-        {tab === 6 && <BuildingUsePermits language={language} />}
-        {tab === 7 && <LandValue records={data.landValueRecords} summary={data.landValueSummary} language={language} />}
-        {tab === 8 && <IncomePerEarnerByDistrictYear records={data.incomeRecords} summary={data.incomeSummary} latest={data.incomeLatest} language={language} />}
-        {tab === 9 && <MovablePropertyPledgeBusiness records={data.pledgeRecords} summary={data.pledgeSummary} language={language} />}
-        {tab === 10 && <DemographicContext data={data} language={language} />}
-        {tab === 11 && <DataTable records={filteredRecords} language={language} />}
-        {tab === 12 && <DataNotes language={language} />}
+        {tab === 2 && <ResidentialPriceQuarterlyIndex data={data} language={language} />}
+        {tab === 3 && <ResidentialRentIndex data={data} language={language} />}
+        {tab === 4 && <CommercialOfficeRentIndex data={data} language={language} />}
+        {tab === 5 && <DistrictComparison rows={comparisonRows} language={language} />}
+        {tab === 6 && <QuarterlyAnalysis data={data} language={language} />}
+        {tab === 7 && <BuildingUsePermits language={language} />}
+        {tab === 8 && <LandValue records={data.landValueRecords} summary={data.landValueSummary} language={language} />}
+        {tab === 9 && <IncomePerEarnerByDistrictYear records={data.incomeRecords} summary={data.incomeSummary} latest={data.incomeLatest} language={language} />}
+        {tab === 10 && <MovablePropertyPledgeBusiness records={data.pledgeRecords} summary={data.pledgeSummary} language={language} />}
+        {tab === 11 && <DemographicContext data={data} language={language} />}
+        {tab === 12 && <DataTable records={filteredRecords} language={language} />}
+        {tab === 13 && <DataNotes language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

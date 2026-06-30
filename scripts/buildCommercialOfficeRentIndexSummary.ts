@@ -19,6 +19,9 @@ try {
     ...buildRealEstateSummary(realPriceRecords),
     residentialRentIndex: previous?.residentialRentIndex,
     residentialPriceMonthlyIndex: previous?.residentialPriceMonthlyIndex,
+    residentialPriceQuarterlyIndex: previous?.residentialPriceQuarterlyIndex,
+    movablePropertyPledgeBusinessStatistics: previous?.movablePropertyPledgeBusinessStatistics,
+    incomePerEarnerByDistrictYear: previous?.incomePerEarnerByDistrictYear,
   } as RealEstateSummary;
   const citywide = summary.latestByCategory.find((item) => item.category === 'citywide');
   const majorRoad = summary.latestByCategory.find((item) => item.category === 'major_roads');

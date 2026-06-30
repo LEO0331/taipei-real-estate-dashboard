@@ -1,6 +1,6 @@
 # Taipei Real Estate & Demographics Dashboard / 台北實價與人口趨勢儀表板
 
-Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price monthly index trends by housing category / 各住宅類別住宅價格月指數趨勢, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, income-per-earner affordability context / 所得收入與負擔能力背景, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
+Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price trends: monthly and quarterly residential price indexes, including district-level quarterly comparison / 住宅價格趨勢：住宅價格月指數與季指數，包含行政區季資料比較, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, income-per-earner affordability context / 所得收入與負擔能力背景, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
 
 ## Purpose
 
@@ -8,6 +8,7 @@ The site combines eight Taipei public-data sources:
 
 - [臺北市實價周報](https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc)
 - [臺北市住宅價格月指數](https://data.taipei/dataset/detail?id=ce4ea2c6-6334-44f8-945a-5705492b187d)
+- [臺北市住宅價格季指數](https://data.taipei/dataset/detail?id=954911b5-896d-4ae1-9ebe-87c4ba8a191e)
 - [臺北市商辦租金指數](https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3)
 - [臺北市實價登錄每季動態分析](https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa)
 - [臺北市住宅租金指數](https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20)
@@ -35,6 +36,10 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 - Residential price monthly index values are citywide or housing-category level only: citywide, citywide apartment, citywide building, and citywide small unit. They are not individual-home appraisals, listing prices, district estimates, investment advice, or forecasts.
 - Residential price monthly index CSV files are CP950 / Big5-family today, with UTF-8-SIG fallback. ROC year/month values such as `101/08` become Gregorian periods such as `2012-08`.
 - Residential price index conversion parses monthly index, 3-month moving average, 6-month moving average, source percent-change fields, standard residential total price in NTD 10,000, and standard residential unit price in NTD 10,000 per ping. It derives NTD, NTD per square meter, year-over-year metrics, and change since the first available category period.
+- Residential price quarterly index is a separate `residential_price_quarterly_index` module. It parses UTF-8-SIG CSV with Big5/CP950 fallback, supports both `住宅價格季指數類別` and uploaded `宅價格季指數類別`, and converts ROC quarters such as `114Q4` to Gregorian quarters such as `2025-Q4`.
+- Residential price quarterly index classifies rows as citywide, housing type, or district; parses quarterly index, quarterly change percentage, standard housing total price, and standard housing unit price; derives year-over-year metrics, change from first available quarter, and district rankings.
+- Residential price quarterly district rankings exclude citywide and housing-type rows. The source has no exact address or coordinate fields, so the dashboard uses district-level charts only and does not create point markers or geocoding.
+- Residential price quarterly index can be compared with monthly price index, rent index, income, and land-value modules as context only. It is not individual-home appraisal, actual transaction price, buy/sell advice, investment advice, mortgage advice, or price prediction.
 - Population files contain city, district, village, male, female, and total rows. Conversion uses district rows where `性別=計` to avoid double counting.
 - ROC dates are converted by adding 1911. Failed parses remain in the conversion report.
 - Land-value CSV resource names provide ROC years. Source thousand-NTD values become NTD; per-hectare and urban public/private/joint ownership metrics are derived for district context only. No parcel-level map, market-price, appraisal, or investment claim is made.
@@ -69,6 +74,7 @@ npm run dev
 data/raw/real-price-weekly/
 data/raw/quarterly-market-analysis/
 data/raw/residential-price-monthly-index/
+data/raw/residential-price-quarterly-index/
 data/raw/commercial-office-rent-index/
 data/raw/residential-rent-index/
 data/raw/population-by-age/
@@ -95,6 +101,9 @@ public/data/quarterly-market-summary.json
 public/data/residential-price-monthly-index-records.json
 public/data/residential-price-monthly-index-summary.json
 public/data/residential-price-monthly-index-category-series.json
+public/data/residential-price-quarterly-index-records.json
+public/data/residential-price-quarterly-index-summary.json
+public/data/residential-price-quarterly-index-latest.json
 public/data/commercial-office-rent-index-records.json
 public/data/commercial-office-rent-index-summary.json
 public/data/commercial-office-rent-index-category-series.json
@@ -119,6 +128,8 @@ Rent-index-only workflow:
 ```bash
 npm run data:fetch:price-index
 npm run data:convert:price-index
+npm run data:fetch:residential-price-quarterly
+npm run data:convert:residential-price-quarterly
 npm run data:fetch:commercial-rent
 npm run data:convert:commercial-rent
 npm run data:fetch:rent-index

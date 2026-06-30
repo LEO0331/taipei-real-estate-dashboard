@@ -11,9 +11,11 @@ import {
   classifyRealPriceRecordType,
   classifyResidentialRentIndexCategory,
   classifyResidentialPriceIndexCategory,
+  classifyResidentialPriceQuarterlyCategory,
   convertResidentialRentIndexRows,
   convertCommercialOfficeRentIndexRows,
   convertResidentialPriceMonthlyIndexRows,
+  convertResidentialPriceQuarterlyIndexRows,
   normalizeDistrict,
   parseCsv,
   parseNumber,
@@ -137,6 +139,22 @@ test('parses residential price monthly index rows and derives metrics', () => {
   const summary = buildResidentialPriceMonthlyIndexSummary(records);
   assert.equal(summary.latestPeriod, '2013-08');
   assert.equal(summary.latestByCategory[0].monthlyIndex, 110);
+});
+
+test('parses residential price quarterly index rows and ranks districts', () => {
+  assert.equal(classifyResidentialPriceQuarterlyCategory('全市小宅').housingType, 'small_unit');
+  assert.equal(classifyResidentialPriceQuarterlyCategory('大安區').district, '大安區');
+  const records = convertResidentialPriceQuarterlyIndexRows([
+    { 宅價格季指數類別: '全市', 期別: '113Q4', 季指數: '130', 季指數變動率: '1%', '標準住宅總價（新台幣萬元）': '2,000', '標準住宅單價（新台幣萬元每坪）': '60' },
+    { 宅價格季指數類別: '全市', 期別: '114Q4', 季指數: '126.88', 季指數變動率: '-0.02%', '標準住宅總價（新台幣萬元）': '2,010', '標準住宅單價（新台幣萬元每坪）': '64.84' },
+    { 宅價格季指數類別: '大安區', 期別: '114Q4', 季指數: '120', 季指數變動率: '0.1%', '標準住宅總價（新台幣萬元）': '3,000', '標準住宅單價（新台幣萬元每坪）': '94.75' },
+    { 宅價格季指數類別: '北投區', 期別: '114Q4', 季指數: '110', 季指數變動率: '-0.1%', '標準住宅總價（新台幣萬元）': '1,500', '標準住宅單價（新台幣萬元每坪）': '51.26' },
+  ]);
+  const citywide = records.find((record) => record.category === '全市' && record.quarterKey === '2025-Q4');
+  assert.equal(citywide?.quarterStartDate, '2025-10-01');
+  assert.equal(citywide?.quarterlyChangePercent, -0.02);
+  assert.equal(Number(citywide?.quarterlyIndexYoYChangePercent?.toFixed(2)), -2.4);
+  assert.equal(records.find((record) => record.district === '大安區')?.districtRankByStandardUnitPrice, 1);
 });
 
 test('parses commercial office rent index rows and derives premium metrics', () => {

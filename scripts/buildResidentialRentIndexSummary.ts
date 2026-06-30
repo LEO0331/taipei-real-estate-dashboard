@@ -18,7 +18,10 @@ try {
   const realEstateSummary = {
     ...buildRealEstateSummary(realPriceRecords),
     residentialPriceMonthlyIndex: previous?.residentialPriceMonthlyIndex,
+    residentialPriceQuarterlyIndex: previous?.residentialPriceQuarterlyIndex,
     commercialOfficeRentIndex: previous?.commercialOfficeRentIndex,
+    movablePropertyPledgeBusinessStatistics: previous?.movablePropertyPledgeBusinessStatistics,
+    incomePerEarnerByDistrictYear: previous?.incomePerEarnerByDistrictYear,
   } as RealEstateSummary;
   const citywide = summary.latestByCategory.find((item) => item.rentIndexCategory === 'citywide');
   realEstateSummary.residentialRentIndex = {

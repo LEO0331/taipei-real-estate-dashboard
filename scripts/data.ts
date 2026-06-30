@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import {
@@ -16,6 +17,10 @@ import {
   type ResidentialRentIndexRecord,
   type ResidentialRentIndexSummary,
   type ResidentialPriceIndexCategory,
+  type ResidentialPriceHousingType,
+  type ResidentialPriceQuarterlyIndexCategoryType,
+  type ResidentialPriceQuarterlyIndexRecord,
+  type ResidentialPriceQuarterlyIndexSummary,
   type ResidentialPriceMonthlyIndexRecord,
   type ResidentialPriceMonthlyIndexSummary,
   type RealEstateSummary,
@@ -243,6 +248,24 @@ export function classifyResidentialPriceIndexCategory(raw: string | undefined): 
   return 'other';
 }
 
+export function classifyResidentialPriceQuarterlyCategory(raw: string | undefined): {
+  categoryType: ResidentialPriceQuarterlyIndexCategoryType;
+  housingType?: ResidentialPriceHousingType;
+  district?: District;
+  isCitywide: boolean;
+  isHousingType: boolean;
+  isDistrict: boolean;
+} {
+  const text = raw?.trim() ?? '';
+  if (text === '全市') return { categoryType: 'citywide', housingType: 'all', isCitywide: true, isHousingType: false, isDistrict: false };
+  if (text === '全市公寓') return { categoryType: 'housing_type', housingType: 'apartment', isCitywide: false, isHousingType: true, isDistrict: false };
+  if (text === '全市大樓') return { categoryType: 'housing_type', housingType: 'building', isCitywide: false, isHousingType: true, isDistrict: false };
+  if (text === '全市小宅') return { categoryType: 'housing_type', housingType: 'small_unit', isCitywide: false, isHousingType: true, isDistrict: false };
+  const district = DISTRICTS.find((item) => item === text);
+  if (district) return { categoryType: 'district', district, isCitywide: false, isHousingType: false, isDistrict: true };
+  return { categoryType: 'unknown', housingType: 'unknown', isCitywide: false, isHousingType: false, isDistrict: false };
+}
+
 export function classifyCommercialOfficeRentIndexCategory(raw: string | undefined): CommercialOfficeRentIndexCategory {
   const text = raw?.trim() ?? '';
   if (!text) return 'unknown';
@@ -257,6 +280,14 @@ const priceCategoryLabels: Record<ResidentialPriceIndexCategory, { zh: string; e
   citywide_building: { zh: '全市大樓', en: 'Citywide building' },
   citywide_small_unit: { zh: '全市小宅', en: 'Citywide small unit' },
   other: { zh: '其他', en: 'Other' },
+  unknown: { zh: '未知', en: 'Unknown' },
+};
+
+const quarterlyHousingLabels: Record<ResidentialPriceHousingType, { zh: string; en: string }> = {
+  all: { zh: '全市', en: 'Citywide' },
+  apartment: { zh: '全市公寓', en: 'Citywide apartment' },
+  building: { zh: '全市大樓', en: 'Citywide building' },
+  small_unit: { zh: '全市小宅', en: 'Citywide small unit' },
   unknown: { zh: '未知', en: 'Unknown' },
 };
 
@@ -609,6 +640,113 @@ export function convertResidentialPriceMonthlyIndexRows(rows: CsvRow[], warnings
     }
   }
   return records.sort((a, b) => a.period.localeCompare(b.period) || a.categoryRaw!.localeCompare(b.categoryRaw!, 'zh-Hant'));
+}
+
+export function convertResidentialPriceQuarterlyIndexRows(rows: CsvRow[], warnings: string[] = []): ResidentialPriceQuarterlyIndexRecord[] {
+  const records: ResidentialPriceQuarterlyIndexRecord[] = [];
+  const seen = new Map<string, ResidentialPriceQuarterlyIndexRecord>();
+
+  rows.forEach((row, index) => {
+    const categoryRaw = getColumn(row, ['住宅價格季指數類別', '宅價格季指數類別']) ?? '';
+    const category = classifyResidentialPriceQuarterlyCategory(categoryRaw);
+    if (category.categoryType === 'unknown') warnings.push(`Unknown residential price quarterly index category: ${categoryRaw}`);
+    const period = parseRocQuarter(getColumn(row, ['期別']));
+    if (period.warning) warnings.push(period.warning);
+    if (!period.quarter || !period.periodDate || !period.year || !period.quarterNumber) return;
+    const standardHousingTotalPriceTenThousandNtd = parseNumericValue(getColumn(row, ['標準住宅總價（新台幣萬元）', '標準住宅總價新台幣萬元']));
+    const standardHousingUnitPriceTenThousandNtdPerPing = parseNumericValue(getColumn(row, ['標準住宅單價（新台幣萬元每坪）', '標準住宅單價新台幣萬元每坪']));
+    const record = compact({
+      id: `residential-price-quarterly-index-${index + 1}`,
+      module: 'residential_price_quarterly_index',
+      source: '臺北市住宅價格季指數',
+      sourceAgency: '臺北市政府地政局',
+      sourceRecordHash: createHash('sha1').update(JSON.stringify(row)).digest('hex').slice(0, 12),
+      categoryRaw,
+      category: categoryRaw.trim(),
+      ...category,
+      quarterRaw: period.periodRaw,
+      rocYear: period.rocYear,
+      year: period.year,
+      quarter: period.quarterNumber as 1 | 2 | 3 | 4,
+      quarterKey: period.quarter,
+      quarterStartDate: period.periodDate,
+      quarterlyIndex: parseNumericValue(getColumn(row, ['季指數'])),
+      quarterlyChangePercent: parsePercentValue(getColumn(row, ['季指數變動率(%)', '季指數變動率'])),
+      standardHousingTotalPriceTenThousandNtd,
+      standardHousingUnitPriceTenThousandNtdPerPing,
+    } satisfies ResidentialPriceQuarterlyIndexRecord);
+    const key = `${categoryRaw.trim()}|${period.quarter}`;
+    if (seen.has(key)) {
+      warnings.push(`Duplicate residential price quarterly index row skipped: ${key}`);
+      return;
+    }
+    seen.set(key, record);
+    records.push(record);
+  });
+
+  for (const category of new Set(records.map((record) => record.category))) {
+    const group = records.filter((record) => record.category === category).sort((a, b) => a.quarterKey.localeCompare(b.quarterKey));
+    const first = group.find((record) => record.quarterlyIndex !== undefined);
+    const byQuarter = new Map(group.map((record) => [record.quarterKey, record]));
+    for (const record of group) {
+      const sameQuarterLastYear = byQuarter.get(`${record.year - 1}-Q${record.quarter}`);
+      record.quarterlyIndexYoYChangePercent = percentChange(record.quarterlyIndex, sameQuarterLastYear?.quarterlyIndex);
+      record.standardHousingTotalPriceYoYChangePercent = percentChange(record.standardHousingTotalPriceTenThousandNtd, sameQuarterLastYear?.standardHousingTotalPriceTenThousandNtd);
+      record.standardHousingUnitPriceYoYChangePercent = percentChange(record.standardHousingUnitPriceTenThousandNtdPerPing, sameQuarterLastYear?.standardHousingUnitPriceTenThousandNtdPerPing);
+      record.indexChangeFromFirstQuarterPercent = percentChange(record.quarterlyIndex, first?.quarterlyIndex);
+      record.unitPriceChangeFromFirstQuarterPercent = percentChange(record.standardHousingUnitPriceTenThousandNtdPerPing, first?.standardHousingUnitPriceTenThousandNtdPerPing);
+    }
+  }
+
+  const rank = (items: ResidentialPriceQuarterlyIndexRecord[], key: 'quarterlyIndex' | 'standardHousingUnitPriceTenThousandNtdPerPing' | 'quarterlyChangePercent', rankKey: 'districtRankByQuarterlyIndex' | 'districtRankByStandardUnitPrice' | 'districtRankByQuarterlyChange') =>
+    [...items].sort((a, b) => (b[key] ?? -Infinity) - (a[key] ?? -Infinity)).forEach((record, index) => { record[rankKey] = index + 1; });
+  for (const quarterKey of new Set(records.map((record) => record.quarterKey))) {
+    const districts = records.filter((record) => record.quarterKey === quarterKey && record.isDistrict);
+    rank(districts, 'quarterlyIndex', 'districtRankByQuarterlyIndex');
+    rank(districts, 'standardHousingUnitPriceTenThousandNtdPerPing', 'districtRankByStandardUnitPrice');
+    rank(districts, 'quarterlyChangePercent', 'districtRankByQuarterlyChange');
+  }
+
+  return records.sort((a, b) => a.quarterKey.localeCompare(b.quarterKey) || a.categoryRaw.localeCompare(b.categoryRaw, 'zh-Hant'));
+}
+
+export function buildResidentialPriceQuarterlyIndexSummary(records: ResidentialPriceQuarterlyIndexRecord[]): ResidentialPriceQuarterlyIndexSummary {
+  const quarters = [...new Set(records.map((record) => record.quarterKey))].sort();
+  const latestQuarterKey = quarters.at(-1);
+  const latest = records.filter((record) => record.quarterKey === latestQuarterKey);
+  const latestCitywide = latest.find((record) => record.isCitywide);
+  const categories = [...new Set(records.map((record) => record.category))];
+  return compact({
+    totalRecords: records.length,
+    minQuarterKey: quarters[0],
+    maxQuarterKey: latestQuarterKey,
+    latestQuarterKey,
+    categoryCount: categories.length,
+    districtCount: new Set(records.map((record) => record.district).filter(Boolean)).size,
+    housingTypeCategoryCount: new Set(records.filter((record) => record.isHousingType).map((record) => record.housingType)).size,
+    latestCitywide: latestCitywide && compact({
+      quarterKey: latestCitywide.quarterKey,
+      quarterlyIndex: latestCitywide.quarterlyIndex,
+      quarterlyChangePercent: latestCitywide.quarterlyChangePercent,
+      standardHousingTotalPriceTenThousandNtd: latestCitywide.standardHousingTotalPriceTenThousandNtd,
+      standardHousingUnitPriceTenThousandNtdPerPing: latestCitywide.standardHousingUnitPriceTenThousandNtdPerPing,
+      quarterlyIndexYoYChangePercent: latestCitywide.quarterlyIndexYoYChangePercent,
+      standardHousingUnitPriceYoYChangePercent: latestCitywide.standardHousingUnitPriceYoYChangePercent,
+    }),
+    latestHousingTypeValues: latest.filter((record) => record.isHousingType).map((record) => compact({ category: record.category, housingType: record.housingType, quarterlyIndex: record.quarterlyIndex, quarterlyChangePercent: record.quarterlyChangePercent, standardHousingTotalPriceTenThousandNtd: record.standardHousingTotalPriceTenThousandNtd, standardHousingUnitPriceTenThousandNtdPerPing: record.standardHousingUnitPriceTenThousandNtdPerPing })),
+    latestDistrictRanking: latest.filter((record) => record.isDistrict).sort((a, b) => (a.districtRankByStandardUnitPrice ?? 99) - (b.districtRankByStandardUnitPrice ?? 99)).map((record) => compact({ district: record.district, quarterlyIndex: record.quarterlyIndex, quarterlyChangePercent: record.quarterlyChangePercent, standardHousingTotalPriceTenThousandNtd: record.standardHousingTotalPriceTenThousandNtd, standardHousingUnitPriceTenThousandNtdPerPing: record.standardHousingUnitPriceTenThousandNtdPerPing, districtRankByQuarterlyIndex: record.districtRankByQuarterlyIndex, districtRankByStandardUnitPrice: record.districtRankByStandardUnitPrice })),
+    byCategory: categories.map((category) => {
+      const group = records.filter((record) => record.category === category).sort((a, b) => a.quarterKey.localeCompare(b.quarterKey));
+      const first = group[0];
+      const latestRecord = group.at(-1);
+      return compact({ category, categoryType: latestRecord?.categoryType ?? first?.categoryType ?? 'unknown', recordCount: group.length, minQuarterKey: first?.quarterKey, maxQuarterKey: latestRecord?.quarterKey, latestQuarterlyIndex: latestRecord?.quarterlyIndex, latestStandardUnitPrice: latestRecord?.standardHousingUnitPriceTenThousandNtdPerPing, indexChangeFromFirstQuarterPercent: latestRecord?.indexChangeFromFirstQuarterPercent });
+    }),
+    byQuarter: quarters.map((quarterKey) => {
+      const items = records.filter((record) => record.quarterKey === quarterKey);
+      const byCategory = new Map(items.map((record) => [record.category, record]));
+      return compact({ quarterKey, recordCount: items.length, citywideQuarterlyIndex: byCategory.get('全市')?.quarterlyIndex, citywideQuarterlyChangePercent: byCategory.get('全市')?.quarterlyChangePercent, citywideStandardUnitPrice: byCategory.get('全市')?.standardHousingUnitPriceTenThousandNtdPerPing, apartmentQuarterlyIndex: byCategory.get(quarterlyHousingLabels.apartment.zh)?.quarterlyIndex, buildingQuarterlyIndex: byCategory.get(quarterlyHousingLabels.building.zh)?.quarterlyIndex, smallUnitQuarterlyIndex: byCategory.get(quarterlyHousingLabels.small_unit.zh)?.quarterlyIndex });
+    }),
+  });
 }
 
 export function convertCommercialOfficeRentIndexRows(rows: CsvRow[], warnings: string[] = []): CommercialOfficeRentIndexRecord[] {

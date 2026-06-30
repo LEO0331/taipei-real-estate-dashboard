@@ -14,6 +14,8 @@ export type ResidentialRentIndexCategory =
   | 'citywide' | 'elevator_building' | 'apartment' | 'other' | 'unknown';
 export type ResidentialPriceIndexCategory =
   | 'citywide' | 'citywide_apartment' | 'citywide_building' | 'citywide_small_unit' | 'other' | 'unknown';
+export type ResidentialPriceQuarterlyIndexCategoryType = 'citywide' | 'housing_type' | 'district' | 'unknown';
+export type ResidentialPriceHousingType = 'all' | 'apartment' | 'building' | 'small_unit' | 'unknown';
 export type CommercialOfficeRentIndexCategory = 'citywide' | 'major_roads' | 'other' | 'unknown';
 export type MovablePropertyPledgeItemCategory = 'total' | 'gold_jewelry' | 'watches' | 'motorcycle' | 'other' | 'unknown';
 export type BuildingConstructionType = 'new_construction' | 'addition' | 'repair' | 'reconstruction' | 'other' | 'unknown';
@@ -275,6 +277,55 @@ export type ResidentialPriceMonthlyIndexSummary = {
   }>;
 };
 
+export type ResidentialPriceQuarterlyIndexRecord = {
+  id: string;
+  module: 'residential_price_quarterly_index';
+  source: string;
+  sourceAgency: string;
+  sourceRecordHash?: string;
+  categoryRaw: string;
+  category: string;
+  categoryType: ResidentialPriceQuarterlyIndexCategoryType;
+  housingType?: ResidentialPriceHousingType;
+  district?: District;
+  isCitywide: boolean;
+  isHousingType: boolean;
+  isDistrict: boolean;
+  quarterRaw?: string;
+  rocYear?: number;
+  year: number;
+  quarter: 1 | 2 | 3 | 4;
+  quarterKey: string;
+  quarterStartDate: string;
+  quarterlyIndex?: number;
+  quarterlyChangePercent?: number;
+  standardHousingTotalPriceTenThousandNtd?: number;
+  standardHousingUnitPriceTenThousandNtdPerPing?: number;
+  quarterlyIndexYoYChangePercent?: number;
+  standardHousingTotalPriceYoYChangePercent?: number;
+  standardHousingUnitPriceYoYChangePercent?: number;
+  indexChangeFromFirstQuarterPercent?: number;
+  unitPriceChangeFromFirstQuarterPercent?: number;
+  districtRankByQuarterlyIndex?: number;
+  districtRankByStandardUnitPrice?: number;
+  districtRankByQuarterlyChange?: number;
+};
+
+export type ResidentialPriceQuarterlyIndexSummary = {
+  totalRecords: number;
+  minQuarterKey?: string;
+  maxQuarterKey?: string;
+  latestQuarterKey?: string;
+  categoryCount: number;
+  districtCount: number;
+  housingTypeCategoryCount: number;
+  latestCitywide?: Pick<ResidentialPriceQuarterlyIndexRecord, 'quarterKey' | 'quarterlyIndex' | 'quarterlyChangePercent' | 'standardHousingTotalPriceTenThousandNtd' | 'standardHousingUnitPriceTenThousandNtdPerPing' | 'quarterlyIndexYoYChangePercent' | 'standardHousingUnitPriceYoYChangePercent'>;
+  latestHousingTypeValues: Array<Pick<ResidentialPriceQuarterlyIndexRecord, 'category' | 'housingType' | 'quarterlyIndex' | 'quarterlyChangePercent' | 'standardHousingTotalPriceTenThousandNtd' | 'standardHousingUnitPriceTenThousandNtdPerPing'>>;
+  latestDistrictRanking: Array<Pick<ResidentialPriceQuarterlyIndexRecord, 'district' | 'quarterlyIndex' | 'quarterlyChangePercent' | 'standardHousingTotalPriceTenThousandNtd' | 'standardHousingUnitPriceTenThousandNtdPerPing' | 'districtRankByQuarterlyIndex' | 'districtRankByStandardUnitPrice'>>;
+  byCategory: Array<{ category: string; categoryType: ResidentialPriceQuarterlyIndexCategoryType; recordCount: number; minQuarterKey?: string; maxQuarterKey?: string; latestQuarterlyIndex?: number; latestStandardUnitPrice?: number; indexChangeFromFirstQuarterPercent?: number }>;
+  byQuarter: Array<{ quarterKey: string; recordCount: number; citywideQuarterlyIndex?: number; citywideQuarterlyChangePercent?: number; citywideStandardUnitPrice?: number; apartmentQuarterlyIndex?: number; buildingQuarterlyIndex?: number; smallUnitQuarterlyIndex?: number }>;
+};
+
 export type CommercialOfficeRentIndexRecord = {
   id: string;
   source: string;
@@ -443,6 +494,14 @@ export type RealEstateSummary = {
     citywideMonthlyIndex?: number;
     citywideMonthlyIndexChangePercent?: number;
     citywideYearOverYearMonthlyIndexChangePercent?: number;
+    citywideStandardTotalPriceTenThousandNtd?: number;
+    citywideStandardUnitPriceTenThousandNtdPerPing?: number;
+  };
+  residentialPriceQuarterlyIndex?: {
+    latestQuarterKey?: string;
+    citywideQuarterlyIndex?: number;
+    citywideQuarterlyChangePercent?: number;
+    citywideYearOverYearQuarterlyIndexChangePercent?: number;
     citywideStandardTotalPriceTenThousandNtd?: number;
     citywideStandardUnitPriceTenThousandNtdPerPing?: number;
   };
