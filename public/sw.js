@@ -1,4 +1,4 @@
-const CACHE = 'taipei-dashboard-v7';
+const CACHE = 'taipei-dashboard-v8';
 const ASSETS = [
   './',
   './manifest.webmanifest',
@@ -20,6 +20,9 @@ const ASSETS = [
   './data/land-parcel-assessed-value-records.json',
   './data/land-parcel-assessed-value-summary.json',
   './data/land-parcel-assessed-value-district-year-summary.json',
+  './data/movable-property-pledge-business-records.json',
+  './data/movable-property-pledge-business-summary.json',
+  './data/movable-property-pledge-business-annual-summary.json',
   './data/building-use-permits/manifest.json',
   './data/building-use-permits/summary.json',
   './data/building-use-permits/yearly-summary.json',

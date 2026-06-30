@@ -19,6 +19,9 @@ import {
   type LandParcelAssessedValueRecord,
   type LandParcelAssessedValueSummary,
   type PopulationDistrictSummary,
+  type MovablePropertyPledgeBusinessRecord,
+  type MovablePropertyPledgeBusinessSummary,
+  type MovablePropertyPledgeItemCategory,
   type QuarterlyMarketRecord,
   type ResidentialPriceIndexCategory,
   type ResidentialPriceMonthlyIndexRecord,
@@ -55,6 +58,8 @@ type DataBundle = {
   rentIndexSummary: ResidentialRentIndexSummary;
   landValueRecords: LandParcelAssessedValueRecord[];
   landValueSummary: LandParcelAssessedValueSummary;
+  pledgeRecords: MovablePropertyPledgeBusinessRecord[];
+  pledgeSummary: MovablePropertyPledgeBusinessSummary;
 };
 
 const colors = ['#b24738', '#356f9d', '#737d68', '#c58a43', '#775f86', '#408579'];
@@ -198,6 +203,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
   const summary = data.realEstate;
   const rent = summary.residentialRentIndex;
   const commercialRent = summary.commercialOfficeRentIndex;
+  const pledge = summary.movablePropertyPledgeBusinessStatistics;
   return <>
     <MetricStrip items={[
       { label: t.latestDataPeriod, value: summary.latestDataPeriod ?? '—' },
@@ -240,6 +246,17 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: t.majorRoadRentPremium, value: `${formatRentUnit(commercialRent.majorRoadRentGapNtdPerPingPerMonth, language)} / ${formatSourcePercent(commercialRent.majorRoadRentGapPercent)}` },
       ]} />
       <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 3 }))}>{language === 'zh' ? '查看商辦租金' : 'View office rent'}</button>
+    </section>}
+    {pledge && <section className="overview-panel">
+      <h2>{language === 'zh' ? '社會經濟背景：動產質借' : 'Socioeconomic Context: Pledge Loans'}</h2>
+      <MetricStrip items={[
+        { label: language === 'zh' ? '最新年度' : 'Latest year', value: pledge.latestYear ?? '—' },
+        { label: language === 'zh' ? '質借件數' : 'Pledge cases', value: pledge.latestYearPledgeCaseCount?.toLocaleString() ?? '—' },
+        { label: language === 'zh' ? '質借本金' : 'Pledge principal', value: formatNtd(pledge.latestYearPledgePrincipalNtd, language) },
+        { label: language === 'zh' ? '現金利息收入' : 'Cash interest income', value: formatNtd(pledge.latestYearCashInterestIncomeNtd, language) },
+      ]} />
+      <p className="notice">{language === 'zh' ? '僅供社會經濟背景觀察，不代表房價、租金、房貸壓力或財務建議。' : 'Socioeconomic context only; not prices, rents, mortgage stress, or financial advice.'}</p>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 8 }))}>{language === 'zh' ? '查看動產質借' : 'View pledge loans'}</button>
     </section>}
     <div className="chart-grid">
       <ChartSection title={t.transactionCountByMonth}><ResponsiveContainer width="100%" height={280}>
@@ -678,10 +695,10 @@ function DataNotes({ language }: { language: Language }) {
     <h2>{t.dataNotes}</h2>
     {language === 'zh' ? <>
       <p>本網站整理臺北市公開資料中的實價登錄、每季動態分析、住宅租金指數、使用執照摘要與人口年齡資料，僅供資料探索與區域或市場趨勢觀察使用，並非不動產估價、租金估價、建物安全判定、產權查證、合法使用認定、投資建議或價格預測。人口與使用執照資料僅作為區域背景脈絡，不代表房價、租金或交易量之因果解釋。</p>
-      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
+      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>動產質借處營業概況提供年度營運統計，欄位包含分處別、項目、本年質借件數、本金、現金利息收入與變賣金額；僅供社會經濟背景觀察，不代表房價、租金、房貸壓力、個人信用、貧窮程度、投資訊號、借貸建議或財務決策依據。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
     </> : <>
       <p>This site organizes Taipei public-data records for real-price registration, quarterly market analysis, residential rent index, building use-permit summaries, and population-by-age data for data exploration and regional or market trend observation only. It is not real-estate appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, investment advice, or price prediction. Population and use-permit data are regional context and do not represent causal explanation for housing prices, rent, or transaction volume.</p>
-      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
+      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>Movable-property pledge business statistics are annual operating statistics for socioeconomic context only. They do not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, lending advice, or financial decisions.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
     </>}
     <div className="source-links">
       <a href="https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc">臺北市實價周報</a>
@@ -691,6 +708,7 @@ function DataNotes({ language }: { language: Language }) {
       <a href="https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3">商辦租金指數</a>
       <a href="https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733">臺北市歷年使用執照摘要</a>
       <a href="https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3">人口年齡資料</a>
+      <a href="https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9">臺北市動產質借處營業概況</a>
       <a href={`${base}data/conversion-report.json`}>{language === 'zh' ? '轉換報告' : 'Conversion report'}</a>
     </div>
   </article>;
@@ -721,6 +739,95 @@ function LandValue({ records, summary, language }: { records: LandParcelAssessed
   return <><section className="section-intro"><h2>{label('土地筆數面積與公告土地現值', 'Land Parcel, Area & Announced Land Current Value Statistics')}</h2><p>{label('探索臺北市各行政區土地筆數、土地面積、公告土地現值總額與都市土地公有、私有、公私共有結構，作為土地存量與行政公告土地價值背景。', 'Explore district-level land-stock and announced land-value context by ownership structure.')}</p><p className="notice">{label('土地筆數面積及公告土地現值統計為地政公開資料中的行政區彙總資料，公告土地現值為官方公告之行政參考指標，並非市場成交價格、個別土地估價、不動產投資建議或價格預測。', 'Announced land current value is an official administrative reference indicator, not market transaction price, individual appraisal, investment advice, or price prediction.')}</p></section><MetricStrip items={[{ label: label('最新年度', 'Latest year'), value: summary.latestYear ?? '—' }, { label: label('涵蓋行政區數', 'Districts covered'), value: summary.districtCount }, { label: label('土地筆數總計', 'Total parcel count'), value: totals?.totalParcelCount?.toLocaleString() ?? '—' }, { label: label('土地面積總計', 'Total land area'), value: totals?.totalAreaHectares ? `${totals.totalAreaHectares.toLocaleString()} ha` : '—' }, { label: label('公告土地現值總額', 'Total announced land current value'), value: formatValue(totals?.totalAnnouncedLandCurrentValueNtd) }, { label: label('每公頃公告土地現值', 'Value per hectare'), value: formatValue(totals?.announcedLandCurrentValueNtdPerHectare) }]} /><div className="chart-grid"><ChartSection title={label('各行政區公告土地現值總額', 'Total announced land current value by district')}><ResponsiveContainer width="100%" height={300}><BarChart data={latest}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} /><YAxis tickFormatter={(value) => `${Math.round(value / 1e9)}B`} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="totalAnnouncedLandCurrentValueNtd" fill="#b24738" /></BarChart></ResponsiveContainer></ChartSection><ChartSection title={label('全市公告土地現值年度趨勢', 'Citywide announced land current value by year')}><ResponsiveContainer width="100%" height={300}><LineChart data={summary.byYear}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="year" /><YAxis tickFormatter={(value) => `${Math.round(value / 1e9)}B`} /><Tooltip content={<ChartTooltip language={language} />} /><Line dataKey="totalAnnouncedLandCurrentValueNtd" stroke="#356f9d" strokeWidth={3} dot /></LineChart></ResponsiveContainer></ChartSection></div><section className="analysis-list"><h2>{label('土地現值資料表', 'Land Value Table')}</h2><details className="filters" open><summary>{label('篩選條件', 'Filters')}</summary><div className="filter-grid"><label><span>{label('年度', 'Year')}</span><select value={year} onChange={(event) => setYear(event.target.value)}>{summary.byYear.map((item) => <option key={item.year}>{item.year}</option>)}</select></label><label><span>{label('行政區', 'District')}</span><select value={district} onChange={(event) => setDistrict(event.target.value)}><option value="">{label('全部行政區', 'All districts')}</option>{DISTRICTS.map((item) => <option key={item}>{districtLabel(item, language)}</option>)}</select></label></div></details><div className="table-wrap"><table><thead><tr>{[label('行政區', 'District'), label('筆數總計', 'Parcels'), label('面積（公頃）', 'Area (ha)'), label('公告土地現值總額', 'Announced value'), label('每公頃公告土地現值', 'Value / ha')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{selected.map((record) => <tr key={record.id}><th>{districtLabel(record.district, language)}</th><td>{record.totalParcelCount?.toLocaleString()}</td><td>{record.totalAreaHectares?.toLocaleString()}</td><td>{formatValue(record.totalAnnouncedLandCurrentValueNtd)}</td><td>{formatValue(record.announcedLandCurrentValueNtdPerHectare)}</td></tr>)}</tbody></table></div></section></>;
 }
 
+const pledgeItemLabel = (category: MovablePropertyPledgeItemCategory, language: Language) => ({
+  total: { zh: '合計', en: 'Total' },
+  gold_jewelry: { zh: '黃金珠寶', en: 'Gold and jewelry' },
+  watches: { zh: '鐘錶', en: 'Watches' },
+  motorcycle: { zh: '機車', en: 'Motorcycle' },
+  other: { zh: '其他', en: 'Other' },
+  unknown: { zh: '未分類', en: 'Unknown' },
+}[category][language]);
+
+function MovablePropertyPledgeBusiness({ records, summary, language }: { records: MovablePropertyPledgeBusinessRecord[]; summary: MovablePropertyPledgeBusinessSummary; language: Language }) {
+  const zh = language === 'zh';
+  const label = (zhText: string, enText: string) => zh ? zhText : enText;
+  const [year, setYear] = useState(String(summary.latestYear ?? ''));
+  const [branch, setBranch] = useState('');
+  const [itemCategory, setItemCategory] = useState('');
+  const [search, setSearch] = useState('');
+  const [minCases, setMinCases] = useState('');
+  const [maxCases, setMaxCases] = useState('');
+  const [minPrincipal, setMinPrincipal] = useState('');
+  const [maxPrincipal, setMaxPrincipal] = useState('');
+  const [minInterest, setMinInterest] = useState('');
+  const [maxInterest, setMaxInterest] = useState('');
+  const [minSale, setMinSale] = useState('');
+  const [maxSale, setMaxSale] = useState('');
+  const [page, setPage] = useState(1);
+  const years = summary.byYear.map((item) => item.dataYear);
+  const branches = [...new Set(records.map((record) => record.branchName).filter((value): value is string => !!value))].sort((a, b) => a.localeCompare(b, 'zh-Hant'));
+  const categories = [...new Set(records.map((record) => record.itemCategory))];
+  const inRange = (value: number | undefined, min: string, max: string) =>
+    (!min || (value ?? -Infinity) >= Number(min)) && (!max || (value ?? Infinity) <= Number(max));
+  const filtered = records.filter((record) => (!year || record.dataYear === Number(year))
+    && (!branch || record.branchName === branch)
+    && (!itemCategory || record.itemCategory === itemCategory)
+    && inRange(record.annualPledgeCaseCount, minCases, maxCases)
+    && inRange(record.annualPledgePrincipalNtd, minPrincipal, maxPrincipal)
+    && inRange(record.cashInterestIncomeNtd, minInterest, maxInterest)
+    && inRange(record.annualSaleTotalNtd, minSale, maxSale)
+    && (!search || [record.dataYear, record.branchName, record.itemRaw, record.sourceResourceName].some((value) => String(value ?? '').toLocaleLowerCase().includes(search.toLocaleLowerCase()))));
+  const pages = Math.max(1, Math.ceil(filtered.length / 20));
+  const visible = filtered.slice((page - 1) * 20, page * 20);
+  useEffect(() => setPage(1), [year, branch, itemCategory, search, minCases, maxCases, minPrincipal, maxPrincipal, minInterest, maxInterest, minSale, maxSale]);
+  const latest = summary.latestAnnualSummary;
+  return <>
+    <section className="section-intro">
+      <h2>{label('動產質借處營業概況', 'Movable Property Pledge Business Statistics')}</h2>
+      <p>{label('整理臺北市動產質借處年度營運統計，依年度、分處別與項目觀察質借件數、本金、利息收入與變賣金額等社會經濟背景指標。', 'Explore annual Taipei movable-property pledge office operating statistics by year, branch, and item category, including pledge-loan case counts, principal amounts, interest income, and sale amounts as socioeconomic background indicators.')}</p>
+      <p className="notice">{label('本資料僅供社會經濟背景觀察，不代表不動產價格、租金、房貸壓力、個人信用狀況、貧窮程度、投資訊號、政策成效或未來市場預測，也不應作為估價、交易、投資、借貸或財務決策依據。', 'This data is socioeconomic background context only. It does not represent real-estate prices, rents, mortgage stress, credit status, poverty level, investment signals, policy effectiveness, forecasts, appraisal, transaction advice, lending advice, or financial decisions.')}</p>
+      <p className="notice">{label('動產質借處營業概況為年度營運統計資料，未提供分處地址或經緯度。本模組以趨勢圖與資料表呈現，不顯示地圖點位。', 'Movable-property pledge business statistics are annual operating statistics and do not provide branch addresses or coordinates. This module is presented through trend charts and tables, not map markers.')}</p>
+    </section>
+    <MetricStrip items={[
+      { label: label('最新年度', 'Latest year'), value: summary.latestYear ?? '—' },
+      { label: label('紀錄數', 'Record count'), value: summary.totalRecords.toLocaleString() },
+      { label: label('分處數', 'Branch count'), value: summary.branchCount },
+      { label: label('項目數', 'Item category count'), value: summary.itemCategoryCount },
+      { label: label('最新年度質借件數', 'Latest-year pledge cases'), value: latest?.totalPledgeCaseCount?.toLocaleString() ?? '—' },
+      { label: label('最新年度質借本金', 'Latest-year pledge principal'), value: formatNtd(latest?.totalPledgePrincipalNtd, language) },
+      { label: label('最新年度現金利息收入', 'Latest-year cash interest income'), value: formatNtd(latest?.totalCashInterestIncomeNtd, language) },
+      { label: label('平均每件質借本金', 'Average principal per case'), value: formatNtd(latest?.averagePrincipalPerCaseNtd, language) },
+      { label: label('質借件數最多分處', 'Top branch by pledge cases'), value: latest?.topBranchByPledgeCaseCount ?? '—' },
+    ]} />
+    <div className="chart-grid">
+      <ChartSection title={label('年度質借件數', 'Annual pledge case count')} note={label('此圖僅整理動產質借處年度營業統計，不代表不動產價格、租金、房貸壓力、個人信用狀況、貧窮程度、投資訊號、政策成效或未來市場預測。', 'This chart only organizes annual movable-property pledge office operating statistics and does not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, policy effectiveness, or forecasts.')}><ResponsiveContainer width="100%" height={300}><LineChart data={summary.byYear}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="dataYear" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Line dataKey="totalPledgeCaseCount" name={label('質借件數', 'Pledge cases')} stroke="#356f9d" strokeWidth={3} /></LineChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('年度質借本金', 'Annual pledge principal')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.byYear}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="dataYear" /><YAxis tickFormatter={(value) => `${Math.round(value / 1e6)}M`} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="totalPledgePrincipalNtd" name={label('質借本金', 'Pledge principal')} fill="#b24738" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('各分處質借件數', 'Pledge cases by branch')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.latestYearBranchBreakdown}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="branchName" angle={-35} textAnchor="end" height={72} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="pledgeCaseCount" name={label('質借件數', 'Pledge cases')} fill="#737d68" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('各項目質借本金', 'Pledge principal by item category')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.byItemCategory.map((item) => ({ ...item, label: zh ? item.itemLabelZh : item.itemLabelEn }))}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" angle={-35} textAnchor="end" height={72} /><YAxis tickFormatter={(value) => `${Math.round(value / 1e6)}M`} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="totalPledgePrincipalNtd" name={label('質借本金', 'Pledge principal')} fill="#c58a43" /></BarChart></ResponsiveContainer></ChartSection>
+    </div>
+    <section className="analysis-list">
+      <h2>{label('動產質借資料表', 'Pledge Business Table')}</h2>
+      <details className="filters" open><summary>{label('篩選條件', 'Filters')}</summary><div className="filter-grid">
+        <label><span>{label('年度', 'Year')}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{label('全部年份', 'All years')}</option>{years.map((item) => <option key={item}>{item}</option>)}</select></label>
+        <label><span>{label('分處', 'Branch')}</span><select value={branch} onChange={(event) => setBranch(event.target.value)}><option value="">{label('全部分處', 'All branches')}</option>{branches.map((item) => <option key={item}>{item}</option>)}</select></label>
+        <label><span>{label('項目', 'Item category')}</span><select value={itemCategory} onChange={(event) => setItemCategory(event.target.value)}><option value="">{label('全部項目', 'All items')}</option>{categories.map((item) => <option key={item} value={item}>{pledgeItemLabel(item, language)}</option>)}</select></label>
+        <label><span>{label('質借件數範圍', 'Pledge case range')}</span><input type="number" value={minCases} onChange={(event) => setMinCases(event.target.value)} placeholder={label('最小', 'Min')} /></label>
+        <label><span>&nbsp;</span><input type="number" value={maxCases} onChange={(event) => setMaxCases(event.target.value)} placeholder={label('最大', 'Max')} /></label>
+        <label><span>{label('質借本金範圍', 'Pledge principal range')}</span><input type="number" value={minPrincipal} onChange={(event) => setMinPrincipal(event.target.value)} placeholder={label('最小', 'Min')} /></label>
+        <label><span>&nbsp;</span><input type="number" value={maxPrincipal} onChange={(event) => setMaxPrincipal(event.target.value)} placeholder={label('最大', 'Max')} /></label>
+        <label><span>{label('現金利息收入範圍', 'Cash interest income range')}</span><input type="number" value={minInterest} onChange={(event) => setMinInterest(event.target.value)} placeholder={label('最小', 'Min')} /></label>
+        <label><span>&nbsp;</span><input type="number" value={maxInterest} onChange={(event) => setMaxInterest(event.target.value)} placeholder={label('最大', 'Max')} /></label>
+        <label><span>{label('變賣總計範圍', 'Sale total range')}</span><input type="number" value={minSale} onChange={(event) => setMinSale(event.target.value)} placeholder={label('最小', 'Min')} /></label>
+        <label><span>&nbsp;</span><input type="number" value={maxSale} onChange={(event) => setMaxSale(event.target.value)} placeholder={label('最大', 'Max')} /></label>
+        <label className="search-field"><span>{label('搜尋', 'Search')}</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={label('搜尋年度、分處或項目', 'Search year, branch, or item')} type="search" /></label>
+      </div></details>
+      <p className="table-count">{filtered.length.toLocaleString()} {label('筆紀錄', 'records')}</p>
+      <div className="table-wrap"><table><thead><tr>{[label('年度', 'Year'), label('分處別', 'Branch'), label('項目', 'Item'), label('本年質借件數', 'Annual pledge cases'), label('本年質借本金', 'Annual pledge principal'), label('現金利息收入', 'Cash interest income'), label('本年變賣總計', 'Annual sale total'), label('年變動率', 'YoY change')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}><td>{record.dataYear}</td><td>{record.branchName}</td><td>{record.itemRaw}</td><td>{record.annualPledgeCaseCount?.toLocaleString() ?? '—'}</td><td>{formatNtd(record.annualPledgePrincipalNtd, language)}</td><td>{formatNtd(record.cashInterestIncomeNtd, language)}</td><td>{formatNtd(record.annualSaleTotalNtd, language)}</td><td>{formatSourcePercent(record.yearOverYearPledgeCaseChangePercent)}</td></tr>)}</tbody></table></div>
+      <nav className="pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{label('上一頁', 'Previous')}</button><span>{label('頁', 'Page')} {page} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{label('下一頁', 'Next')}</button></nav>
+    </section>
+  </>;
+}
+
 export default function App() {
   const [language, setLanguage] = useState<Language>('zh');
   const [tab, setTab] = useState(0);
@@ -748,8 +855,10 @@ export default function App() {
       loadJson<ResidentialRentIndexSummary>('residential-rent-index-summary.json'),
       loadJson<LandParcelAssessedValueRecord[]>('land-parcel-assessed-value-records.json'),
       loadJson<LandParcelAssessedValueSummary>('land-parcel-assessed-value-summary.json'),
-    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary]) =>
-      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary }),
+      loadJson<MovablePropertyPledgeBusinessRecord[]>('movable-property-pledge-business-records.json'),
+      loadJson<MovablePropertyPledgeBusinessSummary>('movable-property-pledge-business-summary.json'),
+    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, pledgeRecords, pledgeSummary]) =>
+      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, pledgeRecords, pledgeSummary }),
     ).catch(() => setError(true));
   }, []);
 
@@ -790,9 +899,10 @@ export default function App() {
         {tab === 5 && <QuarterlyAnalysis data={data} language={language} />}
         {tab === 6 && <BuildingUsePermits language={language} />}
         {tab === 7 && <LandValue records={data.landValueRecords} summary={data.landValueSummary} language={language} />}
-        {tab === 8 && <DemographicContext data={data} language={language} />}
-        {tab === 9 && <DataTable records={filteredRecords} language={language} />}
-        {tab === 10 && <DataNotes language={language} />}
+        {tab === 8 && <MovablePropertyPledgeBusiness records={data.pledgeRecords} summary={data.pledgeSummary} language={language} />}
+        {tab === 9 && <DemographicContext data={data} language={language} />}
+        {tab === 10 && <DataTable records={filteredRecords} language={language} />}
+        {tab === 11 && <DataNotes language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

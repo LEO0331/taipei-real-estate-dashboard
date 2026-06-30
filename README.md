@@ -1,6 +1,6 @@
 # Taipei Real Estate & Demographics Dashboard / 台北實價與人口趨勢儀表板
 
-Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price monthly index trends by housing category / 各住宅類別住宅價格月指數趨勢, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, and demographic context.
+Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price monthly index trends by housing category / 各住宅類別住宅價格月指數趨勢, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
 
 ## Purpose
 
@@ -15,8 +15,9 @@ The site combines eight Taipei public-data sources:
 - [臺北市115年度使用執照摘要](https://data.taipei/dataset/detail?id=0816f991-e6c8-4da0-a789-d022fee1462b)
 - [臺北市土地筆數面積及公告土地現值統計](https://data.taipei/dataset/detail?id=68c439fc-877a-42bb-9c35-a3701e8fc9c3)
 - [臺北市各里人口數按年齡分](https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3)
+- [臺北市動產質借處營業概況](https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9)
 
-It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, transaction advice, investment recommendation, or price prediction tool. Population, use-permit, land-value, rent-index, and price-index data provide context only and do not imply causation.
+It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, transaction advice, investment recommendation, lending advice, financial advice, or price prediction tool. Population, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
 
 ## Data model and limitations
 
@@ -36,6 +37,9 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 - Population files contain city, district, village, male, female, and total rows. Conversion uses district rows where `性別=計` to avoid double counting.
 - ROC dates are converted by adding 1911. Failed parses remain in the conversion report.
 - Land-value CSV resource names provide ROC years. Source thousand-NTD values become NTD; per-hectare and urban public/private/joint ownership metrics are derived for district context only. No parcel-level map, market-price, appraisal, or investment claim is made.
+- Movable-property pledge business CSV resources are annual Big5 files. ROC resource years such as `112年度` become Gregorian years such as `2023`; branch, item, pledge-loan case count, pledge principal, cash interest income, sale total, sale principal, sale interest, and sale profit are parsed into annual records and summaries.
+- Movable-property pledge business statistics are socioeconomic background only. They are not real-estate price, rent, mortgage-stress, individual-credit, poverty, investment, lending, financial-advice, or forecast signals.
+- Movable-property pledge business statistics provide no branch addresses or coordinates, so no map markers or geocoding are generated.
 - Rent index periods parse ROC quarters such as `107Q3` into Gregorian quarters such as `2018-Q3`.
 - Weekly sale totals are in NT$10,000 and become NTD. Sale unit prices are NT$10,000/ping and become NTD/ping.
 - Weekly rental unit prices remain NTD/ping/month. Rental totals are derived from unit price × area when available because the source total is rounded.
@@ -54,7 +58,7 @@ npm test
 npm run dev
 ```
 
-`data:fetch` checks the three raw-data folders and records whether local CSV files are available. Place manually downloaded official files in:
+`data:fetch` checks/downloads local raw-data inputs and records whether official files are available. Place manually downloaded official files in:
 
 ```text
 data/raw/real-price-weekly/
@@ -65,6 +69,7 @@ data/raw/residential-rent-index/
 data/raw/population-by-age/
 data/raw/building-use-permits/
 data/raw/land-parcel-assessed-value-statistics/
+data/raw/movable-property-pledge-business-statistics/
 ```
 
 Build and preview:
@@ -95,6 +100,9 @@ public/data/conversion-report.json
 public/data/building-use-permits/
 public/data/land-parcel-assessed-value-records.json
 public/data/land-parcel-assessed-value-summary.json
+public/data/movable-property-pledge-business-records.json
+public/data/movable-property-pledge-business-summary.json
+public/data/movable-property-pledge-business-annual-summary.json
 ```
 
 Rent-index-only workflow:
@@ -108,6 +116,8 @@ npm run data:fetch:rent-index
 npm run data:convert:rent-index
 npm run data:convert:building-use-permits
 npm run data:convert:land-value
+npm run data:fetch:pledge-business
+npm run data:convert:pledge-business
 ```
 
 ## GitHub Pages

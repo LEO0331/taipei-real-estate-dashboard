@@ -23,6 +23,7 @@ import {
   parseTaiwanDate,
   sqmToPing,
 } from './data.ts';
+import { classifyMovablePropertyPledgeItemCategory, parseCaseCount, parseNtdAmount, parseYearFromResourceName } from './convertMovablePropertyPledgeBusinessStatistics.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -52,6 +53,15 @@ test('parses formatted numbers and converts square metres to ping', () => {
   assert.equal(parseNumber('NT$ 1,234.5'), 1234.5);
   assert.equal(parseNumber('-'), undefined);
   assert.equal(Number(sqmToPing(3.305785).toFixed(6)), 1);
+});
+
+test('parses movable-property pledge business helper fields', () => {
+  assert.deepEqual(parseYearFromResourceName('臺北市動產質借處營業概況-112年度.csv'), { rocYear: 112, dataYear: 2023 });
+  assert.equal(parseCaseCount('57,001件'), 57001);
+  assert.equal(parseNtdAmount('3,042,552,100元'), 3042552100);
+  assert.equal(parseNtdAmount('--'), undefined);
+  assert.equal(classifyMovablePropertyPledgeItemCategory('計'), 'total');
+  assert.equal(classifyMovablePropertyPledgeItemCategory('黃金'), 'gold_jewelry');
 });
 
 test('classifies building and record types', () => {

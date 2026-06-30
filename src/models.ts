@@ -15,6 +15,7 @@ export type ResidentialRentIndexCategory =
 export type ResidentialPriceIndexCategory =
   | 'citywide' | 'citywide_apartment' | 'citywide_building' | 'citywide_small_unit' | 'other' | 'unknown';
 export type CommercialOfficeRentIndexCategory = 'citywide' | 'major_roads' | 'other' | 'unknown';
+export type MovablePropertyPledgeItemCategory = 'total' | 'gold_jewelry' | 'watches' | 'motorcycle' | 'other' | 'unknown';
 export type BuildingConstructionType = 'new_construction' | 'addition' | 'repair' | 'reconstruction' | 'other' | 'unknown';
 export type PublicUseStatus = 'public_use' | 'non_public_use' | 'unspecified';
 export type ZoningCategory = 'residential' | 'commercial' | 'industrial' | 'school' | 'park' | 'government' | 'protection' | 'mixed_or_special' | 'other' | 'unknown';
@@ -60,6 +61,27 @@ export type LandParcelAssessedValueRecord = {
   yearOverYearTotalParcelCountChangePercent?: number; yearOverYearTotalAreaChangePercent?: number; yearOverYearTotalAnnouncedLandCurrentValueChangePercent?: number; yearOverYearValuePerHectareChangePercent?: number;
 };
 export type LandParcelAssessedValueSummary = { totalRecords: number; minYear?: number; maxYear?: number; districtCount: number; latestYear?: number; latestCitywideTotals?: Pick<LandParcelAssessedValueRecord, 'totalParcelCount' | 'totalAreaHectares' | 'totalAnnouncedLandCurrentValueNtd' | 'announcedLandCurrentValueNtdPerHectare' | 'urbanPublicAreaHectares' | 'urbanPrivateAreaHectares' | 'urbanJointAreaHectares'>; latestByDistrict: LandParcelAssessedValueRecord[]; byYear: Array<{ year: number; totalParcelCount: number; totalAreaHectares: number; totalAnnouncedLandCurrentValueNtd: number; announcedLandCurrentValueNtdPerHectare?: number }>; };
+
+export type MovablePropertyPledgeBusinessRecord = {
+  id: string; module: 'movable_property_pledge_business_statistics'; dataYear: number; rocYear?: number; sourceResourceName?: string;
+  branchRaw?: string; branchName?: string; branchNameNormalized?: string; itemRaw?: string; itemCategory: MovablePropertyPledgeItemCategory; itemCategoryNormalized?: string;
+  annualPledgeCaseCount?: number; annualPledgePrincipalNtd?: number; cashInterestIncomeNtd?: number; annualSaleTotalNtd?: number; annualSalePrincipalNtd?: number; annualSaleInterestNtd?: number; annualSaleProfitNtd?: number;
+  averagePrincipalPerCaseNtd?: number; cashInterestIncomePerCaseNtd?: number; saleTotalToPledgePrincipalRatioPercent?: number; saleProfitToSaleTotalRatioPercent?: number; salePrincipalSharePercent?: number; saleInterestSharePercent?: number;
+  yearOverYearPledgeCaseChangePercent?: number; yearOverYearPledgePrincipalChangePercent?: number; yearOverYearCashInterestIncomeChangePercent?: number; yearOverYearSaleTotalChangePercent?: number;
+  isTotalRow: boolean; sourceRecordHash?: string; source: string; sourceAgency: string;
+};
+
+export type MovablePropertyPledgeAnnualSummary = {
+  dataYear: number; recordCount: number; totalPledgeCaseCount?: number; totalPledgePrincipalNtd?: number; totalCashInterestIncomeNtd?: number; totalSaleTotalNtd?: number; totalSalePrincipalNtd?: number; totalSaleInterestNtd?: number; totalSaleProfitNtd?: number;
+  averagePrincipalPerCaseNtd?: number; cashInterestIncomePerCaseNtd?: number; branchCount: number; itemCategoryCount: number; topBranchByPledgeCaseCount?: string; topBranchByPledgePrincipal?: string; topItemCategoryByPledgeCaseCount?: MovablePropertyPledgeItemCategory;
+};
+
+export type MovablePropertyPledgeBusinessSummary = {
+  totalRecords: number; minYear?: number; maxYear?: number; latestYear?: number; branchCount: number; itemCategoryCount: number; latestAnnualSummary?: MovablePropertyPledgeAnnualSummary; byYear: MovablePropertyPledgeAnnualSummary[];
+  byBranch: Array<{ branchName: string; recordCount: number; totalPledgeCaseCount?: number; totalPledgePrincipalNtd?: number; totalCashInterestIncomeNtd?: number; totalSaleTotalNtd?: number }>;
+  byItemCategory: Array<{ itemCategory: MovablePropertyPledgeItemCategory; itemLabelZh: string; itemLabelEn: string; recordCount: number; totalPledgeCaseCount?: number; totalPledgePrincipalNtd?: number; totalCashInterestIncomeNtd?: number; totalSaleTotalNtd?: number }>;
+  latestYearBranchBreakdown: Array<{ branchName: string; pledgeCaseCount?: number; pledgePrincipalNtd?: number; cashInterestIncomeNtd?: number; saleTotalNtd?: number }>;
+};
 
 export function classifyBuildingConstructionType(raw: string | undefined): BuildingConstructionType {
   const text = raw?.trim() ?? '';
@@ -414,5 +436,11 @@ export type RealEstateSummary = {
     majorRoadStandardRentNtdPerPingPerMonth?: number;
     majorRoadRentGapNtdPerPingPerMonth?: number;
     majorRoadRentGapPercent?: number;
+  };
+  movablePropertyPledgeBusinessStatistics?: {
+    latestYear?: number;
+    latestYearPledgeCaseCount?: number;
+    latestYearPledgePrincipalNtd?: number;
+    latestYearCashInterestIncomeNtd?: number;
   };
 };
