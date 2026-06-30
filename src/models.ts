@@ -83,6 +83,26 @@ export type MovablePropertyPledgeBusinessSummary = {
   latestYearBranchBreakdown: Array<{ branchName: string; pledgeCaseCount?: number; pledgePrincipalNtd?: number; cashInterestIncomeNtd?: number; saleTotalNtd?: number }>;
 };
 
+export type IncomePerEarnerByDistrictYearRecord = {
+  id: string; module: 'income_per_earner_by_district_year'; source: string; sourceAgency: string; sourceResourceName?: string; sourceRecordHash?: string;
+  yearRaw?: string; rocYear?: number; dataYear: number; districtRaw?: string; district?: District; districtNormalized: string; isCityAverage: boolean;
+  incomeEarnerCount?: number; totalIncomeNtd?: number; employeeCompensationNtd?: number; mainJobSalaryNtd?: number; sideJobSalaryNtd?: number; otherEmployeeIncomeNtd?: number;
+  businessOwnerIncomeNtd?: number; agriculturalNetIncomeNtd?: number; businessNetIncomeNtd?: number; professionalPracticeNetIncomeNtd?: number; propertyIncomeNtd?: number; imputedOwnerOccupiedRentIncomeNtd?: number;
+  currentTransferIncomeNtd?: number; transferFromPrivateNtd?: number; transferFromGovernmentNtd?: number; socialInsuranceBenefitNtd?: number; transferFromEnterpriseNtd?: number; transferFromAbroadNtd?: number; miscellaneousIncomeNtd?: number;
+  nonConsumptionExpenditureNtd?: number; interestExpenditureNtd?: number; currentTransferExpenditureNtd?: number; transferToPrivateNtd?: number; transferToGovernmentNtd?: number; socialInsuranceExpenditureNtd?: number; transferToAbroadNtd?: number; disposableIncomeNtd?: number;
+  employeeCompensationSharePercent?: number; businessOwnerIncomeSharePercent?: number; propertyIncomeSharePercent?: number; currentTransferIncomeSharePercent?: number; nonConsumptionExpenditureToTotalIncomePercent?: number; interestExpenditureToTotalIncomePercent?: number; disposableIncomeToTotalIncomePercent?: number;
+  mainJobSalaryShareOfEmployeeCompensationPercent?: number; sideJobSalaryShareOfEmployeeCompensationPercent?: number; yearOverYearTotalIncomeChangePercent?: number; yearOverYearDisposableIncomeChangePercent?: number; totalIncomeRank?: number; disposableIncomeRank?: number;
+};
+
+export type IncomePerEarnerByDistrictYearSummary = {
+  totalRecords: number; minYear?: number; maxYear?: number; latestYear?: number; districtCount: number; hasCityAverage: boolean;
+  latestCityAverage?: IncomePerEarnerByDistrictYearRecord;
+  latestYearDistrictRanking: Array<Pick<IncomePerEarnerByDistrictYearRecord, 'district' | 'totalIncomeNtd' | 'disposableIncomeNtd' | 'incomeEarnerCount' | 'totalIncomeRank' | 'disposableIncomeRank'>>;
+  byYear: Array<{ dataYear: number; rocYear?: number; recordCount: number; cityAverageTotalIncomeNtd?: number; cityAverageDisposableIncomeNtd?: number; cityAverageIncomeEarnerCount?: number; topDistrictByTotalIncome?: District; topDistrictByDisposableIncome?: District; lowestDistrictByDisposableIncome?: District }>;
+  byDistrict: Array<{ district: District; recordCount: number; latestTotalIncomeNtd?: number; latestDisposableIncomeNtd?: number; latestIncomeEarnerCount?: number; totalIncomeChangeSinceFirstPercent?: number; disposableIncomeChangeSinceFirstPercent?: number }>;
+  latestIncomeComposition: Array<{ key: string; labelZh: string; labelEn: string; valueNtd?: number; sharePercent?: number }>;
+};
+
 export function classifyBuildingConstructionType(raw: string | undefined): BuildingConstructionType {
   const text = raw?.trim() ?? '';
   if (!text) return 'unknown'; if (text.includes('新建')) return 'new_construction'; if (text.includes('增建')) return 'addition'; if (text.includes('修建')) return 'repair'; if (text.includes('改建')) return 'reconstruction'; return 'other';
@@ -442,5 +462,12 @@ export type RealEstateSummary = {
     latestYearPledgeCaseCount?: number;
     latestYearPledgePrincipalNtd?: number;
     latestYearCashInterestIncomeNtd?: number;
+  };
+  incomePerEarnerByDistrictYear?: {
+    latestYear?: number;
+    cityAverageTotalIncomeNtd?: number;
+    cityAverageDisposableIncomeNtd?: number;
+    cityAverageIncomeEarnerCount?: number;
+    topDistrictByDisposableIncome?: string;
   };
 };

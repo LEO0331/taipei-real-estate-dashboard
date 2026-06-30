@@ -16,6 +16,8 @@ import {
   type BuildingUsePermitSummary,
   type DistrictComparisonSummary,
   type Language,
+  type IncomePerEarnerByDistrictYearRecord,
+  type IncomePerEarnerByDistrictYearSummary,
   type LandParcelAssessedValueRecord,
   type LandParcelAssessedValueSummary,
   type PopulationDistrictSummary,
@@ -58,6 +60,9 @@ type DataBundle = {
   rentIndexSummary: ResidentialRentIndexSummary;
   landValueRecords: LandParcelAssessedValueRecord[];
   landValueSummary: LandParcelAssessedValueSummary;
+  incomeRecords: IncomePerEarnerByDistrictYearRecord[];
+  incomeSummary: IncomePerEarnerByDistrictYearSummary;
+  incomeLatest: IncomePerEarnerByDistrictYearRecord[];
   pledgeRecords: MovablePropertyPledgeBusinessRecord[];
   pledgeSummary: MovablePropertyPledgeBusinessSummary;
 };
@@ -203,6 +208,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
   const summary = data.realEstate;
   const rent = summary.residentialRentIndex;
   const commercialRent = summary.commercialOfficeRentIndex;
+  const income = summary.incomePerEarnerByDistrictYear;
   const pledge = summary.movablePropertyPledgeBusinessStatistics;
   return <>
     <MetricStrip items={[
@@ -247,6 +253,17 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
       ]} />
       <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 3 }))}>{language === 'zh' ? '查看商辦租金' : 'View office rent'}</button>
     </section>}
+    {income && <section className="overview-panel">
+      <h2>{language === 'zh' ? '社會經濟背景：所得收入' : 'Socioeconomic Context: Income'}</h2>
+      <MetricStrip items={[
+        { label: language === 'zh' ? '最新年度' : 'Latest year', value: income.latestYear ?? '—' },
+        { label: language === 'zh' ? '總平均所得收入' : 'City average total income', value: formatNtd(income.cityAverageTotalIncomeNtd, language) },
+        { label: language === 'zh' ? '總平均可支配所得' : 'City average disposable income', value: formatNtd(income.cityAverageDisposableIncomeNtd, language) },
+        { label: language === 'zh' ? '可支配所得最高行政區' : 'Top disposable-income district', value: districtLabel(income.topDistrictByDisposableIncome, language) },
+      ]} />
+      <p className="notice">{language === 'zh' ? '所得資料僅作為負擔能力與社會經濟背景，不代表估價、稅務、投資、貸款、財務建議或市場預測。' : 'Income data is affordability and socioeconomic context only, not appraisal, tax, investment, lending, financial advice, or market prediction.'}</p>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 8 }))}>{language === 'zh' ? '查看所得收入' : 'View income context'}</button>
+    </section>}
     {pledge && <section className="overview-panel">
       <h2>{language === 'zh' ? '社會經濟背景：動產質借' : 'Socioeconomic Context: Pledge Loans'}</h2>
       <MetricStrip items={[
@@ -256,7 +273,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: language === 'zh' ? '現金利息收入' : 'Cash interest income', value: formatNtd(pledge.latestYearCashInterestIncomeNtd, language) },
       ]} />
       <p className="notice">{language === 'zh' ? '僅供社會經濟背景觀察，不代表房價、租金、房貸壓力或財務建議。' : 'Socioeconomic context only; not prices, rents, mortgage stress, or financial advice.'}</p>
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 8 }))}>{language === 'zh' ? '查看動產質借' : 'View pledge loans'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 9 }))}>{language === 'zh' ? '查看動產質借' : 'View pledge loans'}</button>
     </section>}
     <div className="chart-grid">
       <ChartSection title={t.transactionCountByMonth}><ResponsiveContainer width="100%" height={280}>
@@ -694,11 +711,11 @@ function DataNotes({ language }: { language: Language }) {
   return <article className="notes">
     <h2>{t.dataNotes}</h2>
     {language === 'zh' ? <>
-      <p>本網站整理臺北市公開資料中的實價登錄、每季動態分析、住宅租金指數、使用執照摘要與人口年齡資料，僅供資料探索與區域或市場趨勢觀察使用，並非不動產估價、租金估價、建物安全判定、產權查證、合法使用認定、投資建議或價格預測。人口與使用執照資料僅作為區域背景脈絡，不代表房價、租金或交易量之因果解釋。</p>
-      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>動產質借處營業概況提供年度營運統計，欄位包含分處別、項目、本年質借件數、本金、現金利息收入與變賣金額；僅供社會經濟背景觀察，不代表房價、租金、房貸壓力、個人信用、貧窮程度、投資訊號、借貸建議或財務決策依據。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
+      <p>本網站整理臺北市公開資料中的實價登錄、每季動態分析、住宅租金指數、使用執照摘要、所得收入與人口年齡資料，僅供資料探索與區域或市場趨勢觀察使用，並非不動產估價、租金估價、建物安全判定、產權查證、合法使用認定、稅務判斷、投資建議或價格預測。人口、所得與使用執照資料僅作為區域背景脈絡，不代表房價、租金或交易量之因果解釋。</p>
+      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>所得收入資料以 Big5/CP950 解碼，行政區排名排除「總平均」列；僅供所得與負擔能力背景觀察，不代表個別所得、稅務、貸款、投資、財務建議或市場預測，也不建立精確地圖點位。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>動產質借處營業概況提供年度營運統計，欄位包含分處別、項目、本年質借件數、本金、現金利息收入與變賣金額；僅供社會經濟背景觀察，不代表房價、租金、房貸壓力、個人信用、貧窮程度、投資訊號、借貸建議或財務決策依據。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
     </> : <>
-      <p>This site organizes Taipei public-data records for real-price registration, quarterly market analysis, residential rent index, building use-permit summaries, and population-by-age data for data exploration and regional or market trend observation only. It is not real-estate appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, investment advice, or price prediction. Population and use-permit data are regional context and do not represent causal explanation for housing prices, rent, or transaction volume.</p>
-      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>Movable-property pledge business statistics are annual operating statistics for socioeconomic context only. They do not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, lending advice, or financial decisions.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
+      <p>This site organizes Taipei public-data records for real-price registration, quarterly market analysis, residential rent index, building use-permit summaries, income, and population-by-age data for data exploration and regional or market trend observation only. It is not real-estate appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, investment advice, or price prediction. Population, income, and use-permit data are regional context and do not represent causal explanation for housing prices, rent, or transaction volume.</p>
+      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Income data is decoded as Big5/CP950, district rankings exclude the city-average row, and the data is income and affordability context only. It is not individual income, tax, lending, investment, financial advice, or market prediction, and no exact map points are generated.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>Movable-property pledge business statistics are annual operating statistics for socioeconomic context only. They do not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, lending advice, or financial decisions.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
     </>}
     <div className="source-links">
       <a href="https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc">臺北市實價周報</a>
@@ -707,6 +724,7 @@ function DataNotes({ language }: { language: Language }) {
       <a href="https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20">住宅租金指數</a>
       <a href="https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3">商辦租金指數</a>
       <a href="https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733">臺北市歷年使用執照摘要</a>
+      <a href="https://data.taipei/dataset/detail?id=33da4ba0-c366-45eb-a71f-1991e6455ed6">臺北市所得收入者每人所得</a>
       <a href="https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3">人口年齡資料</a>
       <a href="https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9">臺北市動產質借處營業概況</a>
       <a href={`${base}data/conversion-report.json`}>{language === 'zh' ? '轉換報告' : 'Conversion report'}</a>
@@ -737,6 +755,77 @@ function BuildingUsePermits({ language }: { language: Language }) {
 function LandValue({ records, summary, language }: { records: LandParcelAssessedValueRecord[]; summary: LandParcelAssessedValueSummary; language: Language }) {
   const zh = language === 'zh'; const latest = summary.latestByDistrict; const totals = summary.latestCitywideTotals; const [year, setYear] = useState(String(summary.latestYear ?? '')); const [district, setDistrict] = useState(''); const selected = records.filter((record) => record.year === Number(year) && (!district || record.district === district)); const label = (zhText: string, enText: string) => zh ? zhText : enText; const formatValue = (value: number | undefined) => value === undefined ? '—' : formatNtd(value, language);
   return <><section className="section-intro"><h2>{label('土地筆數面積與公告土地現值', 'Land Parcel, Area & Announced Land Current Value Statistics')}</h2><p>{label('探索臺北市各行政區土地筆數、土地面積、公告土地現值總額與都市土地公有、私有、公私共有結構，作為土地存量與行政公告土地價值背景。', 'Explore district-level land-stock and announced land-value context by ownership structure.')}</p><p className="notice">{label('土地筆數面積及公告土地現值統計為地政公開資料中的行政區彙總資料，公告土地現值為官方公告之行政參考指標，並非市場成交價格、個別土地估價、不動產投資建議或價格預測。', 'Announced land current value is an official administrative reference indicator, not market transaction price, individual appraisal, investment advice, or price prediction.')}</p></section><MetricStrip items={[{ label: label('最新年度', 'Latest year'), value: summary.latestYear ?? '—' }, { label: label('涵蓋行政區數', 'Districts covered'), value: summary.districtCount }, { label: label('土地筆數總計', 'Total parcel count'), value: totals?.totalParcelCount?.toLocaleString() ?? '—' }, { label: label('土地面積總計', 'Total land area'), value: totals?.totalAreaHectares ? `${totals.totalAreaHectares.toLocaleString()} ha` : '—' }, { label: label('公告土地現值總額', 'Total announced land current value'), value: formatValue(totals?.totalAnnouncedLandCurrentValueNtd) }, { label: label('每公頃公告土地現值', 'Value per hectare'), value: formatValue(totals?.announcedLandCurrentValueNtdPerHectare) }]} /><div className="chart-grid"><ChartSection title={label('各行政區公告土地現值總額', 'Total announced land current value by district')}><ResponsiveContainer width="100%" height={300}><BarChart data={latest}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} /><YAxis tickFormatter={(value) => `${Math.round(value / 1e9)}B`} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="totalAnnouncedLandCurrentValueNtd" fill="#b24738" /></BarChart></ResponsiveContainer></ChartSection><ChartSection title={label('全市公告土地現值年度趨勢', 'Citywide announced land current value by year')}><ResponsiveContainer width="100%" height={300}><LineChart data={summary.byYear}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="year" /><YAxis tickFormatter={(value) => `${Math.round(value / 1e9)}B`} /><Tooltip content={<ChartTooltip language={language} />} /><Line dataKey="totalAnnouncedLandCurrentValueNtd" stroke="#356f9d" strokeWidth={3} dot /></LineChart></ResponsiveContainer></ChartSection></div><section className="analysis-list"><h2>{label('土地現值資料表', 'Land Value Table')}</h2><details className="filters" open><summary>{label('篩選條件', 'Filters')}</summary><div className="filter-grid"><label><span>{label('年度', 'Year')}</span><select value={year} onChange={(event) => setYear(event.target.value)}>{summary.byYear.map((item) => <option key={item.year}>{item.year}</option>)}</select></label><label><span>{label('行政區', 'District')}</span><select value={district} onChange={(event) => setDistrict(event.target.value)}><option value="">{label('全部行政區', 'All districts')}</option>{DISTRICTS.map((item) => <option key={item}>{districtLabel(item, language)}</option>)}</select></label></div></details><div className="table-wrap"><table><thead><tr>{[label('行政區', 'District'), label('筆數總計', 'Parcels'), label('面積（公頃）', 'Area (ha)'), label('公告土地現值總額', 'Announced value'), label('每公頃公告土地現值', 'Value / ha')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{selected.map((record) => <tr key={record.id}><th>{districtLabel(record.district, language)}</th><td>{record.totalParcelCount?.toLocaleString()}</td><td>{record.totalAreaHectares?.toLocaleString()}</td><td>{formatValue(record.totalAnnouncedLandCurrentValueNtd)}</td><td>{formatValue(record.announcedLandCurrentValueNtdPerHectare)}</td></tr>)}</tbody></table></div></section></>;
+}
+
+function IncomePerEarnerByDistrictYear({ records, summary, latest, language }: { records: IncomePerEarnerByDistrictYearRecord[]; summary: IncomePerEarnerByDistrictYearSummary; latest: IncomePerEarnerByDistrictYearRecord[]; language: Language }) {
+  const label = (zh: string, en: string) => language === 'zh' ? zh : en;
+  const [year, setYear] = useState(String(summary.latestYear ?? ''));
+  const [district, setDistrict] = useState('');
+  const [includeAverage, setIncludeAverage] = useState(true);
+  const [minTotal, setMinTotal] = useState('');
+  const [maxTotal, setMaxTotal] = useState('');
+  const [minDisposable, setMinDisposable] = useState('');
+  const [maxDisposable, setMaxDisposable] = useState('');
+  const [minEarners, setMinEarners] = useState('');
+  const [maxEarners, setMaxEarners] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const years = [...new Set(records.map((record) => record.dataYear))].sort((a, b) => b - a);
+  const inRange = (value: number | undefined, min: string, max: string) =>
+    (min === '' || (value ?? -Infinity) >= Number(min)) && (max === '' || (value ?? Infinity) <= Number(max));
+  const filtered = records.filter((record) => (!year || record.dataYear === Number(year))
+    && (includeAverage || !record.isCityAverage)
+    && (!district || record.district === district)
+    && inRange(record.totalIncomeNtd, minTotal, maxTotal)
+    && inRange(record.disposableIncomeNtd, minDisposable, maxDisposable)
+    && inRange(record.incomeEarnerCount, minEarners, maxEarners)
+    && (!search || `${record.dataYear} ${record.districtRaw} ${record.districtNormalized}`.toLowerCase().includes(search.toLowerCase())));
+  const pages = Math.max(1, Math.ceil(filtered.length / 25));
+  const visible = filtered.slice((Math.min(page, pages) - 1) * 25, Math.min(page, pages) * 25);
+  const latestDistricts = latest.filter((record) => !record.isCityAverage).sort((a, b) => (b.disposableIncomeNtd ?? 0) - (a.disposableIncomeNtd ?? 0));
+  const cityTrend = summary.byYear.map((item) => ({ ...item, year: item.dataYear }));
+  const top = summary.latestYearDistrictRanking[0];
+  const low = summary.byYear.at(-1)?.lowestDistrictByDisposableIncome;
+  useEffect(() => setPage(1), [year, district, includeAverage, minTotal, maxTotal, minDisposable, maxDisposable, minEarners, maxEarners, search]);
+  return <>
+    <section className="section-intro">
+      <h2>{label('所得收入者每人所得', 'Income per Earner by District and Year')}</h2>
+      <p>{label('整理臺北市主計處行政區別年度所得資料，觀察每位所得收入者所得收入總計、可支配所得、非消費支出與所得組成，作為負擔能力與社會經濟背景。', 'Explore annual district-level income per earner, disposable income, non-consumption expenditure, and income composition as affordability and socioeconomic context.')}</p>
+      <p className="notice">{label('本資料僅供社會經濟與負擔能力背景觀察，不代表個別所得、稅務判斷、購屋能力認定、房價估值、投資建議、貸款建議、財務建議或市場預測。資料未提供地址或經緯度，本模組不建立精確地圖點位。', 'This data is socioeconomic and affordability context only. It does not represent individual income, tax judgment, purchase capacity, price appraisal, investment advice, lending advice, financial advice, or market prediction. The source has no addresses or coordinates, so this module does not create exact map points.')}</p>
+    </section>
+    <MetricStrip items={[
+      { label: label('最新年度', 'Latest year'), value: summary.latestYear ?? '—' },
+      { label: label('涵蓋行政區', 'Districts covered'), value: summary.districtCount },
+      { label: label('總平均所得收入', 'City average total income'), value: formatNtd(summary.latestCityAverage?.totalIncomeNtd, language) },
+      { label: label('總平均可支配所得', 'City average disposable income'), value: formatNtd(summary.latestCityAverage?.disposableIncomeNtd, language) },
+      { label: label('可支配所得最高', 'Top disposable income'), value: districtLabel(top?.district, language) },
+      { label: label('可支配所得最低', 'Lowest disposable income'), value: districtLabel(low, language) },
+    ]} />
+    <div className="chart-grid">
+      <ChartSection title={label('總平均所得與可支配所得趨勢', 'City Average Total and Disposable Income Trend')}><ResponsiveContainer width="100%" height={300}><LineChart data={cityTrend}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="year" /><YAxis tickFormatter={(value) => `${Math.round(value / 10000)}萬`} /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Line dataKey="cityAverageTotalIncomeNtd" name={label('所得收入總計', 'Total income')} stroke="#356f9d" strokeWidth={3} dot={false} /><Line dataKey="cityAverageDisposableIncomeNtd" name={label('可支配所得', 'Disposable income')} stroke="#b24738" strokeWidth={3} dot={false} /></LineChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('最新年度行政區可支配所得', 'Latest Disposable Income by District')}><ResponsiveContainer width="100%" height={300}><BarChart data={latestDistricts}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} tickFormatter={(value) => districtLabel(value, language)} /><YAxis tickFormatter={(value) => `${Math.round(value / 10000)}萬`} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="disposableIncomeNtd" name={label('可支配所得', 'Disposable income')} fill="#737d68" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('最新年度所得收入總計', 'Latest Total Income by District')}><ResponsiveContainer width="100%" height={300}><BarChart data={latestDistricts}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} tickFormatter={(value) => districtLabel(value, language)} /><YAxis tickFormatter={(value) => `${Math.round(value / 10000)}萬`} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="totalIncomeNtd" name={label('所得收入總計', 'Total income')} fill="#c58a43" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('總平均所得組成', 'City Average Income Composition')}><ResponsiveContainer width="100%" height={300}><PieChart><Tooltip content={<ChartTooltip language={language} />} /><Pie data={summary.latestIncomeComposition.map((item) => ({ ...item, name: label(item.labelZh, item.labelEn) }))} dataKey="valueNtd" nameKey="name" innerRadius={62} outerRadius={104}>{summary.latestIncomeComposition.map((item, index) => <Cell key={item.key} fill={colors[index % colors.length]} />)}</Pie><Legend /></PieChart></ResponsiveContainer></ChartSection>
+    </div>
+    <section className="analysis-list">
+      <h2>{label('所得收入資料表', 'Income Table')}</h2>
+      <details className="filters" open><summary>{label('篩選條件', 'Filters')}</summary><div className="filter-grid">
+        <label><span>{label('年度', 'Year')}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{label('全部年度', 'All years')}</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+        <label><span>{label('行政區', 'District')}</span><select value={district} onChange={(event) => setDistrict(event.target.value)}><option value="">{label('全部行政區', 'All districts')}</option>{DISTRICTS.map((item) => <option key={item} value={item}>{districtLabel(item, language)}</option>)}</select></label>
+        <label className="checkbox-field"><input type="checkbox" checked={includeAverage} onChange={(event) => setIncludeAverage(event.target.checked)} /> <span>{label('包含總平均', 'Include city average')}</span></label>
+        <label><span>{label('所得收入範圍', 'Total income range')}</span><input type="number" value={minTotal} onChange={(event) => setMinTotal(event.target.value)} placeholder={label('最小', 'Min')} /></label>
+        <label><span>&nbsp;</span><input type="number" value={maxTotal} onChange={(event) => setMaxTotal(event.target.value)} placeholder={label('最大', 'Max')} /></label>
+        <label><span>{label('可支配所得範圍', 'Disposable income range')}</span><input type="number" value={minDisposable} onChange={(event) => setMinDisposable(event.target.value)} placeholder={label('最小', 'Min')} /></label>
+        <label><span>&nbsp;</span><input type="number" value={maxDisposable} onChange={(event) => setMaxDisposable(event.target.value)} placeholder={label('最大', 'Max')} /></label>
+        <label><span>{label('所得收入者人數', 'Income earner count')}</span><input type="number" value={minEarners} onChange={(event) => setMinEarners(event.target.value)} placeholder={label('最小', 'Min')} /></label>
+        <label><span>&nbsp;</span><input type="number" value={maxEarners} onChange={(event) => setMaxEarners(event.target.value)} placeholder={label('最大', 'Max')} /></label>
+        <label className="search-field"><span>{label('搜尋', 'Search')}</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={label('搜尋年度或行政區', 'Search year or district')} type="search" /></label>
+      </div></details>
+      <p className="table-count">{filtered.length.toLocaleString()} {label('筆紀錄', 'records')}</p>
+      <div className="table-wrap"><table><thead><tr>{[label('年度', 'Year'), label('行政區', 'District'), label('所得收入者人數', 'Income earners'), label('所得收入總計', 'Total income'), label('可支配所得', 'Disposable income'), label('非消費支出', 'Non-consumption expenditure'), label('受僱報酬占比', 'Employee compensation share'), label('可支配所得排名', 'Disposable rank'), label('年變動率', 'YoY change')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}><td>{record.dataYear}</td><th>{record.isCityAverage ? label('總平均', 'City average') : districtLabel(record.district, language)}</th><td>{record.incomeEarnerCount?.toLocaleString() ?? '—'}</td><td>{formatNtd(record.totalIncomeNtd, language)}</td><td>{formatNtd(record.disposableIncomeNtd, language)}</td><td>{formatNtd(record.nonConsumptionExpenditureNtd, language)}</td><td>{formatSourcePercent(record.employeeCompensationSharePercent)}</td><td>{record.disposableIncomeRank ?? '—'}</td><td>{formatSourcePercent(record.yearOverYearDisposableIncomeChangePercent)}</td></tr>)}</tbody></table></div>
+      <nav className="pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{label('上一頁', 'Previous')}</button><span>{label('頁', 'Page')} {Math.min(page, pages)} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{label('下一頁', 'Next')}</button></nav>
+    </section>
+  </>;
 }
 
 const pledgeItemLabel = (category: MovablePropertyPledgeItemCategory, language: Language) => ({
@@ -855,10 +944,13 @@ export default function App() {
       loadJson<ResidentialRentIndexSummary>('residential-rent-index-summary.json'),
       loadJson<LandParcelAssessedValueRecord[]>('land-parcel-assessed-value-records.json'),
       loadJson<LandParcelAssessedValueSummary>('land-parcel-assessed-value-summary.json'),
+      loadJson<IncomePerEarnerByDistrictYearRecord[]>('income-per-earner-by-district-year-records.json'),
+      loadJson<IncomePerEarnerByDistrictYearSummary>('income-per-earner-by-district-year-summary.json'),
+      loadJson<IncomePerEarnerByDistrictYearRecord[]>('income-per-earner-by-district-year-latest.json'),
       loadJson<MovablePropertyPledgeBusinessRecord[]>('movable-property-pledge-business-records.json'),
       loadJson<MovablePropertyPledgeBusinessSummary>('movable-property-pledge-business-summary.json'),
-    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, pledgeRecords, pledgeSummary]) =>
-      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, pledgeRecords, pledgeSummary }),
+    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary]) =>
+      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary }),
     ).catch(() => setError(true));
   }, []);
 
@@ -899,10 +991,11 @@ export default function App() {
         {tab === 5 && <QuarterlyAnalysis data={data} language={language} />}
         {tab === 6 && <BuildingUsePermits language={language} />}
         {tab === 7 && <LandValue records={data.landValueRecords} summary={data.landValueSummary} language={language} />}
-        {tab === 8 && <MovablePropertyPledgeBusiness records={data.pledgeRecords} summary={data.pledgeSummary} language={language} />}
-        {tab === 9 && <DemographicContext data={data} language={language} />}
-        {tab === 10 && <DataTable records={filteredRecords} language={language} />}
-        {tab === 11 && <DataNotes language={language} />}
+        {tab === 8 && <IncomePerEarnerByDistrictYear records={data.incomeRecords} summary={data.incomeSummary} latest={data.incomeLatest} language={language} />}
+        {tab === 9 && <MovablePropertyPledgeBusiness records={data.pledgeRecords} summary={data.pledgeSummary} language={language} />}
+        {tab === 10 && <DemographicContext data={data} language={language} />}
+        {tab === 11 && <DataTable records={filteredRecords} language={language} />}
+        {tab === 12 && <DataNotes language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

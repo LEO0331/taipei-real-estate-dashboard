@@ -24,6 +24,7 @@ import {
   sqmToPing,
 } from './data.ts';
 import { classifyMovablePropertyPledgeItemCategory, parseCaseCount, parseNtdAmount, parseYearFromResourceName } from './convertMovablePropertyPledgeBusinessStatistics.ts';
+import { normalizeIncomeDistrict, parseNtdValue, parseRocYear as parseIncomeRocYear } from './convertIncomePerEarnerByDistrictYear.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -62,6 +63,14 @@ test('parses movable-property pledge business helper fields', () => {
   assert.equal(parseNtdAmount('--'), undefined);
   assert.equal(classifyMovablePropertyPledgeItemCategory('計'), 'total');
   assert.equal(classifyMovablePropertyPledgeItemCategory('黃金'), 'gold_jewelry');
+});
+
+test('parses income per earner helper fields', () => {
+  assert.deepEqual(parseIncomeRocYear('113年'), { rocYear: 113, dataYear: 2024 });
+  assert.equal(parseNtdValue('892,650'), 892650);
+  assert.equal(parseNtdValue('-'), undefined);
+  assert.deepEqual(normalizeIncomeDistrict(' 大安區'), { district: '大安區', districtNormalized: '大安區', isCityAverage: false });
+  assert.deepEqual(normalizeIncomeDistrict(' 總平均'), { district: undefined, districtNormalized: '總平均', isCityAverage: true });
 });
 
 test('classifies building and record types', () => {

@@ -1,6 +1,6 @@
 # Taipei Real Estate & Demographics Dashboard / 台北實價與人口趨勢儀表板
 
-Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price monthly index trends by housing category / 各住宅類別住宅價格月指數趨勢, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
+Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price monthly index trends by housing category / 各住宅類別住宅價格月指數趨勢, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, income-per-earner affordability context / 所得收入與負擔能力背景, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
 
 ## Purpose
 
@@ -14,10 +14,11 @@ The site combines eight Taipei public-data sources:
 - [臺北市歷年使用執照摘要](https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733)
 - [臺北市115年度使用執照摘要](https://data.taipei/dataset/detail?id=0816f991-e6c8-4da0-a789-d022fee1462b)
 - [臺北市土地筆數面積及公告土地現值統計](https://data.taipei/dataset/detail?id=68c439fc-877a-42bb-9c35-a3701e8fc9c3)
+- [臺北市所得收入者每人所得－行政區別按年別](https://data.taipei/dataset/detail?id=33da4ba0-c366-45eb-a71f-1991e6455ed6)
 - [臺北市各里人口數按年齡分](https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3)
 - [臺北市動產質借處營業概況](https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9)
 
-It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, transaction advice, investment recommendation, lending advice, financial advice, or price prediction tool. Population, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
+It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, transaction advice, investment recommendation, lending advice, financial advice, or price prediction tool. Population, income, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
 
 ## Data model and limitations
 
@@ -40,6 +41,10 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 - Movable-property pledge business CSV resources are annual Big5 files. ROC resource years such as `112年度` become Gregorian years such as `2023`; branch, item, pledge-loan case count, pledge principal, cash interest income, sale total, sale principal, sale interest, and sale profit are parsed into annual records and summaries.
 - Movable-property pledge business statistics are socioeconomic background only. They are not real-estate price, rent, mortgage-stress, individual-credit, poverty, investment, lending, financial-advice, or forecast signals.
 - Movable-property pledge business statistics provide no branch addresses or coordinates, so no map markers or geocoding are generated.
+- Income-per-earner CSV is Big5/CP950 today, with UTF-8-SIG fallback for future files. ROC years such as `113年` become Gregorian years such as `2024`.
+- Income-per-earner conversion parses all source income, transfer, non-consumption expenditure, and disposable-income fields; derives composition ratios, disposable-income ratios, year-over-year metrics, and district rankings.
+- Income rankings exclude `總平均` and compare district-level rows only. The income module is affordability and socioeconomic context only; it is not individual income, tax, lending, financial, investment, appraisal, or prediction advice.
+- Income-per-earner data has district labels only and no exact address or coordinate fields, so no geocoding or point markers are generated.
 - Rent index periods parse ROC quarters such as `107Q3` into Gregorian quarters such as `2018-Q3`.
 - Weekly sale totals are in NT$10,000 and become NTD. Sale unit prices are NT$10,000/ping and become NTD/ping.
 - Weekly rental unit prices remain NTD/ping/month. Rental totals are derived from unit price × area when available because the source total is rounded.
@@ -69,6 +74,7 @@ data/raw/residential-rent-index/
 data/raw/population-by-age/
 data/raw/building-use-permits/
 data/raw/land-parcel-assessed-value-statistics/
+data/raw/income-per-earner-by-district-year/
 data/raw/movable-property-pledge-business-statistics/
 ```
 
@@ -100,6 +106,9 @@ public/data/conversion-report.json
 public/data/building-use-permits/
 public/data/land-parcel-assessed-value-records.json
 public/data/land-parcel-assessed-value-summary.json
+public/data/income-per-earner-by-district-year-records.json
+public/data/income-per-earner-by-district-year-summary.json
+public/data/income-per-earner-by-district-year-latest.json
 public/data/movable-property-pledge-business-records.json
 public/data/movable-property-pledge-business-summary.json
 public/data/movable-property-pledge-business-annual-summary.json
@@ -116,6 +125,8 @@ npm run data:fetch:rent-index
 npm run data:convert:rent-index
 npm run data:convert:building-use-permits
 npm run data:convert:land-value
+npm run data:fetch:income
+npm run data:convert:income
 npm run data:fetch:pledge-business
 npm run data:convert:pledge-business
 ```
