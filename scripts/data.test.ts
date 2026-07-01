@@ -26,6 +26,7 @@ import {
   sqmToPing,
 } from './data.ts';
 import { classifyMovablePropertyPledgeItemCategory, parseCaseCount, parseNtdAmount, parseYearFromResourceName } from './convertMovablePropertyPledgeBusinessStatistics.ts';
+import { classifyMovableCollateralType, classifySecuredTransactionType, makeMovablePropertySecuredTransactionRecord, parseRocDate } from './convertMovablePropertySecuredTransactionRecords.ts';
 import { normalizeIncomeDistrict, parseNtdValue, parseRocYear as parseIncomeRocYear } from './convertIncomePerEarnerByDistrictYear.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
@@ -65,6 +66,26 @@ test('parses movable-property pledge business helper fields', () => {
   assert.equal(parseNtdAmount('--'), undefined);
   assert.equal(classifyMovablePropertyPledgeItemCategory('計'), 'total');
   assert.equal(classifyMovablePropertyPledgeItemCategory('黃金'), 'gold_jewelry');
+});
+
+test('parses movable-property secured transaction helper fields', () => {
+  assert.deepEqual(parseRocDate('0901102'), { raw: '0901102', date: '2001-11-02', year: 2001, month: 11 });
+  assert.deepEqual(parseRocDate('1150601'), { raw: '1150601', date: '2026-06-01', year: 2026, month: 6 });
+  assert.equal(classifySecuredTransactionType('動產抵押'), 'movable_property_mortgage');
+  assert.equal(classifySecuredTransactionType('附條件買賣'), 'conditional_sale');
+  assert.equal(classifyMovableCollateralType('機器設備或工具'), 'machinery_equipment_or_tools');
+  const record = makeMovablePropertySecuredTransactionRecord({
+    登記編號: '動3336', 登記核准日期: '0901102', 擔保類別: '動產抵押', 契約啟始日期: '0901031', 契約終止日期: '1051031',
+    債務人名稱: '勤鑫實業有限公司', 債務人統編: '**********', 債務人住居所或營業所: '台北市中正區金華街十八之六號四樓之一',
+    擔保權人名稱: '太平洋電線電纜股份有限公司', 擔保權人統編: '**********', 擔保權人住居所或營業所: '台北市大安區忠孝東路四段二八五號四樓',
+    標的物種類: '機器設備或工具', 標的物所在地: '中正區金華街十八之六號四樓之一', 標的物總金額: '49400000.0000', 標的物價格幣別: 'NTD',
+    擔保債權金額: '30000000.0000', 擔保債權金額幣別: 'NTD', 最高限額註記: 'N', 動產明細項數: '1', 浮動擔保註記: 'N',
+  }, 1);
+  assert.equal(record.registrationApprovalDate, '2001-11-02');
+  assert.equal(record.collateralAmountNtd, 49400000);
+  assert.equal(record.securedDebtAmountNtd, 30000000);
+  assert.equal(record.hasMaskedDebtorBusinessNumber, true);
+  assert.equal(record.debtorDistrict, '中正區');
 });
 
 test('parses income per earner helper fields', () => {

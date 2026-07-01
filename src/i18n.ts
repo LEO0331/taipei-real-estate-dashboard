@@ -4,7 +4,7 @@ export const copy = {
   zh: {
     appTitle: '台北實價與人口趨勢儀表板',
     appSubtitle: '結合實價登錄、住宅價格月指數、住宅價格季指數、住宅租金指數、商辦租金指數、每季動態分析、使用執照摘要與人口年齡資料，探索臺北房市與區域脈絡',
-    tabs: ['市場總覽', '房價月指數', '住宅季指數', '住宅租金', '商辦租金', '行政區比較', '每季動態', '使用執照', '土地現值', '所得收入', '動產質借', '人口脈絡', '資料表', '資料說明'],
+    tabs: ['市場總覽', '房價月指數', '住宅季指數', '住宅租金', '商辦租金', '行政區比較', '每季動態', '使用執照', '土地現值', '所得收入', '動產質借', '動產擔保', '人口脈絡', '資料表', '資料說明'],
     filters: '篩選條件',
     allDistricts: '全部行政區',
     allTypes: '全部類型',
@@ -162,12 +162,12 @@ export const copy = {
     officialText: '官方動態分析原文',
     loading: '載入公開資料中…',
     loadError: '無法載入本機資料檔。',
-    footer: '資料來源：臺北市實價周報、臺北市住宅價格月指數、臺北市住宅價格季指數、臺北市住宅租金指數、臺北市商辦租金指數、臺北市實價登錄每季動態分析、臺北市歷年使用執照摘要、臺北市土地筆數面積及公告土地現值統計、臺北市所得收入者每人所得－行政區別按年別、臺北市各里人口數按年齡分、臺北市動產質借處營業概況等公開資料。資料僅供市場、區域、價格趨勢、租金趨勢、土地存量、建物供給、人口、所得與社會經濟背景趨勢觀察，不構成不動產估價、租金估價、商辦租約估價、土地估價、建物安全判定、產權查證、購屋能力判定、租賃建議、交易建議、投資建議、稅務判斷、借貸建議、財務建議或價格預測。各項指數與標準價格或標準租金為趨勢與參考指標，不代表個別不動產市場價格或租金。最新官方資訊請以主管機關及官方查詢系統為準。',
+    footer: '資料來源：臺北市公開資料中的實價登錄、住宅價格指數、住宅租金指數、商辦租金指數、使用執照摘要、土地筆數面積及公告土地現值統計、各里人口年齡、所得收入者每人所得、動產質借處營業概況、動產擔保登記資料與其他不動產及經濟背景資料。資料僅供資料探索、歷史趨勢觀察與背景分析使用，不構成估價、投資建議、房貸建議、法律意見、信用評等、違約風險判斷、完整債務資料庫、即時權利狀態、交易決策或官方背書。最新與正式資訊請以主管機關公告、正式登記資料、契約文件及專業意見為準。',
   },
   en: {
     appTitle: 'Taipei Real Estate & Demographics Dashboard',
     appSubtitle: 'Explore Taipei real-price records, residential price monthly and quarterly indexes, residential rent index, commercial office rent index, building use permits, and demographic context',
-    tabs: ['Market Overview', 'Monthly Price', 'Quarterly Price', 'Residential Rent', 'Office Rent', 'District Comparison', 'Quarterly Analysis', 'Use Permits', 'Land Value', 'Income', 'Pledge Loans', 'Demographic Context', 'Data Table', 'Data Notes'],
+    tabs: ['Market Overview', 'Monthly Price', 'Quarterly Price', 'Residential Rent', 'Office Rent', 'District Comparison', 'Quarterly Analysis', 'Use Permits', 'Land Value', 'Income', 'Pledge Loans', 'Movable Collateral', 'Demographic Context', 'Data Table', 'Data Notes'],
     filters: 'Filters',
     allDistricts: 'All districts',
     allTypes: 'All types',
@@ -325,7 +325,7 @@ export const copy = {
     officialText: 'Official analysis text',
     loading: 'Loading public data…',
     loadError: 'Unable to load local data files.',
-    footer: 'Data sources: Taipei real-price weekly dataset, Taipei residential price monthly index dataset, Taipei residential price quarterly index dataset, Taipei residential rent index dataset, Taipei commercial office rent index dataset, Taipei quarterly real-price market analysis dataset, Taipei historical building use-permit summary dataset, Taipei land parcel, area, and announced land current value statistics, Taipei income per earner by district and year, Taipei population-by-age dataset, Taipei movable-property pledge business statistics, and related public-data records. The data is for market, regional, price-trend, rent-trend, land-stock, building-supply, demographic, income, and socioeconomic background trend observation only and does not constitute real-estate appraisal, rent appraisal, commercial office lease appraisal, land appraisal, building-safety assessment, title verification, purchasing-power determination, leasing advice, transaction advice, investment advice, tax judgment, lending advice, financial advice, or price prediction. Indexes and standard prices or standard rents are trend and reference indicators and do not represent the market price or rent of any individual property. Please refer to official authorities and official query systems for the latest information.',
+    footer: 'Data sources: Taipei public-data records related to real-price registration, residential price indexes, residential rent indexes, commercial office rent indexes, building use permit summaries, land parcel and assessed land value statistics, village-level population age data, income per earner data, movable property pledge business statistics, movable property secured transaction registration data, and other real-estate and economic context data. The data is for data exploration, historical trend observation, and background analysis only and does not constitute appraisal, investment advice, mortgage advice, legal advice, credit rating, default-risk assessment, a complete debt registry, real-time rights status, transaction decisions, or official endorsement. Latest and official information should be verified with competent-authority announcements, formal registration records, contract documents, and professional advice.',
   },
 } as const;
 

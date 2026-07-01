@@ -21,6 +21,7 @@ try {
     residentialPriceQuarterlyIndex: previous?.residentialPriceQuarterlyIndex,
     commercialOfficeRentIndex: previous?.commercialOfficeRentIndex,
     movablePropertyPledgeBusinessStatistics: previous?.movablePropertyPledgeBusinessStatistics,
+    movablePropertySecuredTransactionRecords: previous?.movablePropertySecuredTransactionRecords,
     incomePerEarnerByDistrictYear: previous?.incomePerEarnerByDistrictYear,
   } as RealEstateSummary;
   const citywide = summary.latestByCategory.find((item) => item.rentIndexCategory === 'citywide');

@@ -1,6 +1,6 @@
 # Taipei Real Estate & Demographics Dashboard / 台北實價與人口趨勢儀表板
 
-Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price trends: monthly and quarterly residential price indexes, including district-level quarterly comparison / 住宅價格趨勢：住宅價格月指數與季指數，包含行政區季資料比較, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, income-per-earner affordability context / 所得收入與負擔能力背景, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
+Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price trends: monthly and quarterly residential price indexes, including district-level quarterly comparison / 住宅價格趨勢：住宅價格月指數與季指數，包含行政區季資料比較, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, income-per-earner affordability context / 所得收入與負擔能力背景, financing and collateral context: movable property secured transaction registration records / 融資與擔保背景：動產擔保登記資料, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
 
 ## Purpose
 
@@ -18,6 +18,7 @@ The site combines eight Taipei public-data sources:
 - [臺北市所得收入者每人所得－行政區別按年別](https://data.taipei/dataset/detail?id=33da4ba0-c366-45eb-a71f-1991e6455ed6)
 - [臺北市各里人口數按年齡分](https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3)
 - [臺北市動產質借處營業概況](https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9)
+- [臺北市動產擔保登記資料](https://data.taipei/dataset/detail?id=cb964837-c602-4238-b6c0-f63ad1094d5e)
 
 It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, transaction advice, investment recommendation, lending advice, financial advice, or price prediction tool. Population, income, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
 
@@ -46,6 +47,11 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 - Movable-property pledge business CSV resources are annual Big5 files. ROC resource years such as `112年度` become Gregorian years such as `2023`; branch, item, pledge-loan case count, pledge principal, cash interest income, sale total, sale principal, sale interest, and sale profit are parsed into annual records and summaries.
 - Movable-property pledge business statistics are socioeconomic background only. They are not real-estate price, rent, mortgage-stress, individual-credit, poverty, investment, lending, financial-advice, or forecast signals.
 - Movable-property pledge business statistics provide no branch addresses or coordinates, so no map markers or geocoding are generated.
+- Movable property secured transaction records are a separate `movable_property_secured_transaction_records` module. The CSV is UTF-8-SIG with Big5/CP950 fallback; ROC dates such as `0901102` become Gregorian dates such as `2001-11-02`.
+- Movable property secured transaction conversion parses registration number, approval dates, secured transaction type, contract period, debtor, secured party, collateral owner, masked business numbers, collateral type, collateral location, collateral value, secured debt amount, currency, maximum-limit flag, item count, and floating-charge flag.
+- The collateral value column supports both official `標的物總價格` and uploaded `標的物總金額`. NTD-derived amount fields are populated only when the source currency is `NTD`; non-NTD source values are preserved but not converted.
+- Districts are parsed from debtor address, secured party address, and collateral location text. The source has no official coordinates, so no geocoding or exact markers are generated.
+- Movable property secured transaction records are financing and collateral context only. They are not real-estate mortgage, housing loan, credit rating, default-risk, legal advice, investment advice, real-time rights status, or complete debt-registry data.
 - Income-per-earner CSV is Big5/CP950 today, with UTF-8-SIG fallback for future files. ROC years such as `113年` become Gregorian years such as `2024`.
 - Income-per-earner conversion parses all source income, transfer, non-consumption expenditure, and disposable-income fields; derives composition ratios, disposable-income ratios, year-over-year metrics, and district rankings.
 - Income rankings exclude `總平均` and compare district-level rows only. The income module is affordability and socioeconomic context only; it is not individual income, tax, lending, financial, investment, appraisal, or prediction advice.
@@ -82,6 +88,7 @@ data/raw/building-use-permits/
 data/raw/land-parcel-assessed-value-statistics/
 data/raw/income-per-earner-by-district-year/
 data/raw/movable-property-pledge-business-statistics/
+data/raw/movable-property-secured-transaction-records/
 ```
 
 Build and preview:
@@ -121,6 +128,9 @@ public/data/income-per-earner-by-district-year-latest.json
 public/data/movable-property-pledge-business-records.json
 public/data/movable-property-pledge-business-summary.json
 public/data/movable-property-pledge-business-annual-summary.json
+public/data/movable-property-secured-transaction-records.json
+public/data/movable-property-secured-transaction-summary.json
+public/data/movable-property-secured-transaction-latest.json
 ```
 
 Rent-index-only workflow:
@@ -140,6 +150,8 @@ npm run data:fetch:income
 npm run data:convert:income
 npm run data:fetch:pledge-business
 npm run data:convert:pledge-business
+npm run data:fetch:movable-secured-transactions
+npm run data:convert:movable-secured-transactions
 ```
 
 ## GitHub Pages

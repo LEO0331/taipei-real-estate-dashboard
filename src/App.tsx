@@ -24,6 +24,8 @@ import {
   type MovablePropertyPledgeBusinessRecord,
   type MovablePropertyPledgeBusinessSummary,
   type MovablePropertyPledgeItemCategory,
+  type MovablePropertySecuredTransactionRecord,
+  type MovablePropertySecuredTransactionSummary,
   type QuarterlyMarketRecord,
   type ResidentialPriceIndexCategory,
   type ResidentialPriceMonthlyIndexRecord,
@@ -70,6 +72,8 @@ type DataBundle = {
   incomeLatest: IncomePerEarnerByDistrictYearRecord[];
   pledgeRecords: MovablePropertyPledgeBusinessRecord[];
   pledgeSummary: MovablePropertyPledgeBusinessSummary;
+  securedTransactionRecords: MovablePropertySecuredTransactionRecord[];
+  securedTransactionSummary: MovablePropertySecuredTransactionSummary;
 };
 
 const colors = ['#b24738', '#356f9d', '#737d68', '#c58a43', '#775f86', '#408579'];
@@ -216,6 +220,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
   const commercialRent = summary.commercialOfficeRentIndex;
   const income = summary.incomePerEarnerByDistrictYear;
   const pledge = summary.movablePropertyPledgeBusinessStatistics;
+  const secured = summary.movablePropertySecuredTransactionRecords;
   return <>
     <MetricStrip items={[
       { label: t.latestDataPeriod, value: summary.latestDataPeriod ?? '—' },
@@ -291,6 +296,17 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
       ]} />
       <p className="notice">{language === 'zh' ? '僅供社會經濟背景觀察，不代表房價、租金、房貸壓力或財務建議。' : 'Socioeconomic context only; not prices, rents, mortgage stress, or financial advice.'}</p>
       <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 10 }))}>{language === 'zh' ? '查看動產質借' : 'View pledge loans'}</button>
+    </section>}
+    {secured && <section className="overview-panel">
+      <h2>{language === 'zh' ? '融資背景：動產擔保' : 'Financing Context: Movable Collateral'}</h2>
+      <MetricStrip items={[
+        { label: language === 'zh' ? '登記筆數' : 'Records', value: secured.totalRecords?.toLocaleString() ?? '—' },
+        { label: language === 'zh' ? '最新登記月份' : 'Latest registration month', value: secured.latestRegistrationMonth ?? '—' },
+        { label: language === 'zh' ? '標的物總金額' : 'Collateral amount', value: formatNtd(secured.totalCollateralAmountNtd, language) },
+        { label: language === 'zh' ? '擔保債權金額' : 'Secured debt amount', value: formatNtd(secured.totalSecuredDebtAmountNtd, language) },
+      ]} />
+      <p className="notice">{language === 'zh' ? '動產擔保登記僅供融資與擔保背景觀察，不代表不動產抵押、房貸、信用評等、法律意見或即時權利狀態。' : 'Movable collateral records are financing and collateral context only, not real-estate mortgages, housing loans, credit ratings, legal advice, or real-time rights status.'}</p>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 11 }))}>{language === 'zh' ? '查看動產擔保' : 'View movable collateral'}</button>
     </section>}
     <div className="chart-grid">
       <ChartSection title={t.transactionCountByMonth}><ResponsiveContainer width="100%" height={280}>
@@ -802,10 +818,10 @@ function DataNotes({ language }: { language: Language }) {
     <h2>{t.dataNotes}</h2>
     {language === 'zh' ? <>
       <p>本網站整理臺北市公開資料中的實價登錄、每季動態分析、住宅價格指數、住宅租金指數、使用執照摘要、所得收入與人口年齡資料，僅供資料探索與區域或市場趨勢觀察使用，並非不動產估價、租金估價、建物安全判定、產權查證、合法使用認定、稅務判斷、投資建議或價格預測。人口、所得與使用執照資料僅作為區域背景脈絡，不代表房價、租金或交易量之因果解釋。</p>
-      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>住宅價格季指數以實價登錄資料庫為基礎，整理全市、公寓、大樓、小宅與12行政區季資料；欄位包含季指數、季變動率、標準住宅總價與標準住宅單價。季指數不代表個別住宅估價、實際成交價格、購屋建議、售屋建議、投資建議、房貸建議或價格預測。</li><li>住宅價格季指數未提供個別地址或經緯度；本網站不建立精確地圖點位，行政區排名排除全市與住宅類型列。</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>所得收入資料以 Big5/CP950 解碼，行政區排名排除「總平均」列；僅供所得與負擔能力背景觀察，不代表個別所得、稅務、貸款、投資、財務建議或市場預測，也不建立精確地圖點位。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>動產質借處營業概況提供年度營運統計，欄位包含分處別、項目、本年質借件數、本金、現金利息收入與變賣金額；僅供社會經濟背景觀察，不代表房價、租金、房貸壓力、個人信用、貧窮程度、投資訊號、借貸建議或財務決策依據。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
+      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>住宅價格季指數以實價登錄資料庫為基礎，整理全市、公寓、大樓、小宅與12行政區季資料；欄位包含季指數、季變動率、標準住宅總價與標準住宅單價。季指數不代表個別住宅估價、實際成交價格、購屋建議、售屋建議、投資建議、房貸建議或價格預測。</li><li>住宅價格季指數未提供個別地址或經緯度；本網站不建立精確地圖點位，行政區排名排除全市與住宅類型列。</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>所得收入資料以 Big5/CP950 解碼，行政區排名排除「總平均」列；僅供所得與負擔能力背景觀察，不代表個別所得、稅務、貸款、投資、財務建議或市場預測，也不建立精確地圖點位。</li><li>動產擔保登記資料提供登記編號、核准日期、擔保類別、契約期間、債務人、擔保權人、標的物種類、所在地、標的物總金額與擔保債權金額等來源欄位；僅供融資與擔保背景觀察，不代表不動產抵押、房貸、即時權利狀態、信用評等、違約風險、法律意見、投資建議或完整債務資料庫。</li><li>動產擔保登記資料未提供官方座標；本網站只解析地址文字中的行政區，不進行地理編碼或建立精確地圖點位。遮罩統編會原樣保留，不推測缺漏識別資訊。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>動產質借處營業概況提供年度營運統計，欄位包含分處別、項目、本年質借件數、本金、現金利息收入與變賣金額；僅供社會經濟背景觀察，不代表房價、租金、房貸壓力、個人信用、貧窮程度、投資訊號、借貸建議或財務決策依據。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
     </> : <>
       <p>This site organizes Taipei public-data records for real-price registration, quarterly market analysis, residential price indexes, residential rent index, building use-permit summaries, income, and population-by-age data for data exploration and regional or market trend observation only. It is not real-estate appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, investment advice, or price prediction. Population, income, and use-permit data are regional context and do not represent causal explanation for housing prices, rent, or transaction volume.</p>
-      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>The residential price quarterly index is compiled from real-price registration data and organizes citywide, apartment, building, small-unit, and 12-district quarterly records. It includes quarterly index, quarterly change, standard total price, and standard unit price. It is not individual-home appraisal, actual transaction price, home-buying advice, home-selling advice, investment advice, mortgage advice, or price forecast.</li><li>The residential price quarterly index has no individual address or coordinate fields. No exact map points are generated, and district rankings exclude citywide and housing-type rows.</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Income data is decoded as Big5/CP950, district rankings exclude the city-average row, and the data is income and affordability context only. It is not individual income, tax, lending, investment, financial advice, or market prediction, and no exact map points are generated.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>Movable-property pledge business statistics are annual operating statistics for socioeconomic context only. They do not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, lending advice, or financial decisions.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
+      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>The residential price quarterly index is compiled from real-price registration data and organizes citywide, apartment, building, small-unit, and 12-district quarterly records. It includes quarterly index, quarterly change, standard total price, and standard unit price. It is not individual-home appraisal, actual transaction price, home-buying advice, home-selling advice, investment advice, mortgage advice, or price forecast.</li><li>The residential price quarterly index has no individual address or coordinate fields. No exact map points are generated, and district rankings exclude citywide and housing-type rows.</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Income data is decoded as Big5/CP950, district rankings exclude the city-average row, and the data is income and affordability context only. It is not individual income, tax, lending, investment, financial advice, or market prediction, and no exact map points are generated.</li><li>Movable property secured transaction records provide source fields such as registration number, approval date, secured transaction type, contract period, debtor, secured party, collateral type, collateral location, collateral value, and secured debt amount. They are financing and collateral context only, not real-estate mortgages, housing loans, real-time rights status, credit ratings, default risk, legal advice, investment advice, or a complete debt registry.</li><li>Movable property secured transaction records have no official coordinates. This site only parses districts from source text and does not geocode or create exact map points. Masked business numbers are preserved as source text and not inferred.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>Movable-property pledge business statistics are annual operating statistics for socioeconomic context only. They do not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, lending advice, or financial decisions.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
     </>}
     <div className="source-links">
       <a href="https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc">臺北市實價周報</a>
@@ -818,6 +834,7 @@ function DataNotes({ language }: { language: Language }) {
       <a href="https://data.taipei/dataset/detail?id=33da4ba0-c366-45eb-a71f-1991e6455ed6">臺北市所得收入者每人所得</a>
       <a href="https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3">人口年齡資料</a>
       <a href="https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9">臺北市動產質借處營業概況</a>
+      <a href="https://data.taipei/dataset/detail?id=cb964837-c602-4238-b6c0-f63ad1094d5e">臺北市動產擔保登記資料</a>
       <a href={`${base}data/conversion-report.json`}>{language === 'zh' ? '轉換報告' : 'Conversion report'}</a>
     </div>
   </article>;
@@ -1008,6 +1025,83 @@ function MovablePropertyPledgeBusiness({ records, summary, language }: { records
   </>;
 }
 
+const securedTypeLabel = (category: string, language: Language) => ({
+  movable_property_mortgage: language === 'zh' ? '動產抵押' : 'Movable property mortgage',
+  conditional_sale: language === 'zh' ? '附條件買賣' : 'Conditional sale',
+  other: language === 'zh' ? '其他' : 'Other',
+  unknown: language === 'zh' ? '未知' : 'Unknown',
+}[category] ?? category);
+
+const collateralTypeLabel = (category: string, language: Language) => ({
+  machinery_equipment_or_tools: language === 'zh' ? '機器設備或工具' : 'Machinery, equipment, or tools',
+  vehicle_or_transport: language === 'zh' ? '車輛或運輸設備' : 'Vehicle or transport',
+  inventory_or_goods: language === 'zh' ? '存貨或商品' : 'Inventory or goods',
+  other: language === 'zh' ? '其他' : 'Other',
+  unknown: language === 'zh' ? '未知' : 'Unknown',
+}[category] ?? category);
+
+function MovablePropertySecuredTransactions({ records, summary, language }: { records: MovablePropertySecuredTransactionRecord[]; summary: MovablePropertySecuredTransactionSummary; language: Language }) {
+  const label = (zh: string, en: string) => language === 'zh' ? zh : en;
+  const [year, setYear] = useState('');
+  const [securedType, setSecuredType] = useState('');
+  const [collateralType, setCollateralType] = useState('');
+  const [district, setDistrict] = useState('');
+  const [maximumLimit, setMaximumLimit] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 25;
+  const years = [...new Set(records.map((record) => record.registrationYear).filter(Boolean))].sort();
+  const filtered = records.filter((record) =>
+    (!year || record.registrationYear === Number(year))
+    && (!securedType || record.securedTransactionCategory === securedType)
+    && (!collateralType || record.collateralTypeCategory === collateralType)
+    && (!district || record.collateralDistrict === district || record.debtorDistrict === district || record.securedPartyDistrict === district)
+    && (!maximumLimit || record.maximumLimitFlag === maximumLimit)
+    && (!search || `${record.registrationNumber} ${record.debtorName ?? ''} ${record.securedPartyName ?? ''} ${record.collateralLocation ?? ''} ${record.debtorBusinessNumber ?? ''} ${record.securedPartyBusinessNumber ?? ''} ${record.securedTransactionTypeRaw ?? ''}`.toLowerCase().includes(search.toLowerCase())));
+  useEffect(() => setPage(1), [year, securedType, collateralType, district, maximumLimit, search]);
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const visible = filtered.slice((Math.min(page, pages) - 1) * pageSize, Math.min(page, pages) * pageSize);
+  const latestYears = summary.byRegistrationYear.slice(-20);
+  return <>
+    <section className="section-intro">
+      <h2>{label('動產擔保登記資料', 'Movable Property Secured Transaction Records')}</h2>
+      <p>{label('整理臺北市動產擔保交易登記資料，觀察登記核准日期、擔保類別、契約期間、債務人、擔保權人、標的物種類、所在地、標的物總金額與擔保債權金額。', 'Explore Taipei movable property secured transaction registrations by approval date, secured transaction type, contract period, debtor, secured party, collateral type, location, collateral value, and secured debt amount.')}</p>
+      <p className="notice">{label('本資料不代表不動產抵押、房貸資料、土地或建物權利狀態、即時債權狀態、信用評等、違約風險、企業財務狀況、投資建議、法律意見、完整債務資料庫或官方背書。', 'This data does not represent real-estate mortgages, housing loans, land or building title status, real-time claim status, credit rating, default risk, company financial condition, investment advice, legal advice, a complete debt registry, or official endorsement.')}</p>
+      <p className="notice">{label('來源資料未提供官方座標；本模組僅解析地址文字中的行政區，不建立精確地圖點位或進行地理編碼。', 'The source has no official coordinates; this module only parses districts from source text and does not create exact map points or geocode.')}</p>
+    </section>
+    <MetricStrip items={[
+      { label: label('登記筆數', 'Records'), value: summary.totalRecords.toLocaleString() },
+      { label: label('最新登記月份', 'Latest registration month'), value: summary.latestRegistrationMonth ?? '—' },
+      { label: label('登記日期範圍', 'Registration date range'), value: `${summary.minRegistrationApprovalDate ?? '—'} - ${summary.maxRegistrationApprovalDate ?? '—'}` },
+      { label: label('標的物總金額', 'Collateral amount'), value: formatNtd(summary.totalCollateralAmountNtd, language) },
+      { label: label('擔保債權金額', 'Secured debt amount'), value: formatNtd(summary.totalSecuredDebtAmountNtd, language) },
+      { label: label('最高限額筆數', 'Maximum-limit records'), value: summary.recordsWithMaximumLimitFlag.toLocaleString() },
+      { label: label('解析標的物行政區', 'Parsed collateral districts'), value: summary.dataQuality.parsedCollateralDistrictCount.toLocaleString() },
+      { label: label('遮罩債務人統編', 'Masked debtor IDs'), value: summary.dataQuality.maskedDebtorBusinessNumberCount.toLocaleString() },
+    ]} />
+    <div className="chart-grid">
+      <ChartSection title={label('近年登記筆數', 'Recent Registration Count')} note={label('此圖僅整理登記資料，不代表即時權利狀態、信用風險或法律結論。', 'This chart only organizes registration records and does not represent real-time rights status, credit risk, or legal conclusions.')}><ResponsiveContainer width="100%" height={300}><BarChart data={latestYears}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="year" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="recordCount" name={label('登記筆數', 'Records')} fill="#356f9d" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('擔保類別', 'Secured Transaction Types')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.bySecuredTransactionCategory.map((item) => ({ ...item, label: securedTypeLabel(item.securedTransactionCategory, language) }))}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="count" name={label('筆數', 'Count')} fill="#b24738" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('標的物種類', 'Collateral Types')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.byCollateralTypeCategory.map((item) => ({ ...item, label: collateralTypeLabel(item.collateralTypeCategory, language) }))}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="count" name={label('筆數', 'Count')} fill="#737d68" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('標的物所在地行政區', 'Collateral District Distribution')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.byCollateralDistrict}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} tickFormatter={(value) => districtLabel(value, language)} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="recordCount" name={label('筆數', 'Records')} fill="#c58a43" /></BarChart></ResponsiveContainer></ChartSection>
+    </div>
+    <section className="analysis-list">
+      <h2>{label('動產擔保登記目錄', 'Registration Directory')}</h2>
+      <details className="filters" open><summary>{copy[language].filters}</summary><div className="filter-grid">
+        <label><span>{copy[language].year}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{label('全部年份', 'All years')}</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+        <label><span>{label('擔保類別', 'Secured type')}</span><select value={securedType} onChange={(event) => setSecuredType(event.target.value)}><option value="">{label('全部', 'All')}</option>{summary.bySecuredTransactionCategory.map((item) => <option key={item.securedTransactionCategory} value={item.securedTransactionCategory}>{securedTypeLabel(item.securedTransactionCategory, language)}</option>)}</select></label>
+        <label><span>{label('標的物種類', 'Collateral type')}</span><select value={collateralType} onChange={(event) => setCollateralType(event.target.value)}><option value="">{label('全部', 'All')}</option>{summary.byCollateralTypeCategory.map((item) => <option key={item.collateralTypeCategory} value={item.collateralTypeCategory}>{collateralTypeLabel(item.collateralTypeCategory, language)}</option>)}</select></label>
+        <label><span>{label('行政區', 'District')}</span><select value={district} onChange={(event) => setDistrict(event.target.value)}><option value="">{label('全部行政區', 'All districts')}</option>{DISTRICTS.map((item) => <option key={item} value={item}>{districtLabel(item, language)}</option>)}</select></label>
+        <label><span>{label('最高限額', 'Maximum limit')}</span><select value={maximumLimit} onChange={(event) => setMaximumLimit(event.target.value)}><option value="">{label('全部', 'All')}</option><option value="yes">Y</option><option value="no">N</option><option value="unknown">{label('未知', 'Unknown')}</option></select></label>
+        <label className="search-field"><span>{label('搜尋', 'Search')}</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={label('搜尋登記編號、債務人、擔保權人、所在地、統編或擔保類別', 'Search registration number, debtor, secured party, location, business number, or secured type')} type="search" /></label>
+      </div></details>
+      <p className="table-count">{filtered.length.toLocaleString()} {label('筆紀錄', 'records')}</p>
+      <div className="table-wrap"><table><thead><tr>{[label('登記編號', 'Registration no.'), label('核准日期', 'Approval date'), label('擔保類別', 'Type'), label('債務人', 'Debtor'), label('擔保權人', 'Secured party'), label('標的物所在地', 'Collateral location'), label('標的物總金額', 'Collateral amount'), label('擔保債權金額', 'Secured debt'), label('最高限額', 'Max limit')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}><td>{record.registrationNumber}</td><td>{record.registrationApprovalDate ?? '—'}</td><td>{securedTypeLabel(record.securedTransactionCategory, language)}</td><td>{record.debtorName ?? '—'}</td><td>{record.securedPartyName ?? '—'}</td><td>{record.collateralLocation ?? '—'}</td><td>{formatNtd(record.collateralAmountNtd, language)}</td><td>{formatNtd(record.securedDebtAmountNtd, language)}</td><td>{record.maximumLimitFlag}</td></tr>)}</tbody></table></div>
+      <nav className="pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{label('上一頁', 'Previous')}</button><span>{label('頁', 'Page')} {Math.min(page, pages)} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{label('下一頁', 'Next')}</button></nav>
+    </section>
+  </>;
+}
+
 export default function App() {
   const [language, setLanguage] = useState<Language>('zh');
   const [tab, setTab] = useState(0);
@@ -1043,8 +1137,10 @@ export default function App() {
       loadJson<IncomePerEarnerByDistrictYearRecord[]>('income-per-earner-by-district-year-latest.json'),
       loadJson<MovablePropertyPledgeBusinessRecord[]>('movable-property-pledge-business-records.json'),
       loadJson<MovablePropertyPledgeBusinessSummary>('movable-property-pledge-business-summary.json'),
-    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary]) =>
-      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary }),
+      loadJson<MovablePropertySecuredTransactionRecord[]>('movable-property-secured-transaction-records.json'),
+      loadJson<MovablePropertySecuredTransactionSummary>('movable-property-secured-transaction-summary.json'),
+    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary]) =>
+      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary }),
     ).catch(() => setError(true));
   }, []);
 
@@ -1088,9 +1184,10 @@ export default function App() {
         {tab === 8 && <LandValue records={data.landValueRecords} summary={data.landValueSummary} language={language} />}
         {tab === 9 && <IncomePerEarnerByDistrictYear records={data.incomeRecords} summary={data.incomeSummary} latest={data.incomeLatest} language={language} />}
         {tab === 10 && <MovablePropertyPledgeBusiness records={data.pledgeRecords} summary={data.pledgeSummary} language={language} />}
-        {tab === 11 && <DemographicContext data={data} language={language} />}
-        {tab === 12 && <DataTable records={filteredRecords} language={language} />}
-        {tab === 13 && <DataNotes language={language} />}
+        {tab === 11 && <MovablePropertySecuredTransactions records={data.securedTransactionRecords} summary={data.securedTransactionSummary} language={language} />}
+        {tab === 12 && <DemographicContext data={data} language={language} />}
+        {tab === 13 && <DataTable records={filteredRecords} language={language} />}
+        {tab === 14 && <DataNotes language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

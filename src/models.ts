@@ -18,6 +18,9 @@ export type ResidentialPriceQuarterlyIndexCategoryType = 'citywide' | 'housing_t
 export type ResidentialPriceHousingType = 'all' | 'apartment' | 'building' | 'small_unit' | 'unknown';
 export type CommercialOfficeRentIndexCategory = 'citywide' | 'major_roads' | 'other' | 'unknown';
 export type MovablePropertyPledgeItemCategory = 'total' | 'gold_jewelry' | 'watches' | 'motorcycle' | 'other' | 'unknown';
+export type SecuredTransactionCategory = 'movable_property_mortgage' | 'conditional_sale' | 'other' | 'unknown';
+export type MovableCollateralTypeCategory = 'machinery_equipment_or_tools' | 'vehicle_or_transport' | 'inventory_or_goods' | 'other' | 'unknown';
+export type SourceYesNoUnknown = 'yes' | 'no' | 'unknown';
 export type BuildingConstructionType = 'new_construction' | 'addition' | 'repair' | 'reconstruction' | 'other' | 'unknown';
 export type PublicUseStatus = 'public_use' | 'non_public_use' | 'unspecified';
 export type ZoningCategory = 'residential' | 'commercial' | 'industrial' | 'school' | 'park' | 'government' | 'protection' | 'mixed_or_special' | 'other' | 'unknown';
@@ -83,6 +86,37 @@ export type MovablePropertyPledgeBusinessSummary = {
   byBranch: Array<{ branchName: string; recordCount: number; totalPledgeCaseCount?: number; totalPledgePrincipalNtd?: number; totalCashInterestIncomeNtd?: number; totalSaleTotalNtd?: number }>;
   byItemCategory: Array<{ itemCategory: MovablePropertyPledgeItemCategory; itemLabelZh: string; itemLabelEn: string; recordCount: number; totalPledgeCaseCount?: number; totalPledgePrincipalNtd?: number; totalCashInterestIncomeNtd?: number; totalSaleTotalNtd?: number }>;
   latestYearBranchBreakdown: Array<{ branchName: string; pledgeCaseCount?: number; pledgePrincipalNtd?: number; cashInterestIncomeNtd?: number; saleTotalNtd?: number }>;
+};
+
+export type MovablePropertySecuredTransactionRecord = {
+  id: string; module: 'movable_property_secured_transaction_records'; registrationNumber: string; source: string; sourceAgency: string; sourceRecordHash?: string;
+  registrationApprovalDateRaw?: string; registrationApprovalDate?: string; registrationYear?: number; registrationMonth?: number; registrationMonthKey?: string; registrationQuarter?: string;
+  amendmentDocumentNumber?: string; amendmentApprovalDateRaw?: string; amendmentApprovalDate?: string; amendmentYear?: number; hasAmendment: boolean;
+  cancellationDocumentNumber?: string; cancellationDateRaw?: string; cancellationDate?: string; cancellationYear?: number; hasCancellation: boolean;
+  securedTransactionTypeRaw?: string; securedTransactionType?: string; securedTransactionCategory: SecuredTransactionCategory;
+  contractStartDateRaw?: string; contractStartDate?: string; contractStartYear?: number; contractEndDateRaw?: string; contractEndDate?: string; contractEndYear?: number; contractDurationDays?: number; isContractCurrentlyWithinPeriod?: boolean; isContractExpiredByDate?: boolean;
+  debtorName?: string; debtorNameNormalized?: string; debtorBusinessNumber?: string; hasMaskedDebtorBusinessNumber: boolean; debtorAddress?: string; debtorDistrict?: District; debtorRoadName?: string; debtorAgentName?: string; debtorAgentBusinessNumber?: string;
+  securedPartyName?: string; securedPartyNameNormalized?: string; securedPartyBusinessNumber?: string; hasMaskedSecuredPartyBusinessNumber: boolean; securedPartyAddress?: string; securedPartyDistrict?: District; securedPartyRoadName?: string; securedPartyAgentName?: string; securedPartyAgentBusinessNumber?: string; securedPartyNotes?: string;
+  collateralTypeRaw?: string; collateralType?: string; collateralTypeCategory: MovableCollateralTypeCategory; collateralOwnerName?: string; collateralOwnerNameNormalized?: string; collateralOwnerBusinessNumber?: string; hasMaskedCollateralOwnerBusinessNumber: boolean; collateralLocation?: string; collateralDistrict?: District; collateralRoadName?: string;
+  collateralTotalAmount?: number; collateralCurrency?: string; collateralAmountNtd?: number; securedDebtAmount?: number; securedDebtCurrency?: string; securedDebtAmountNtd?: number; securedDebtToCollateralRatio?: number;
+  maximumLimitFlag: SourceYesNoUnknown; isMaximumLimit: boolean; movableItemCount?: number; floatingChargeFlag: SourceYesNoUnknown; isFloatingCharge: boolean;
+};
+
+export type MovablePropertySecuredTransactionSummary = {
+  totalRecords: number; minRegistrationApprovalDate?: string; maxRegistrationApprovalDate?: string; latestRegistrationMonth?: string;
+  uniqueRegistrationNumberCount: number; uniqueDebtorNameCount: number; uniqueSecuredPartyNameCount: number; uniqueCollateralOwnerNameCount: number;
+  recordsWithAmendment: number; recordsWithCancellation: number; recordsWithContractStartDate: number; recordsWithContractEndDate: number; recordsWithCollateralAmount: number; recordsWithSecuredDebtAmount: number; recordsWithDebtToCollateralRatio: number; recordsWithMaximumLimitFlag: number; recordsWithFloatingChargeFlag: number;
+  totalCollateralAmountNtd?: number; totalSecuredDebtAmountNtd?: number; medianCollateralAmountNtd?: number; medianSecuredDebtAmountNtd?: number; averageSecuredDebtToCollateralRatio?: number; medianSecuredDebtToCollateralRatio?: number;
+  byRegistrationYear: Array<{ year: number; recordCount: number; totalCollateralAmountNtd?: number; totalSecuredDebtAmountNtd?: number; maximumLimitCount: number }>;
+  byRegistrationMonth: Array<{ registrationMonthKey: string; recordCount: number; totalCollateralAmountNtd?: number; totalSecuredDebtAmountNtd?: number }>;
+  bySecuredTransactionCategory: Array<{ securedTransactionCategory: SecuredTransactionCategory; count: number; totalCollateralAmountNtd?: number; totalSecuredDebtAmountNtd?: number }>;
+  byCollateralTypeCategory: Array<{ collateralTypeCategory: MovableCollateralTypeCategory; count: number; totalCollateralAmountNtd?: number; totalSecuredDebtAmountNtd?: number }>;
+  byCollateralDistrict: Array<{ district: District; recordCount: number; totalCollateralAmountNtd?: number; totalSecuredDebtAmountNtd?: number }>;
+  byDebtorDistrict: Array<{ district: District; recordCount: number }>;
+  bySecuredPartyDistrict: Array<{ district: District; recordCount: number }>;
+  topSecuredPartiesByRecordCount: Array<{ securedPartyName: string; recordCount: number; totalSecuredDebtAmountNtd?: number }>;
+  topDebtorsByRecordCount: Array<{ debtorName: string; recordCount: number; totalSecuredDebtAmountNtd?: number }>;
+  dataQuality: { maskedDebtorBusinessNumberCount: number; maskedSecuredPartyBusinessNumberCount: number; maskedCollateralOwnerBusinessNumberCount: number; parsedCollateralDistrictCount: number; parsedDebtorDistrictCount: number; parsedSecuredPartyDistrictCount: number };
 };
 
 export type IncomePerEarnerByDistrictYearRecord = {
@@ -521,6 +555,12 @@ export type RealEstateSummary = {
     latestYearPledgeCaseCount?: number;
     latestYearPledgePrincipalNtd?: number;
     latestYearCashInterestIncomeNtd?: number;
+  };
+  movablePropertySecuredTransactionRecords?: {
+    totalRecords?: number;
+    latestRegistrationMonth?: string;
+    totalCollateralAmountNtd?: number;
+    totalSecuredDebtAmountNtd?: number;
   };
   incomePerEarnerByDistrictYear?: {
     latestYear?: number;
