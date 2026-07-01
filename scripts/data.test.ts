@@ -28,6 +28,7 @@ import {
 import { classifyMovablePropertyPledgeItemCategory, parseCaseCount, parseNtdAmount, parseYearFromResourceName } from './convertMovablePropertyPledgeBusinessStatistics.ts';
 import { classifyMovableCollateralType, classifySecuredTransactionType, makeMovablePropertySecuredTransactionRecord, parseRocDate } from './convertMovablePropertySecuredTransactionRecords.ts';
 import { normalizeIncomeDistrict, parseNtdValue, parseRocYear as parseIncomeRocYear } from './convertIncomePerEarnerByDistrictYear.ts';
+import { classifyConsumerPriceGroup, classifyConsumerPriceLevel, makeConsumerPriceBasicAnnualIndexRecord, parseAnnualChangePercent, parseRocYear as parseCpiRocYear } from './convertConsumerPriceBasicAnnualIndex.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -94,6 +95,26 @@ test('parses income per earner helper fields', () => {
   assert.equal(parseNtdValue('-'), undefined);
   assert.deepEqual(normalizeIncomeDistrict(' 大安區'), { district: '大安區', districtNormalized: '大安區', isCityAverage: false });
   assert.deepEqual(normalizeIncomeDistrict(' 總平均'), { district: undefined, districtNormalized: '總平均', isCityAverage: true });
+});
+
+test('parses annual CPI helper fields without relying on ordinal prefixes', () => {
+  assert.deepEqual(parseCpiRocYear('114年'), { yearRaw: '114年', rocYear: 114, year: 2025 });
+  assert.equal(parseAnnualChangePercent('1.71%').annualChangePercent, 1.71);
+  assert.equal(parseAnnualChangePercent('--').annualChangePercent, undefined);
+  assert.equal(classifyConsumerPriceLevel('一.食物類'), 'main_category');
+  assert.equal(classifyConsumerPriceLevel('(一)房租'), 'sub_category');
+  assert.equal(classifyConsumerPriceGroup('(一)房租'), 'housing');
+  const record = makeConsumerPriceBasicAnnualIndexRecord({
+    縣市別代碼: '63000',
+    年別: '114年',
+    基本分類: '(一)房租',
+    '原始值[統計數值]': '109.42',
+    '年增率[%]': '2.25%',
+  }, 'sample.csv', 1, []);
+  assert.equal(record?.year, 2025);
+  assert.equal(record?.classificationKey, 'rent');
+  assert.equal(record?.indexValue, 109.42);
+  assert.equal(record?.annualChangePercent, 2.25);
 });
 
 test('classifies building and record types', () => {

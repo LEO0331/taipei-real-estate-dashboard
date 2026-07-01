@@ -23,6 +23,7 @@ try {
     movablePropertyPledgeBusinessStatistics: previous?.movablePropertyPledgeBusinessStatistics,
     movablePropertySecuredTransactionRecords: previous?.movablePropertySecuredTransactionRecords,
     incomePerEarnerByDistrictYear: previous?.incomePerEarnerByDistrictYear,
+    consumerPriceBasicAnnualIndex: previous?.consumerPriceBasicAnnualIndex,
   } as RealEstateSummary;
   const citywide = summary.latestByCategory.find((item) => item.category === 'citywide');
   realEstateSummary.residentialPriceMonthlyIndex = {

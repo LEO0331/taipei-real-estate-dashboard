@@ -1,10 +1,10 @@
 # Taipei Real Estate & Demographics Dashboard / 台北實價與人口趨勢儀表板
 
-Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price trends: monthly and quarterly residential price indexes, including district-level quarterly comparison / 住宅價格趨勢：住宅價格月指數與季指數，包含行政區季資料比較, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, income-per-earner affordability context / 所得收入與負擔能力背景, financing and collateral context: movable property secured transaction registration records / 融資與擔保背景：動產擔保登記資料, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
+Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price trends: monthly and quarterly residential price indexes, including district-level quarterly comparison / 住宅價格趨勢：住宅價格月指數與季指數，包含行政區季資料比較, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, income-per-earner affordability context / 所得收入與負擔能力背景, prices and affordability context: annual CPI by basic classification / 物價與居住負擔背景：消費者物價指數基本分類年指數, financing and collateral context: movable property secured transaction registration records / 融資與擔保背景：動產擔保登記資料, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
 
 ## Purpose
 
-The site combines eight Taipei public-data sources:
+The site combines Taipei public-data sources:
 
 - [臺北市實價周報](https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc)
 - [臺北市住宅價格月指數](https://data.taipei/dataset/detail?id=ce4ea2c6-6334-44f8-945a-5705492b187d)
@@ -16,11 +16,12 @@ The site combines eight Taipei public-data sources:
 - [臺北市115年度使用執照摘要](https://data.taipei/dataset/detail?id=0816f991-e6c8-4da0-a789-d022fee1462b)
 - [臺北市土地筆數面積及公告土地現值統計](https://data.taipei/dataset/detail?id=68c439fc-877a-42bb-9c35-a3701e8fc9c3)
 - [臺北市所得收入者每人所得－行政區別按年別](https://data.taipei/dataset/detail?id=33da4ba0-c366-45eb-a71f-1991e6455ed6)
+- [臺北市消費者物價指數基本分類年指數](https://data.taipei/dataset/detail?id=7ee57050-4d27-482c-bae5-ebd15ca86702)
 - [臺北市各里人口數按年齡分](https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3)
 - [臺北市動產質借處營業概況](https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9)
 - [臺北市動產擔保登記資料](https://data.taipei/dataset/detail?id=cb964837-c602-4238-b6c0-f63ad1094d5e)
 
-It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, transaction advice, investment recommendation, lending advice, financial advice, or price prediction tool. Population, income, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
+It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, transaction advice, investment recommendation, lending advice, financial advice, or price prediction tool. Population, income, CPI, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
 
 ## Data model and limitations
 
@@ -56,6 +57,10 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 - Income-per-earner conversion parses all source income, transfer, non-consumption expenditure, and disposable-income fields; derives composition ratios, disposable-income ratios, year-over-year metrics, and district rankings.
 - Income rankings exclude `總平均` and compare district-level rows only. The income module is affordability and socioeconomic context only; it is not individual income, tax, lending, financial, investment, appraisal, or prediction advice.
 - Income-per-earner data has district labels only and no exact address or coordinate fields, so no geocoding or point markers are generated.
+- Annual CPI by basic classification CSV is Big5/CP950 today, with UTF-8 fallback. ROC years such as `114年` become Gregorian years such as `2025`.
+- Annual CPI conversion parses city code, year, basic classification, index value, and source year-over-year percent. It derives stable semantic classification keys because source labels can change ordinal prefixes over time.
+- Annual CPI is city-level price, income, rent, and housing-affordability context only. It is not personal inflation, realtime prices, housing price forecast, rent forecast, purchase-capacity determination, investment advice, mortgage advice, policy-effectiveness determination, financial advice, or official endorsement.
+- Annual CPI has no district, address, or coordinate fields, so no geocoding or point markers are generated.
 - Rent index periods parse ROC quarters such as `107Q3` into Gregorian quarters such as `2018-Q3`.
 - Weekly sale totals are in NT$10,000 and become NTD. Sale unit prices are NT$10,000/ping and become NTD/ping.
 - Weekly rental unit prices remain NTD/ping/month. Rental totals are derived from unit price × area when available because the source total is rounded.
@@ -87,6 +92,7 @@ data/raw/population-by-age/
 data/raw/building-use-permits/
 data/raw/land-parcel-assessed-value-statistics/
 data/raw/income-per-earner-by-district-year/
+data/raw/consumer-price-basic-annual-index/
 data/raw/movable-property-pledge-business-statistics/
 data/raw/movable-property-secured-transaction-records/
 ```
@@ -125,6 +131,9 @@ public/data/land-parcel-assessed-value-summary.json
 public/data/income-per-earner-by-district-year-records.json
 public/data/income-per-earner-by-district-year-summary.json
 public/data/income-per-earner-by-district-year-latest.json
+public/data/consumer-price-basic-annual-index.json
+public/data/consumer-price-basic-annual-index-summary.json
+public/data/consumer-price-basic-annual-index-latest.json
 public/data/movable-property-pledge-business-records.json
 public/data/movable-property-pledge-business-summary.json
 public/data/movable-property-pledge-business-annual-summary.json
@@ -148,6 +157,8 @@ npm run data:convert:building-use-permits
 npm run data:convert:land-value
 npm run data:fetch:income
 npm run data:convert:income
+npm run data:fetch:cpi-annual-basic
+npm run data:convert:cpi-annual-basic
 npm run data:fetch:pledge-business
 npm run data:convert:pledge-business
 npm run data:fetch:movable-secured-transactions

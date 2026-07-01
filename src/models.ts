@@ -17,6 +17,8 @@ export type ResidentialPriceIndexCategory =
 export type ResidentialPriceQuarterlyIndexCategoryType = 'citywide' | 'housing_type' | 'district' | 'unknown';
 export type ResidentialPriceHousingType = 'all' | 'apartment' | 'building' | 'small_unit' | 'unknown';
 export type CommercialOfficeRentIndexCategory = 'citywide' | 'major_roads' | 'other' | 'unknown';
+export type ConsumerPriceClassificationGroup = 'total' | 'food' | 'clothing' | 'housing' | 'transport_communication' | 'healthcare' | 'education_recreation' | 'miscellaneous' | 'other' | 'unknown';
+export type ConsumerPriceClassificationLevel = 'total' | 'main_category' | 'sub_category' | 'unknown';
 export type MovablePropertyPledgeItemCategory = 'total' | 'gold_jewelry' | 'watches' | 'motorcycle' | 'other' | 'unknown';
 export type SecuredTransactionCategory = 'movable_property_mortgage' | 'conditional_sale' | 'other' | 'unknown';
 export type MovableCollateralTypeCategory = 'machinery_equipment_or_tools' | 'vehicle_or_transport' | 'inventory_or_goods' | 'other' | 'unknown';
@@ -137,6 +139,25 @@ export type IncomePerEarnerByDistrictYearSummary = {
   byYear: Array<{ dataYear: number; rocYear?: number; recordCount: number; cityAverageTotalIncomeNtd?: number; cityAverageDisposableIncomeNtd?: number; cityAverageIncomeEarnerCount?: number; topDistrictByTotalIncome?: District; topDistrictByDisposableIncome?: District; lowestDistrictByDisposableIncome?: District }>;
   byDistrict: Array<{ district: District; recordCount: number; latestTotalIncomeNtd?: number; latestDisposableIncomeNtd?: number; latestIncomeEarnerCount?: number; totalIncomeChangeSinceFirstPercent?: number; disposableIncomeChangeSinceFirstPercent?: number }>;
   latestIncomeComposition: Array<{ key: string; labelZh: string; labelEn: string; valueNtd?: number; sharePercent?: number }>;
+};
+
+export type ConsumerPriceBasicAnnualIndexRecord = {
+  id: string; module: 'consumer_price_basic_annual_index'; source: string; sourceAgency: string; sourceResourceName?: string; sourceRecordHash?: string;
+  cityCodeRaw?: string; cityCode?: string; isTaipeiCity: boolean; yearRaw?: string; rocYear?: number; year: number;
+  basicClassificationRaw: string; basicClassificationLabel: string; semanticClassificationLabel: string; classificationKey: string;
+  classificationGroup: ConsumerPriceClassificationGroup; classificationLevel: ConsumerPriceClassificationLevel; classificationSortOrder: number;
+  parentClassificationKey?: string; indexValue?: number; annualChangeRaw?: string; annualChangePercent?: number; yearOverYearIndexDelta?: number;
+  isTotalIndex: boolean; isMainCategory: boolean; isHousingRelated: boolean; isFoodRelated: boolean; isTransportRelated: boolean; isHealthcareRelated: boolean;
+  indexBaseNote?: string;
+};
+
+export type ConsumerPriceBasicAnnualIndexSummary = {
+  totalRecords: number; minYear?: number; maxYear?: number; latestYear?: number; classificationCount: number; semanticClassificationKeyCount: number; mainCategoryCount: number;
+  latestTotalIndex?: number; latestTotalAnnualChangePercent?: number; latestHousingIndex?: number; latestHousingAnnualChangePercent?: number;
+  baseYearCandidate?: number; byYear: Array<{ year: number; totalIndex?: number; totalAnnualChangePercent?: number; housingIndex?: number; rentIndex?: number; foodIndex?: number; transportCommunicationIndex?: number }>;
+  latestMainCategories: Array<Pick<ConsumerPriceBasicAnnualIndexRecord, 'classificationKey' | 'basicClassificationLabel' | 'semanticClassificationLabel' | 'classificationGroup' | 'indexValue' | 'annualChangePercent' | 'yearOverYearIndexDelta'>>;
+  byClassificationGroup: Array<{ classificationGroup: ConsumerPriceClassificationGroup; recordCount: number; latestIndex?: number; latestAnnualChangePercent?: number }>;
+  highestLatestAnnualChangeCategories: Array<Pick<ConsumerPriceBasicAnnualIndexRecord, 'classificationKey' | 'semanticClassificationLabel' | 'classificationGroup' | 'indexValue' | 'annualChangePercent'>>;
 };
 
 export function classifyBuildingConstructionType(raw: string | undefined): BuildingConstructionType {
@@ -568,5 +589,12 @@ export type RealEstateSummary = {
     cityAverageDisposableIncomeNtd?: number;
     cityAverageIncomeEarnerCount?: number;
     topDistrictByDisposableIncome?: string;
+  };
+  consumerPriceBasicAnnualIndex?: {
+    latestYear?: number;
+    latestTotalIndex?: number;
+    latestTotalAnnualChangePercent?: number;
+    latestHousingIndex?: number;
+    latestHousingAnnualChangePercent?: number;
   };
 };
