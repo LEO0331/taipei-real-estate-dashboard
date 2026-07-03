@@ -24,6 +24,7 @@ try {
     movablePropertySecuredTransactionRecords: previous?.movablePropertySecuredTransactionRecords,
     incomePerEarnerByDistrictYear: previous?.incomePerEarnerByDistrictYear,
     consumerPriceBasicAnnualIndex: previous?.consumerPriceBasicAnnualIndex,
+    taipowerTaipeiElectricitySales: previous?.taipowerTaipeiElectricitySales,
   } as RealEstateSummary;
   const citywide = summary.latestByCategory.find((item) => item.category === 'citywide');
   realEstateSummary.residentialPriceMonthlyIndex = {

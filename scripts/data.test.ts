@@ -29,6 +29,7 @@ import { classifyMovablePropertyPledgeItemCategory, parseCaseCount, parseNtdAmou
 import { classifyMovableCollateralType, classifySecuredTransactionType, makeMovablePropertySecuredTransactionRecord, parseRocDate } from './convertMovablePropertySecuredTransactionRecords.ts';
 import { normalizeIncomeDistrict, parseNtdValue, parseRocYear as parseIncomeRocYear } from './convertIncomePerEarnerByDistrictYear.ts';
 import { classifyConsumerPriceGroup, classifyConsumerPriceLevel, makeConsumerPriceBasicAnnualIndexRecord, parseAnnualChangePercent, parseRocYear as parseCpiRocYear } from './convertConsumerPriceBasicAnnualIndex.ts';
+import { classifyAnnualTrend, convertTaipowerTaipeiElectricitySalesRows, parseIntegerMetric, parseTaipeiElectricityPeriod, safeShare, thousandKwhToKwh } from './convertTaipowerTaipeiElectricitySales.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -115,6 +116,31 @@ test('parses annual CPI helper fields without relying on ordinal prefixes', () =
   assert.equal(record?.classificationKey, 'rent');
   assert.equal(record?.indexValue, 109.42);
   assert.equal(record?.annualChangePercent, 2.25);
+});
+
+test('parses Taipower Taipei electricity helper fields and annual trends', () => {
+  assert.deepEqual(parseTaipeiElectricityPeriod('57年'), {
+    raw: '57年',
+    rocYear: 57,
+    gregorianYear: 1968,
+    periodLabelZh: '民國57年',
+    periodLabelEn: '1968',
+  });
+  assert.equal(parseTaipeiElectricityPeriod('2025').rocYear, 114);
+  assert.equal(parseIntegerMetric('0'), 0);
+  assert.equal(parseIntegerMetric('1,242,655'), 1242655);
+  assert.equal(thousandKwhToKwh(16105223), 16105223000);
+  assert.equal(safeShare(25, 100), 0.25);
+  assert.equal(classifyAnnualTrend(-1), 'decrease');
+  const records = convertTaipowerTaipeiElectricitySalesRows([
+    { 統計期: '113年', '總用戶數[戶]': '1200000', '總用電量[千度]': '1000', '每用戶用電量[度]': '10', '電燈用戶數[戶]': '1100000', '電燈用電量[千度]': '400', '電力用戶數[戶]': '100000', '電力用電量[千度]': '600', '台電自用用電量[千度]': '0' },
+    { 統計期: '114年', '總用戶數[戶]': '1242655', '總用電量[千度]': '16105223', '每用戶用電量[度]': '13016', '電燈用戶數[戶]': '1218794', '電燈用電量[千度]': '7782781', '電力用戶數[戶]': '23861', '電力用電量[千度]': '8322442', '台電自用用電量[千度]': '0' },
+  ]);
+  assert.equal(records[1].gregorianYear, 2025);
+  assert.equal(records[1].totalElectricitySalesKwh, 16105223000);
+  assert.equal(records[1].totalElectricitySalesYearOverYearChange, 16104223);
+  assert.equal(records[1].totalElectricitySalesTrendDirection, 'increase');
+  assert.equal(records[1].isLatestRecord, true);
 });
 
 test('classifies building and record types', () => {

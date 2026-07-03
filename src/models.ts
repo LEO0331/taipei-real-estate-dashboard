@@ -19,6 +19,7 @@ export type ResidentialPriceHousingType = 'all' | 'apartment' | 'building' | 'sm
 export type CommercialOfficeRentIndexCategory = 'citywide' | 'major_roads' | 'other' | 'unknown';
 export type ConsumerPriceClassificationGroup = 'total' | 'food' | 'clothing' | 'housing' | 'transport_communication' | 'healthcare' | 'education_recreation' | 'miscellaneous' | 'other' | 'unknown';
 export type ConsumerPriceClassificationLevel = 'total' | 'main_category' | 'sub_category' | 'unknown';
+export type AnnualTrendDirection = 'increase' | 'decrease' | 'no_change' | 'first_record' | 'unknown';
 export type MovablePropertyPledgeItemCategory = 'total' | 'gold_jewelry' | 'watches' | 'motorcycle' | 'other' | 'unknown';
 export type SecuredTransactionCategory = 'movable_property_mortgage' | 'conditional_sale' | 'other' | 'unknown';
 export type MovableCollateralTypeCategory = 'machinery_equipment_or_tools' | 'vehicle_or_transport' | 'inventory_or_goods' | 'other' | 'unknown';
@@ -158,6 +159,39 @@ export type ConsumerPriceBasicAnnualIndexSummary = {
   latestMainCategories: Array<Pick<ConsumerPriceBasicAnnualIndexRecord, 'classificationKey' | 'basicClassificationLabel' | 'semanticClassificationLabel' | 'classificationGroup' | 'indexValue' | 'annualChangePercent' | 'yearOverYearIndexDelta'>>;
   byClassificationGroup: Array<{ classificationGroup: ConsumerPriceClassificationGroup; recordCount: number; latestIndex?: number; latestAnnualChangePercent?: number }>;
   highestLatestAnnualChangeCategories: Array<Pick<ConsumerPriceBasicAnnualIndexRecord, 'classificationKey' | 'semanticClassificationLabel' | 'classificationGroup' | 'indexValue' | 'annualChangePercent'>>;
+};
+
+export type TaipowerTaipeiElectricitySalesRecord = {
+  id: string; module: 'taipower_taipei_electricity_sales'; periodRaw: string; rocYear: number; gregorianYear: number; periodLabelZh: string; periodLabelEn: string;
+  totalCustomerCount?: number; totalElectricitySalesThousandKwh?: number; totalElectricitySalesKwh?: number; totalElectricityUsePerCustomerKwh?: number;
+  lightingCustomerCount?: number; lightingElectricitySalesThousandKwh?: number; lightingElectricitySalesKwh?: number; lightingElectricityUsePerCustomerKwh?: number;
+  lightingFlatRateCustomerCount?: number; lightingFlatRateElectricitySalesThousandKwh?: number; lightingFlatRateUsePerCustomerKwh?: number;
+  lightingFlatRateGeneralCustomerCount?: number; lightingFlatRateGeneralElectricitySalesThousandKwh?: number; lightingFlatRateGeneralUsePerCustomerKwh?: number;
+  lightingFlatRateStreetlightCustomerCount?: number; lightingFlatRateStreetlightElectricitySalesThousandKwh?: number; lightingFlatRateStreetlightUsePerCustomerKwh?: number;
+  lightingMeteredCustomerCount?: number; lightingMeteredElectricitySalesThousandKwh?: number; lightingMeteredUsePerCustomerKwh?: number;
+  lightingMeteredBusinessCustomerCount?: number; lightingMeteredBusinessElectricitySalesThousandKwh?: number; lightingMeteredBusinessUsePerCustomerKwh?: number;
+  lightingMeteredNonBusinessCustomerCount?: number; lightingMeteredNonBusinessElectricitySalesThousandKwh?: number; lightingMeteredNonBusinessUsePerCustomerKwh?: number;
+  powerCustomerCount?: number; powerElectricitySalesThousandKwh?: number; powerElectricitySalesKwh?: number; powerUsePerCustomerKwh?: number;
+  powerFlatRateCustomerCount?: number; powerFlatRateElectricitySalesThousandKwh?: number; powerFlatRateUsePerCustomerKwh?: number;
+  powerMeteredCustomerCount?: number; powerMeteredElectricitySalesThousandKwh?: number; powerMeteredUsePerCustomerKwh?: number;
+  taipowerSelfUseElectricityThousandKwh?: number; taipowerSelfUseElectricityKwh?: number;
+  totalCustomerCountYearOverYearChange?: number; totalCustomerCountTrendDirection: AnnualTrendDirection;
+  totalElectricitySalesYearOverYearChange?: number; totalElectricitySalesYearOverYearPercentChange?: number; totalElectricitySalesTrendDirection: AnnualTrendDirection;
+  totalElectricityUsePerCustomerYearOverYearChange?: number; totalElectricityUsePerCustomerTrendDirection: AnnualTrendDirection;
+  lightingShareOfTotalSales?: number; powerShareOfTotalSales?: number; lightingMeteredBusinessShareOfLightingSales?: number; lightingMeteredNonBusinessShareOfLightingSales?: number; powerMeteredShareOfPowerSales?: number;
+  isLatestRecord: boolean; categoryConsistencyWarnings: string[]; sourceRecordHash?: string; source: string; sourceAgency: string;
+};
+
+export type TaipowerTaipeiElectricitySalesSummary = {
+  totalRecords: number; minRocYear?: number; maxRocYear?: number; minGregorianYear?: number; maxGregorianYear?: number;
+  latestRecord?: Pick<TaipowerTaipeiElectricitySalesRecord, 'rocYear' | 'gregorianYear' | 'totalCustomerCount' | 'totalElectricitySalesThousandKwh' | 'totalElectricityUsePerCustomerKwh' | 'lightingElectricitySalesThousandKwh' | 'powerElectricitySalesThousandKwh' | 'totalElectricitySalesYearOverYearChange' | 'totalElectricitySalesYearOverYearPercentChange'>;
+  firstTotalCustomerCount?: number; latestTotalCustomerCount?: number; totalCustomerCountChange?: number; totalCustomerCountPercentChange?: number;
+  firstTotalElectricitySalesThousandKwh?: number; latestTotalElectricitySalesThousandKwh?: number; totalElectricitySalesChangeThousandKwh?: number; totalElectricitySalesPercentChange?: number;
+  minTotalElectricitySalesThousandKwh?: number; maxTotalElectricitySalesThousandKwh?: number; averageTotalElectricitySalesThousandKwh?: number;
+  minTotalElectricityUsePerCustomerKwh?: number; maxTotalElectricityUsePerCustomerKwh?: number; averageTotalElectricityUsePerCustomerKwh?: number;
+  latestLightingShareOfTotalSales?: number; latestPowerShareOfTotalSales?: number;
+  annualSeries: Array<Pick<TaipowerTaipeiElectricitySalesRecord, 'rocYear' | 'gregorianYear' | 'totalCustomerCount' | 'totalElectricitySalesThousandKwh' | 'totalElectricityUsePerCustomerKwh' | 'lightingElectricitySalesThousandKwh' | 'powerElectricitySalesThousandKwh' | 'lightingCustomerCount' | 'powerCustomerCount' | 'totalElectricitySalesYearOverYearChange' | 'totalElectricitySalesYearOverYearPercentChange' | 'totalCustomerCountYearOverYearChange' | 'totalElectricityUsePerCustomerYearOverYearChange' | 'lightingShareOfTotalSales' | 'powerShareOfTotalSales' | 'lightingMeteredBusinessElectricitySalesThousandKwh' | 'lightingMeteredNonBusinessElectricitySalesThousandKwh'>>;
+  dataQuality: { missingPeriodCount: number; invalidPeriodCount: number; duplicateYearCount: number; missingTotalCustomerCountCount: number; invalidTotalCustomerCountCount: number; missingTotalElectricitySalesCount: number; invalidTotalElectricitySalesCount: number; missingPerCustomerUseCount: number; invalidPerCustomerUseCount: number; categorySumMismatchCount: number; duplicateFallbackKeyCount: number };
 };
 
 export function classifyBuildingConstructionType(raw: string | undefined): BuildingConstructionType {
@@ -596,5 +630,12 @@ export type RealEstateSummary = {
     latestTotalAnnualChangePercent?: number;
     latestHousingIndex?: number;
     latestHousingAnnualChangePercent?: number;
+  };
+  taipowerTaipeiElectricitySales?: {
+    latestYear?: number;
+    latestTotalCustomerCount?: number;
+    latestTotalElectricitySalesThousandKwh?: number;
+    latestTotalElectricityUsePerCustomerKwh?: number;
+    latestTotalElectricitySalesYearOverYearPercentChange?: number;
   };
 };
