@@ -15,6 +15,7 @@ import {
   type ConsumerPriceBasicAnnualIndexSummary,
   type ConsumerPriceClassificationGroup,
   type ConsumerPriceClassificationLevel,
+  type DevelopmentIntensityCategory,
   type BuildingUsePermitDetailRecord,
   type BuildingUsePermitRecord,
   type BuildingUsePermitSummary,
@@ -27,6 +28,9 @@ import {
   type LandValueTaxPeriodCategory,
   type LandValueTaxProgressiveBracketRecord,
   type LandValueTaxProgressiveBracketSummary,
+  type LandUseZoningCategory,
+  type LandUseZoningControlRecord,
+  type LandUseZoningControlSummary,
   type PopulationDistrictSummary,
   type MovablePropertyPledgeBusinessRecord,
   type MovablePropertyPledgeBusinessSummary,
@@ -76,6 +80,8 @@ type DataBundle = {
   rentIndexSummary: ResidentialRentIndexSummary;
   landValueRecords: LandParcelAssessedValueRecord[];
   landValueSummary: LandParcelAssessedValueSummary;
+  landUseZoningRecords: LandUseZoningControlRecord[];
+  landUseZoningSummary: LandUseZoningControlSummary;
   incomeRecords: IncomePerEarnerByDistrictYearRecord[];
   incomeSummary: IncomePerEarnerByDistrictYearSummary;
   incomeLatest: IncomePerEarnerByDistrictYearRecord[];
@@ -119,6 +125,8 @@ const formatThousandKwh = (value: number | undefined, language: Language) =>
 const formatKwh = (value: number | undefined, language: Language) =>
   value === undefined ? '—' : `${value.toLocaleString(language === 'zh' ? 'zh-TW' : 'en-US', { maximumFractionDigits: 0 })} kWh`;
 const formatPermille = (value: number | undefined) => value === undefined ? '—' : `${value.toLocaleString()}‰`;
+const formatArea = (valueSqm: number | undefined, language: Language) =>
+  valueSqm === undefined ? '—' : `${(valueSqm / 10_000).toLocaleString(language === 'zh' ? 'zh-TW' : 'en-US', { maximumFractionDigits: 1 })} ha`;
 const formatPriceAxis = (value: number, language: Language) =>
   language === 'zh' ? `${Math.round(value / 10_000)}萬` : `${Math.round(value / 1_000)}k`;
 const districtLabel = (district: string | undefined, language: Language) =>
@@ -260,6 +268,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
   const income = summary.incomePerEarnerByDistrictYear;
   const cpi = summary.consumerPriceBasicAnnualIndex;
   const electricity = summary.taipowerTaipeiElectricitySales;
+  const landUse = summary.landUseZoningControlSummary;
   const landTax = summary.landValueTaxProgressiveBrackets;
   const pledge = summary.movablePropertyPledgeBusinessStatistics;
   const secured = summary.movablePropertySecuredTransactionRecords;
@@ -326,7 +335,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: language === 'zh' ? '可支配所得最高行政區' : 'Top disposable-income district', value: districtLabel(income.topDistrictByDisposableIncome, language) },
       ]} />
       <p className="notice">{language === 'zh' ? '所得資料僅作為負擔能力與社會經濟背景，不代表估價、稅務、投資、貸款、財務建議或市場預測。' : 'Income data is affordability and socioeconomic context only, not appraisal, tax, investment, lending, financial advice, or market prediction.'}</p>
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 10 }))}>{language === 'zh' ? '查看所得收入' : 'View income context'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 11 }))}>{language === 'zh' ? '查看所得收入' : 'View income context'}</button>
     </section>}
     {cpi && <section className="overview-panel">
       <h2>{language === 'zh' ? '物價背景：年度CPI' : 'Price Context: Annual CPI'}</h2>
@@ -337,7 +346,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: language === 'zh' ? '居住類指數' : 'Housing index', value: cpi.latestHousingIndex?.toFixed(2) ?? '—' },
       ]} />
       <p className="notice">{language === 'zh' ? '年度CPI僅作為物價、所得、租金與居住負擔背景，不代表個人通膨、即時價格、房價或租金預測。' : 'Annual CPI is price, income, rent, and housing-affordability context only; not personal inflation, realtime prices, or housing/rent forecasts.'}</p>
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 11 }))}>{language === 'zh' ? '查看物價年指數' : 'View annual CPI'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 12 }))}>{language === 'zh' ? '查看物價年指數' : 'View annual CPI'}</button>
     </section>}
     {electricity && <section className="overview-panel">
       <h2>{language === 'zh' ? '城市用電：臺北市售電量' : 'City Electricity: Taipei Sales'}</h2>
@@ -348,7 +357,18 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: language === 'zh' ? '每用戶用電量' : 'Per-customer use', value: formatKwh(electricity.latestTotalElectricityUsePerCustomerKwh, language) },
       ]} />
       <p className="notice">{language === 'zh' ? '年度售電量僅供城市用電、公共設施需求與經濟活動背景，不代表即時用電、個別建物用電、電價、停電風險或碳排放。' : 'Annual electricity sales are city electricity, infrastructure demand, and economic-activity context only; not realtime demand, building-level use, prices, outage risk, or emissions.'}</p>
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 12 }))}>{language === 'zh' ? '查看臺北市售電量' : 'View electricity sales'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 13 }))}>{language === 'zh' ? '查看臺北市售電量' : 'View electricity sales'}</button>
+    </section>}
+    {landUse && <section className="overview-panel">
+      <h2>{language === 'zh' ? '土地使用、分區管制與開發強度' : 'Land Use, Zoning Control & Development Intensity'}</h2>
+      <MetricStrip items={[
+        { label: language === 'zh' ? '資料列數' : 'Data rows', value: landUse.totalRecords?.toLocaleString() ?? '—' },
+        { label: language === 'zh' ? '涵蓋行政區數' : 'Districts covered', value: landUse.districtCount ?? '—' },
+        { label: language === 'zh' ? '不重複分區數' : 'Unique zoning names', value: landUse.uniqueZoningNameCount ?? '—' },
+        { label: language === 'zh' ? '總面積' : 'Total area', value: formatArea(landUse.totalAreaSquareMeters, language) },
+      ]} />
+      <p className="notice">{language === 'zh' ? '土地使用管制資料為行政區與分區層級彙整，不代表個別土地、地號、建物或基地之正式管制證明、建築許可、開發權利或估價結果。' : 'Land-use control data is district- and zoning-level summary data, not an official control certificate, building permit, development right, or appraisal for a specific parcel, cadastral number, building, or site.'}</p>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 9 }))}>{language === 'zh' ? '查看土地使用管制' : 'View land-use control'}</button>
     </section>}
     {landTax && <section className="overview-panel">
       <h2>{language === 'zh' ? '地價、稅負與持有成本：地價稅級距' : 'Land Value, Tax Burden & Holding Cost: Land Value Tax Brackets'}</h2>
@@ -359,7 +379,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: language === 'zh' ? '一般土地級距數' : 'General land bracket count', value: landTax.latestGeneralLandTaxBracketCount ?? '—' },
       ]} />
       <p className="notice">{language === 'zh' ? '地價稅級距資料僅整理年度稅制公式與級距，不代表個別土地、所有權人或案件之正式應納稅額，也不構成稅務、法律、投資或申報建議。' : 'Land value tax bracket data only organizes annual tax schedules and formulas; it is not an official payable tax amount for a specific parcel, owner, or case, and is not tax, legal, investment, or filing advice.'}</p>
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 9 }))}>{language === 'zh' ? '查看地價稅級距' : 'View land value tax brackets'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 10 }))}>{language === 'zh' ? '查看地價稅級距' : 'View land value tax brackets'}</button>
     </section>}
     {pledge && <section className="overview-panel">
       <h2>{language === 'zh' ? '社會經濟背景：動產質借' : 'Socioeconomic Context: Pledge Loans'}</h2>
@@ -370,7 +390,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: language === 'zh' ? '現金利息收入' : 'Cash interest income', value: formatNtd(pledge.latestYearCashInterestIncomeNtd, language) },
       ]} />
       <p className="notice">{language === 'zh' ? '僅供社會經濟背景觀察，不代表房價、租金、房貸壓力或財務建議。' : 'Socioeconomic context only; not prices, rents, mortgage stress, or financial advice.'}</p>
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 13 }))}>{language === 'zh' ? '查看動產質借' : 'View pledge loans'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 14 }))}>{language === 'zh' ? '查看動產質借' : 'View pledge loans'}</button>
     </section>}
     {secured && <section className="overview-panel">
       <h2>{language === 'zh' ? '融資背景：動產擔保' : 'Financing Context: Movable Collateral'}</h2>
@@ -381,7 +401,7 @@ function MarketOverview({ data, language }: { data: DataBundle; language: Langua
         { label: language === 'zh' ? '擔保債權金額' : 'Secured debt amount', value: formatNtd(secured.totalSecuredDebtAmountNtd, language) },
       ]} />
       <p className="notice">{language === 'zh' ? '動產擔保登記僅供融資與擔保背景觀察，不代表不動產抵押、房貸、信用評等、法律意見或即時權利狀態。' : 'Movable collateral records are financing and collateral context only, not real-estate mortgages, housing loans, credit ratings, legal advice, or real-time rights status.'}</p>
-      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 14 }))}>{language === 'zh' ? '查看動產擔保' : 'View movable collateral'}</button>
+      <button className="link-button" onClick={() => window.dispatchEvent(new CustomEvent('set-dashboard-tab', { detail: 15 }))}>{language === 'zh' ? '查看動產擔保' : 'View movable collateral'}</button>
     </section>}
     <div className="chart-grid">
       <ChartSection title={t.transactionCountByMonth}><ResponsiveContainer width="100%" height={280}>
@@ -892,11 +912,11 @@ function DataNotes({ language }: { language: Language }) {
   return <article className="notes">
     <h2>{t.dataNotes}</h2>
     {language === 'zh' ? <>
-      <p>本網站整理臺北市公開資料中的實價登錄、每季動態分析、住宅價格指數、住宅租金指數、消費者物價指數、城市用電、地價稅級距、使用執照摘要、所得收入與人口年齡資料，僅供資料探索與區域或市場趨勢觀察使用，並非不動產估價、租金估價、建物安全判定、產權查證、合法使用認定、稅務判斷、投資建議或價格預測。人口、所得、物價、用電、地價稅與使用執照資料僅作為區域背景脈絡，不代表房價、租金或交易量之因果解釋。</p>
-      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>住宅價格季指數以實價登錄資料庫為基礎，整理全市、公寓、大樓、小宅與12行政區季資料；欄位包含季指數、季變動率、標準住宅總價與標準住宅單價。季指數不代表個別住宅估價、實際成交價格、購屋建議、售屋建議、投資建議、房貸建議或價格預測。</li><li>住宅價格季指數未提供個別地址或經緯度；本網站不建立精確地圖點位，行政區排名排除全市與住宅類型列。</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>所得收入資料以 Big5/CP950 解碼，行政區排名排除「總平均」列；僅供所得與負擔能力背景觀察，不代表個別所得、稅務、貸款、投資、財務建議或市場預測，也不建立精確地圖點位。</li><li>消費者物價指數基本分類年指數以 Big5/CP950 解碼，民國年轉為西元年，並以語意分類鍵整理變動過的序號前綴；僅供物價、所得、租金與居住負擔背景使用，不代表個人或家庭實際通膨率、即時價格、房價預測、租金預測、購屋能力判斷、投資建議、房貸建議、政策成效判定、財務建議或官方背書，也不建立地圖點位。</li><li>台灣電力公司臺北市售電量資料以 UTF-8-SIG 解碼並支援 Big5/CP950 fallback，民國年轉為西元年，[千度] 欄位保留為千度並衍生 kWh；僅供城市用電、公共設施需求與經濟活動背景，不代表即時用電、個別用戶或建物用電、行政區用電、電價、停電風險、電網可靠度、碳排放或能源效率評估，也不建立地圖點位。</li><li>地價稅累進起點地價及課稅級距資料以 UTF-8-SIG 解碼並支援 Big5/CP950 fallback，保留來源公式原文並解析一般土地級距、稅率、累進差額與不同用地稅率；解析結果僅供視覺化與來源欄位整理，不代表正式稅額計算、稅務建議、法律意見、節稅規劃、申報指引或官方計算結果。資料未提供地址、行政區、地段、地號或經緯度，因此不建立地圖點位、行政區分布或個別土地分析。</li><li>動產擔保登記資料提供登記編號、核准日期、擔保類別、契約期間、債務人、擔保權人、標的物種類、所在地、標的物總金額與擔保債權金額等來源欄位；僅供融資與擔保背景觀察，不代表不動產抵押、房貸、即時權利狀態、信用評等、違約風險、法律意見、投資建議或完整債務資料庫。</li><li>動產擔保登記資料未提供官方座標；本網站只解析地址文字中的行政區，不進行地理編碼或建立精確地圖點位。遮罩統編會原樣保留，不推測缺漏識別資訊。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>動產質借處營業概況提供年度營運統計，欄位包含分處別、項目、本年質借件數、本金、現金利息收入與變賣金額；僅供社會經濟背景觀察，不代表房價、租金、房貸壓力、個人信用、貧窮程度、投資訊號、借貸建議或財務決策依據。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
+      <p>本網站整理臺北市公開資料中的實價登錄、每季動態分析、住宅價格指數、住宅租金指數、土地使用管制、消費者物價指數、城市用電、地價稅級距、使用執照摘要、所得收入與人口年齡資料，僅供資料探索與區域或市場趨勢觀察使用，並非不動產估價、租金估價、建物安全判定、產權查證、合法使用認定、稅務判斷、土地使用管制證明、建築許可、開發權利判定、投資建議或價格預測。</p>
+      <ul><li>週報總價以萬元轉為新臺幣；買賣單價由萬元/坪轉為新臺幣/坪。租賃單價保留元/坪/月。</li><li>民國年加 1911 轉為西元年；無法辨識的日期保留原值並寫入轉換報告。</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>住宅價格季指數以實價登錄資料庫為基礎，整理全市、公寓、大樓、小宅與12行政區季資料；欄位包含季指數、季變動率、標準住宅總價與標準住宅單價。季指數不代表個別住宅估價、實際成交價格、購屋建議、售屋建議、投資建議、房貸建議或價格預測。</li><li>住宅價格季指數未提供個別地址或經緯度；本網站不建立精確地圖點位，行政區排名排除全市與住宅類型列。</li><li>土地使用內容與使用管制彙整表提供行政區、分區、筆數、建蔽率、容積率上限與面積；本網站只做行政區與分區層級整理，不建立精確地圖點位、地號查詢、分區邊界或個別基地推論，衍生估算不代表可建面積、建築許可、土地使用管制證明、法律意見或開發權利保證。</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>商辦租金指數不含行政區、地址或經緯度，本網站不建立地圖點位。</li><li>所得收入資料以 Big5/CP950 解碼，行政區排名排除「總平均」列；僅供所得與負擔能力背景觀察，不代表個別所得、稅務、貸款、投資、財務建議或市場預測，也不建立精確地圖點位。</li><li>消費者物價指數基本分類年指數以 Big5/CP950 解碼，民國年轉為西元年，並以語意分類鍵整理變動過的序號前綴；僅供物價、所得、租金與居住負擔背景使用，不代表個人或家庭實際通膨率、即時價格、房價預測、租金預測、購屋能力判斷、投資建議、房貸建議、政策成效判定、財務建議或官方背書，也不建立地圖點位。</li><li>台灣電力公司臺北市售電量資料以 UTF-8-SIG 解碼並支援 Big5/CP950 fallback，民國年轉為西元年，[千度] 欄位保留為千度並衍生 kWh；僅供城市用電、公共設施需求與經濟活動背景，不代表即時用電、個別用戶或建物用電、行政區用電、電價、停電風險、電網可靠度、碳排放或能源效率評估，也不建立地圖點位。</li><li>地價稅累進起點地價及課稅級距資料以 UTF-8-SIG 解碼並支援 Big5/CP950 fallback，保留來源公式原文並解析一般土地級距、稅率、累進差額與不同用地稅率；解析結果僅供視覺化與來源欄位整理，不代表正式稅額計算、稅務建議、法律意見、節稅規劃、申報指引或官方計算結果。資料未提供地址、行政區、地段、地號或經緯度，因此不建立地圖點位、行政區分布或個別土地分析。</li><li>動產擔保登記資料提供登記編號、核准日期、擔保類別、契約期間、債務人、擔保權人、標的物種類、所在地、標的物總金額與擔保債權金額等來源欄位；僅供融資與擔保背景觀察，不代表不動產抵押、房貸、即時權利狀態、信用評等、違約風險、法律意見、投資建議或完整債務資料庫。</li><li>動產擔保登記資料未提供官方座標；本網站只解析地址文字中的行政區，不進行地理編碼或建立精確地圖點位。遮罩統編會原樣保留，不推測缺漏識別資訊。</li><li>使用執照大型 XML 在建置階段串流解析成摘要、分年統計與分塊 JSON；前端不載入原始 XML，也不進行地址地理編碼。</li><li>使用執照摘要僅供建物供給、建築年代與區域趨勢觀察，不等同正式使用執照謄本、最新建管資料、建物安全判定、產權查證、合法使用認定、不動產估價、租金估價或投資建議。</li><li>動產質借處營業概況提供年度營運統計，欄位包含分處別、項目、本年質借件數、本金、現金利息收入與變賣金額；僅供社會經濟背景觀察，不代表房價、租金、房貸壓力、個人信用、貧窮程度、投資訊號、借貸建議或財務決策依據。</li><li>人口資料使用行政區總計列，避免同時加總行政區、里別與男女列。</li></ul>
     </> : <>
-      <p>This site organizes Taipei public-data records for real-price registration, quarterly market analysis, residential price indexes, residential rent index, consumer price indexes, city electricity demand, land value tax brackets, building use-permit summaries, income, and population-by-age data for data exploration and regional or market trend observation only. It is not real-estate appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, investment advice, or price prediction. Population, income, price, electricity, land value tax, and use-permit data are regional context and do not represent causal explanation for housing prices, rent, or transaction volume.</p>
-      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>The residential price quarterly index is compiled from real-price registration data and organizes citywide, apartment, building, small-unit, and 12-district quarterly records. It includes quarterly index, quarterly change, standard total price, and standard unit price. It is not individual-home appraisal, actual transaction price, home-buying advice, home-selling advice, investment advice, mortgage advice, or price forecast.</li><li>The residential price quarterly index has no individual address or coordinate fields. No exact map points are generated, and district rankings exclude citywide and housing-type rows.</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Income data is decoded as Big5/CP950, district rankings exclude the city-average row, and the data is income and affordability context only. It is not individual income, tax, lending, investment, financial advice, or market prediction, and no exact map points are generated.</li><li>Annual CPI by basic classification is decoded as Big5/CP950, ROC years are converted to Gregorian years, and semantic keys normalize source labels whose ordinal prefixes changed. It is price, income, rent, and housing-affordability context only, not individual or household inflation, realtime prices, housing/rent forecasts, home-purchasing ability determination, investment advice, mortgage advice, policy-effectiveness determination, financial advice, or official endorsement. No map points are generated.</li><li>Taipower Taipei electricity sales data is decoded as UTF-8-SIG with Big5/CP950 fallback, ROC years are converted to Gregorian years, and [thousand kWh] fields are preserved while derived kWh fields are generated. It is city electricity, infrastructure demand, and economic-activity context only, not realtime demand, individual or building-level use, district-level electricity distribution, prices, outage risk, grid reliability, carbon emissions, or energy-efficiency assessment. No map points are generated.</li><li>Land value tax progressive starting point and bracket data is decoded as UTF-8-SIG with Big5/CP950 fallback. This site preserves source formulas and parses general land brackets, tax rates, progressive difference amounts, and land-use-specific tax rates. Parsed values are for visualization and source-field organization only, not official tax calculation, tax advice, legal advice, tax planning, filing guidance, or official calculation result. The data has no address, district, land section, parcel number, or coordinates, so no map points, district distributions, or individual land-parcel analysis are generated.</li><li>Movable property secured transaction records provide source fields such as registration number, approval date, secured transaction type, contract period, debtor, secured party, collateral type, collateral location, collateral value, and secured debt amount. They are financing and collateral context only, not real-estate mortgages, housing loans, real-time rights status, credit ratings, default risk, legal advice, investment advice, or a complete debt registry.</li><li>Movable property secured transaction records have no official coordinates. This site only parses districts from source text and does not geocode or create exact map points. Masked business numbers are preserved as source text and not inferred.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>Movable-property pledge business statistics are annual operating statistics for socioeconomic context only. They do not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, lending advice, or financial decisions.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
+      <p>This site organizes Taipei public-data records for real-price registration, quarterly market analysis, residential price indexes, residential rent index, land-use control, consumer price indexes, city electricity demand, land value tax brackets, building use-permit summaries, income, and population-by-age data for data exploration and regional or market trend observation only. It is not real-estate appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, zoning certificate, building permit, development-right determination, investment advice, or price prediction.</p>
+      <ul><li>Weekly total prices are converted from NT$10,000; sale unit prices are converted from NT$10,000/ping. Rental unit prices remain NTD/ping/month.</li><li>ROC years are converted by adding 1911. Unparsed values remain in the report.</li><li>{t.residentialPriceIndexDataNote}</li><li>{t.residentialPriceIndexInterpretationNote}</li><li>The residential price quarterly index is compiled from real-price registration data and organizes citywide, apartment, building, small-unit, and 12-district quarterly records. It includes quarterly index, quarterly change, standard total price, and standard unit price. It is not individual-home appraisal, actual transaction price, home-buying advice, home-selling advice, investment advice, mortgage advice, or price forecast.</li><li>The residential price quarterly index has no individual address or coordinate fields. No exact map points are generated, and district rankings exclude citywide and housing-type rows.</li><li>The land-use and development-control summary provides district, zoning name, count, BCR, FAR upper limit, and area. This site only summarizes district and zoning-name rows; it does not create exact map points, parcel lookup, zoning boundaries, or parcel-level rights inference. Derived estimates are not buildable area, building permission, zoning certification, legal advice, or development-right guarantees.</li><li>{t.rentIndexDataNote}</li><li>{t.commercialOfficeRentIndexDataNote}</li><li>{t.commercialOfficeRentIndexInterpretationNote}</li><li>Commercial office rent index data has no district, address, or coordinate fields; no map markers are generated.</li><li>Income data is decoded as Big5/CP950, district rankings exclude the city-average row, and the data is income and affordability context only. It is not individual income, tax, lending, investment, financial advice, or market prediction, and no exact map points are generated.</li><li>Annual CPI by basic classification is decoded as Big5/CP950, ROC years are converted to Gregorian years, and semantic keys normalize source labels whose ordinal prefixes changed. It is price, income, rent, and housing-affordability context only, not individual or household inflation, realtime prices, housing/rent forecasts, home-purchasing ability determination, investment advice, mortgage advice, policy-effectiveness determination, financial advice, or official endorsement. No map points are generated.</li><li>Taipower Taipei electricity sales data is decoded as UTF-8-SIG with Big5/CP950 fallback, ROC years are converted to Gregorian years, and [thousand kWh] fields are preserved while derived kWh fields are generated. It is city electricity, infrastructure demand, and economic-activity context only, not realtime demand, individual or building-level use, district-level electricity distribution, prices, outage risk, grid reliability, carbon emissions, or energy-efficiency assessment. No map points are generated.</li><li>Land value tax progressive starting point and bracket data is decoded as UTF-8-SIG with Big5/CP950 fallback. This site preserves source formulas and parses general land brackets, tax rates, progressive difference amounts, and land-use-specific tax rates. Parsed values are for visualization and source-field organization only, not official tax calculation, tax advice, legal advice, tax planning, filing guidance, or official calculation result. The data has no address, district, land section, parcel number, or coordinates, so no map points, district distributions, or individual land-parcel analysis are generated.</li><li>Movable property secured transaction records provide source fields such as registration number, approval date, secured transaction type, contract period, debtor, secured party, collateral type, collateral location, collateral value, and secured debt amount. They are financing and collateral context only, not real-estate mortgages, housing loans, real-time rights status, credit ratings, default risk, legal advice, investment advice, or a complete debt registry.</li><li>Movable property secured transaction records have no official coordinates. This site only parses districts from source text and does not geocode or create exact map points. Masked business numbers are preserved as source text and not inferred.</li><li>Large use-permit XML is parsed through a build-time stream into summaries, yearly statistics, and chunked JSON. The frontend never loads raw XML or geocodes addresses.</li><li>Use-permit summaries are building-stock context only; they are not official transcripts, current building-management records, safety assessments, title verification, legal-use determination, appraisal, or investment advice.</li><li>Movable-property pledge business statistics are annual operating statistics for socioeconomic context only. They do not represent real-estate prices, rents, mortgage stress, individual credit status, poverty level, investment signals, lending advice, or financial decisions.</li><li>District total population rows avoid double-counting district, village, male, and female levels.</li></ul>
     </>}
     <div className="source-links">
       <a href="https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc">臺北市實價周報</a>
@@ -907,6 +927,7 @@ function DataNotes({ language }: { language: Language }) {
       <a href="https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3">商辦租金指數</a>
       <a href="https://data.taipei/dataset/detail?id=7ee57050-4d27-482c-bae5-ebd15ca86702">臺北市消費者物價指數基本分類年指數</a>
       <a href="https://data.taipei/dataset/detail?id=9bfb5424-1996-461a-b19b-f75101e2f459">台灣電力公司臺北市售電量</a>
+      <a href="https://data.taipei/dataset/detail?id=d61ca24b-7b2b-4e75-8004-c568902e6300">臺北市土地使用內容與使用管制彙整表</a>
       <a href="https://data.taipei/dataset/detail?id=60e5f439-0cc0-4163-a91e-98241b6846c3">地價稅累進起點地價及課稅級距</a>
       <a href="https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733">臺北市歷年使用執照摘要</a>
       <a href="https://data.taipei/dataset/detail?id=33da4ba0-c366-45eb-a71f-1991e6455ed6">臺北市所得收入者每人所得</a>
@@ -1132,6 +1153,109 @@ function TaipowerTaipeiElectricitySales({ records, summary, language }: { record
       </div></details>
       <p className="table-count">{filtered.length.toLocaleString()} {label('筆紀錄', 'records')}</p>
       <div className="table-wrap"><table><thead><tr>{[label('民國年', 'ROC year'), label('西元年', 'Gregorian year'), label('總用戶數', 'Total customers'), label('總用電量', 'Total electricity sales'), label('每用戶用電量', 'Per-customer use'), label('電燈用電量', 'Lighting sales'), label('電力用電量', 'Power sales'), label('電燈占比', 'Lighting share'), label('電力占比', 'Power share'), label('年度用電量變化', 'YoY sales change')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}><td>{record.rocYear}</td><td>{record.gregorianYear}</td><td>{record.totalCustomerCount?.toLocaleString() ?? '—'}</td><td>{formatThousandKwh(record.totalElectricitySalesThousandKwh, language)}</td><td>{formatKwh(record.totalElectricityUsePerCustomerKwh, language)}</td><td>{formatThousandKwh(record.lightingElectricitySalesThousandKwh, language)}</td><td>{formatThousandKwh(record.powerElectricitySalesThousandKwh, language)}</td><td>{formatPercent(record.lightingShareOfTotalSales)}</td><td>{formatPercent(record.powerShareOfTotalSales)}</td><td>{formatThousandKwh(record.totalElectricitySalesYearOverYearChange, language)}</td></tr>)}</tbody></table></div>
+      <nav className="pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{label('上一頁', 'Previous')}</button><span>{label('頁', 'Page')} {Math.min(page, pages)} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{label('下一頁', 'Next')}</button></nav>
+    </section>
+  </>;
+}
+
+const zoningCategoryLabel = (category: LandUseZoningCategory, language: Language) => ({
+  residential: { zh: '住宅', en: 'Residential' },
+  commercial: { zh: '商業', en: 'Commercial' },
+  industrial: { zh: '工業', en: 'Industrial' },
+  administrative_public_institution: { zh: '機關', en: 'Public institution' },
+  school_education: { zh: '文教', en: 'Education' },
+  park_green_open_space: { zh: '公園綠地', en: 'Park / open space' },
+  transportation: { zh: '交通', en: 'Transportation' },
+  market: { zh: '市場', en: 'Market' },
+  parking: { zh: '停車', en: 'Parking' },
+  utility_infrastructure: { zh: '公用設備', en: 'Utility infrastructure' },
+  river_water: { zh: '河川水域', en: 'River / water' },
+  cultural_religious_social_welfare: { zh: '文化宗教社福', en: 'Culture / welfare' },
+  medical: { zh: '醫療', en: 'Medical' },
+  agriculture: { zh: '農業', en: 'Agriculture' },
+  special_district: { zh: '特定專用', en: 'Special district' },
+  public_facility: { zh: '公共設施', en: 'Public facility' },
+  other: { zh: '其他', en: 'Other' },
+  unknown: { zh: '未分類', en: 'Unknown' },
+}[category][language]);
+
+const developmentIntensityLabel = (category: DevelopmentIntensityCategory, language: Language) => ({
+  no_ratio_or_not_applicable: { zh: '未提供或不適用', en: 'No ratio / N.A.' },
+  very_low: { zh: '極低', en: 'Very low' },
+  low: { zh: '低', en: 'Low' },
+  medium: { zh: '中', en: 'Medium' },
+  high: { zh: '高', en: 'High' },
+  very_high: { zh: '極高', en: 'Very high' },
+  unknown: { zh: '未知', en: 'Unknown' },
+}[category][language]);
+
+function LandUseZoningControlSummaryView({ records, summary, language }: { records: LandUseZoningControlRecord[]; summary: LandUseZoningControlSummary; language: Language }) {
+  const label = (zh: string, en: string) => language === 'zh' ? zh : en;
+  const [district, setDistrict] = useState('');
+  const [category, setCategory] = useState('');
+  const [intensity, setIntensity] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const categories = [...new Set(records.map((record) => record.zoningCategory))].sort();
+  const intensities = [...new Set(records.map((record) => record.developmentIntensityCategory))].sort();
+  const filtered = records.filter((record) => (!district || record.districtName === district)
+    && (!category || record.zoningCategory === category)
+    && (!intensity || record.developmentIntensityCategory === intensity)
+    && (!search || `${record.districtName} ${record.zoningName} ${record.zoningCategory}`.toLowerCase().includes(search.toLowerCase())));
+  const pages = Math.max(1, Math.ceil(filtered.length / 25));
+  const visible = filtered.slice((Math.min(page, pages) - 1) * 25, Math.min(page, pages) * 25);
+  const ratioPresence = [
+    { name: label('有建蔽率', 'With BCR'), value: summary.recordsWithBuildingCoverageRatio },
+    { name: label('缺建蔽率', 'Missing BCR'), value: summary.recordsWithoutBuildingCoverageRatio },
+    { name: label('有容積率', 'With FAR'), value: summary.recordsWithFloorAreaRatioUpperLimit },
+    { name: label('缺容積率', 'Missing FAR'), value: summary.recordsWithoutFloorAreaRatioUpperLimit },
+  ];
+  const scatter = records.filter((record) => record.buildingCoverageRatioPercent !== undefined && record.floorAreaRatioUpperLimitPercent !== undefined).slice(0, 250).map((record) => ({
+    buildingCoverageRatioPercent: record.buildingCoverageRatioPercent,
+    floorAreaRatioUpperLimitPercent: record.floorAreaRatioUpperLimitPercent,
+    zoningName: record.zoningName,
+  }));
+  useEffect(() => setPage(1), [district, category, intensity, search]);
+  return <>
+    <section className="section-intro">
+      <h2>{label('土地使用內容與使用管制彙整表', 'Land Use and Development Control Summary')}</h2>
+      <p>{label('整理臺北市各行政區與分區層級的筆數、建蔽率、容積率上限與面積，作為土地使用組成與開發強度背景觀察。', 'Explore Taipei district-and-zoning-level record counts, building coverage ratios, FAR upper limits, and areas as land-use composition and development-intensity context.')}</p>
+      <p className="notice">{label('來源不含地址、地號、坐標或幾何邊界；本模組不建立地圖點位、不推論個別基地權利，也不構成土地使用管制證明、建築許可、法規意見或開發權利保證。衍生最大樓地板面積與建築 footprint 僅為依來源比率做的資料視覺化估算。', 'The source has no address, parcel number, coordinates, or geometry. This module does not create map points, infer parcel rights, or provide zoning certificates, building permits, legal advice, or development-right guarantees. Derived floor-area and footprint estimates are visualization-only planning context from source ratios.')}</p>
+    </section>
+    <MetricStrip items={[
+      { label: label('彙整列數', 'Rows'), value: summary.totalRecords.toLocaleString() },
+      { label: label('行政區數', 'Districts'), value: summary.districtCount },
+      { label: label('分區名稱數', 'Zoning names'), value: summary.uniqueZoningNameCount.toLocaleString() },
+      { label: label('來源筆數合計', 'Source count'), value: summary.totalSourceRecordCount.toLocaleString() },
+      { label: label('面積合計', 'Total area'), value: formatArea(summary.totalAreaSquareMeters, language) },
+      { label: label('建蔽率列數', 'Rows with BCR'), value: `${summary.recordsWithBuildingCoverageRatio.toLocaleString()} / ${summary.totalRecords.toLocaleString()}` },
+      { label: label('容積率列數', 'Rows with FAR'), value: `${summary.recordsWithFloorAreaRatioUpperLimit.toLocaleString()} / ${summary.totalRecords.toLocaleString()}` },
+      { label: label('最高建蔽率', 'Max BCR'), value: formatSourcePercent(summary.maxBuildingCoverageRatioPercent) },
+      { label: label('最高容積率', 'Max FAR'), value: formatSourcePercent(summary.maxFloorAreaRatioUpperLimitPercent) },
+      { label: label('最大面積類別', 'Largest category'), value: summary.largestZoningCategoryByArea ? zoningCategoryLabel(summary.largestZoningCategoryByArea, language) : '—' },
+      { label: label('最大面積行政區', 'Largest district'), value: districtLabel(summary.largestDistrictByArea, language) },
+      { label: label('公共/開放空間占比', 'Public/open-space share'), value: formatPercent(summary.publicFacilityOpenSpaceAreaShare) },
+    ]} />
+    <div className="chart-grid">
+      <ChartSection title={label('各行政區土地使用面積', 'Land-Use Area by District')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.byDistrict}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="districtName" angle={-35} textAnchor="end" height={72} tickFormatter={(value) => districtLabel(value, language)} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="totalAreaHectares" name={label('面積[公頃]', 'Area [ha]')} fill="#356f9d" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('土地使用類別面積', 'Area by Zoning Category')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.byZoningCategory.slice(0, 12).map((item) => ({ ...item, label: zoningCategoryLabel(item.zoningCategory, language) }))}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" angle={-30} textAnchor="end" height={84} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="totalAreaHectares" name={label('面積[公頃]', 'Area [ha]')} fill="#737d68" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('主要分區名稱面積', 'Top Zoning Names by Area')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.topZoningNamesByArea.slice(0, 10)}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="zoningName" angle={-30} textAnchor="end" height={84} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="totalAreaSquareMeters" name={label('面積[平方公尺]', 'Area [sqm]')} fill="#c58a43" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('各行政區平均容積率上限', 'Average FAR Upper Limit by District')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.byDistrict}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="districtName" angle={-35} textAnchor="end" height={72} tickFormatter={(value) => districtLabel(value, language)} /><YAxis tickFormatter={(value) => `${value}%`} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="averageFloorAreaRatioUpperLimitPercent" name={label('平均容積率上限', 'Average FAR upper limit')} fill="#b24738" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('建蔽率與容積率資料完整度', 'BCR / FAR Availability')}><ResponsiveContainer width="100%" height={300}><BarChart data={ratioPresence}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="name" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="value" name={label('列數', 'Rows')} fill="#775f86" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('開發強度分布', 'Development Intensity Distribution')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.byDevelopmentIntensityCategory.map((item) => ({ ...item, label: developmentIntensityLabel(item.developmentIntensityCategory, language) }))}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" angle={-25} textAnchor="end" height={72} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="recordRows" name={label('列數', 'Rows')} fill="#408579" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('建蔽率與容積率散布', 'BCR vs FAR Scatter')} note={label('僅顯示同時有建蔽率與容積率的列；點位不是地圖坐標。', 'Only rows with both BCR and FAR are shown; points are not map coordinates.')}><ResponsiveContainer width="100%" height={300}><ScatterChart><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="buildingCoverageRatioPercent" name={label('建蔽率', 'BCR')} type="number" unit="%" /><YAxis dataKey="floorAreaRatioUpperLimitPercent" name={label('容積率', 'FAR')} type="number" unit="%" /><Tooltip cursor={{ strokeDasharray: '3 3' }} /><Scatter name={label('分區列', 'Zoning rows')} data={scatter} fill="#356f9d" /></ScatterChart></ResponsiveContainer></ChartSection>
+    </div>
+    <section className="analysis-list">
+      <h2>{label('土地使用管制資料表', 'Land Use Control Table')}</h2>
+      <details className="filters" open><summary>{copy[language].filters}</summary><div className="filter-grid">
+        <label><span>{copy[language].district}</span><select value={district} onChange={(event) => setDistrict(event.target.value)}><option value="">{copy[language].allDistricts}</option>{DISTRICTS.map((item) => <option key={item} value={item}>{districtLabel(item, language)}</option>)}</select></label>
+        <label><span>{label('土地使用類別', 'Zoning category')}</span><select value={category} onChange={(event) => setCategory(event.target.value)}><option value="">{label('全部類別', 'All categories')}</option>{categories.map((item) => <option key={item} value={item}>{zoningCategoryLabel(item, language)}</option>)}</select></label>
+        <label><span>{label('開發強度', 'Intensity')}</span><select value={intensity} onChange={(event) => setIntensity(event.target.value)}><option value="">{label('全部', 'All')}</option>{intensities.map((item) => <option key={item} value={item}>{developmentIntensityLabel(item, language)}</option>)}</select></label>
+        <label className="search-field"><span>{label('搜尋', 'Search')}</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={label('搜尋行政區或分區名稱', 'Search district or zoning name')} type="search" /></label>
+      </div></details>
+      <p className="notice">{label('估算欄位只在來源建蔽率或容積率存在時產生，缺值不補值；0 會保留為來源明確的 0。', 'Estimate fields are generated only when source BCR/FAR exists. Missing values are not imputed; explicit 0 is preserved as a source value.')}</p>
+      <p className="table-count">{filtered.length.toLocaleString()} {label('筆紀錄', 'records')}</p>
+      <div className="table-wrap"><table><thead><tr>{[label('行政區', 'District'), label('分區', 'Zoning'), label('類別', 'Category'), label('筆數', 'Count'), label('建蔽率', 'BCR'), label('容積率上限', 'FAR upper'), label('面積', 'Area'), label('公頃', 'Hectares'), label('區內占比', 'District share'), label('開發強度', 'Intensity')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}><td>{districtLabel(record.districtName, language)}</td><th>{record.zoningName}</th><td>{zoningCategoryLabel(record.zoningCategory, language)}</td><td>{record.recordCount.toLocaleString()}</td><td>{formatSourcePercent(record.buildingCoverageRatioPercent)}</td><td>{formatSourcePercent(record.floorAreaRatioUpperLimitPercent)}</td><td>{record.areaSquareMeters.toLocaleString(language === 'zh' ? 'zh-TW' : 'en-US', { maximumFractionDigits: 2 })}</td><td>{record.areaHectares.toLocaleString(language === 'zh' ? 'zh-TW' : 'en-US', { maximumFractionDigits: 2 })}</td><td>{formatPercent(record.areaShareWithinDistrict)}</td><td>{developmentIntensityLabel(record.developmentIntensityCategory, language)}</td></tr>)}</tbody></table></div>
       <nav className="pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{label('上一頁', 'Previous')}</button><span>{label('頁', 'Page')} {Math.min(page, pages)} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{label('下一頁', 'Next')}</button></nav>
     </section>
   </>;
@@ -1415,6 +1539,8 @@ export default function App() {
       loadJson<ResidentialRentIndexSummary>('residential-rent-index-summary.json'),
       loadJson<LandParcelAssessedValueRecord[]>('land-parcel-assessed-value-records.json'),
       loadJson<LandParcelAssessedValueSummary>('land-parcel-assessed-value-summary.json'),
+      loadJson<LandUseZoningControlRecord[]>('land-use-zoning-control-summary.json'),
+      loadJson<LandUseZoningControlSummary>('land-use-zoning-control-summary-stats.json'),
       loadJson<IncomePerEarnerByDistrictYearRecord[]>('income-per-earner-by-district-year-records.json'),
       loadJson<IncomePerEarnerByDistrictYearSummary>('income-per-earner-by-district-year-summary.json'),
       loadJson<IncomePerEarnerByDistrictYearRecord[]>('income-per-earner-by-district-year-latest.json'),
@@ -1429,8 +1555,8 @@ export default function App() {
       loadJson<MovablePropertyPledgeBusinessSummary>('movable-property-pledge-business-summary.json'),
       loadJson<MovablePropertySecuredTransactionRecord[]>('movable-property-secured-transaction-records.json'),
       loadJson<MovablePropertySecuredTransactionSummary>('movable-property-secured-transaction-summary.json'),
-    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary]) =>
-      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary }),
+    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary]) =>
+      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary }),
     ).catch(() => setError(true));
   }, []);
 
@@ -1472,15 +1598,16 @@ export default function App() {
         {tab === 6 && <QuarterlyAnalysis data={data} language={language} />}
         {tab === 7 && <BuildingUsePermits language={language} />}
         {tab === 8 && <LandValue records={data.landValueRecords} summary={data.landValueSummary} language={language} />}
-        {tab === 9 && <LandValueTaxProgressiveBrackets records={data.landValueTaxRecords} summary={data.landValueTaxSummary} language={language} />}
-        {tab === 10 && <IncomePerEarnerByDistrictYear records={data.incomeRecords} summary={data.incomeSummary} latest={data.incomeLatest} language={language} />}
-        {tab === 11 && <ConsumerPriceBasicAnnualIndex records={data.cpiRecords} summary={data.cpiSummary} language={language} />}
-        {tab === 12 && <TaipowerTaipeiElectricitySales records={data.electricityRecords} summary={data.electricitySummary} language={language} />}
-        {tab === 13 && <MovablePropertyPledgeBusiness records={data.pledgeRecords} summary={data.pledgeSummary} language={language} />}
-        {tab === 14 && <MovablePropertySecuredTransactions records={data.securedTransactionRecords} summary={data.securedTransactionSummary} language={language} />}
-        {tab === 15 && <DemographicContext data={data} language={language} />}
-        {tab === 16 && <DataTable records={filteredRecords} language={language} />}
-        {tab === 17 && <DataNotes language={language} />}
+        {tab === 9 && <LandUseZoningControlSummaryView records={data.landUseZoningRecords} summary={data.landUseZoningSummary} language={language} />}
+        {tab === 10 && <LandValueTaxProgressiveBrackets records={data.landValueTaxRecords} summary={data.landValueTaxSummary} language={language} />}
+        {tab === 11 && <IncomePerEarnerByDistrictYear records={data.incomeRecords} summary={data.incomeSummary} latest={data.incomeLatest} language={language} />}
+        {tab === 12 && <ConsumerPriceBasicAnnualIndex records={data.cpiRecords} summary={data.cpiSummary} language={language} />}
+        {tab === 13 && <TaipowerTaipeiElectricitySales records={data.electricityRecords} summary={data.electricitySummary} language={language} />}
+        {tab === 14 && <MovablePropertyPledgeBusiness records={data.pledgeRecords} summary={data.pledgeSummary} language={language} />}
+        {tab === 15 && <MovablePropertySecuredTransactions records={data.securedTransactionRecords} summary={data.securedTransactionSummary} language={language} />}
+        {tab === 16 && <DemographicContext data={data} language={language} />}
+        {tab === 17 && <DataTable records={filteredRecords} language={language} />}
+        {tab === 18 && <DataNotes language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

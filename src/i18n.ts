@@ -3,8 +3,8 @@ import type { BuildingType, CommercialOfficeRentIndexCategory, Language, RealPri
 export const copy = {
   zh: {
     appTitle: '台北實價與人口趨勢儀表板',
-    appSubtitle: '結合實價登錄、住宅價格月指數、住宅價格季指數、住宅租金指數、商辦租金指數、所得收入、消費者物價指數、城市用電、地價稅級距、使用執照摘要與人口年齡資料，探索臺北房市與區域脈絡',
-    tabs: ['市場總覽', '房價月指數', '住宅季指數', '住宅租金', '商辦租金', '行政區比較', '每季動態', '使用執照', '土地現值', '地價稅級距', '所得收入', '物價年指數', '臺北市售電量', '動產質借', '動產擔保', '人口脈絡', '資料表', '資料說明'],
+    appSubtitle: '結合實價登錄、住宅價格月指數、住宅價格季指數、住宅租金指數、商辦租金指數、所得收入、消費者物價指數、城市用電、土地使用管制、地價稅級距、使用執照摘要與人口年齡資料，探索臺北房市與區域脈絡',
+    tabs: ['市場總覽', '房價月指數', '住宅季指數', '住宅租金', '商辦租金', '行政區比較', '每季動態', '使用執照', '土地現值', '土地使用管制', '地價稅級距', '所得收入', '物價年指數', '臺北市售電量', '動產質借', '動產擔保', '人口脈絡', '資料表', '資料說明'],
     filters: '篩選條件',
     allDistricts: '全部行政區',
     allTypes: '全部類型',
@@ -162,12 +162,12 @@ export const copy = {
     officialText: '官方動態分析原文',
     loading: '載入公開資料中…',
     loadError: '無法載入本機資料檔。',
-    footer: '資料來源：臺北市公開資料中的實價登錄、住宅價格指數、住宅租金指數、商辦租金指數、消費者物價指數基本分類年指數、台灣電力公司臺北市售電量、地價稅累進起點地價及課稅級距、使用執照摘要、土地筆數面積及公告土地現值統計、各里人口年齡、所得收入者每人所得、動產質借處營業概況、動產擔保登記資料與其他不動產及經濟背景資料。資料僅供資料探索、歷史趨勢觀察與背景分析使用，不構成估價、投資建議、房貸建議、稅務建議、法律意見、節稅規劃、申報指引、能源效率評估、即時用電資訊、電價分析、停電風險判定、信用評等、違約風險判斷、完整債務資料庫、即時權利狀態、交易決策或官方背書。最新與正式資訊請以主管機關公告、稅捐稽徵機關、台灣電力公司、正式登記資料、契約文件及專業意見為準。',
+    footer: '資料來源：臺北市公開資料中的實價登錄、住宅價格指數、住宅租金指數、商辦租金指數、消費者物價指數基本分類年指數、台灣電力公司臺北市售電量、土地使用內容與使用管制彙整表、地價稅累進起點地價及課稅級距、使用執照摘要、土地筆數面積及公告土地現值統計、各里人口年齡、所得收入者每人所得、動產質借處營業概況、動產擔保登記資料與其他不動產及經濟背景資料。資料僅供資料探索、歷史趨勢觀察與背景分析使用，不構成估價、投資建議、房貸建議、稅務建議、法律意見、土地使用管制證明、建築許可、開發權利判定、節稅規劃、申報指引、能源效率評估、即時用電資訊、電價分析、停電風險判定、信用評等、違約風險判斷、完整債務資料庫、即時權利狀態、交易決策或官方背書。最新與正式資訊請以主管機關公告、都市發展主管機關、地政機關、稅捐稽徵機關、台灣電力公司、正式登記資料、契約文件及專業意見為準。',
   },
   en: {
     appTitle: 'Taipei Real Estate & Demographics Dashboard',
-    appSubtitle: 'Explore Taipei real-price records, residential price monthly and quarterly indexes, rent indexes, income, consumer price indexes, city electricity demand, land value tax brackets, building use permits, and demographic context',
-    tabs: ['Market Overview', 'Monthly Price', 'Quarterly Price', 'Residential Rent', 'Office Rent', 'District Comparison', 'Quarterly Analysis', 'Use Permits', 'Land Value', 'Land Value Tax', 'Income', 'Annual CPI', 'Electricity Sales', 'Pledge Loans', 'Movable Collateral', 'Demographic Context', 'Data Table', 'Data Notes'],
+    appSubtitle: 'Explore Taipei real-price records, residential price monthly and quarterly indexes, rent indexes, income, consumer price indexes, city electricity demand, land-use control, land value tax brackets, building use permits, and demographic context',
+    tabs: ['Market Overview', 'Monthly Price', 'Quarterly Price', 'Residential Rent', 'Office Rent', 'District Comparison', 'Quarterly Analysis', 'Use Permits', 'Land Value', 'Land Use Control', 'Land Value Tax', 'Income', 'Annual CPI', 'Electricity Sales', 'Pledge Loans', 'Movable Collateral', 'Demographic Context', 'Data Table', 'Data Notes'],
     filters: 'Filters',
     allDistricts: 'All districts',
     allTypes: 'All types',
@@ -325,7 +325,7 @@ export const copy = {
     officialText: 'Official analysis text',
     loading: 'Loading public data…',
     loadError: 'Unable to load local data files.',
-    footer: 'Data sources: Taipei public-data records related to real-price registration, residential price indexes, residential rent indexes, commercial office rent indexes, annual consumer price indexes by basic classification, Taipower Taipei electricity sales, land value tax progressive starting points and brackets, building use permit summaries, land parcel and assessed land value statistics, village-level population age data, income per earner data, movable property pledge business statistics, movable property secured transaction registration data, and other real-estate and economic context data. The data is for data exploration, historical trend observation, and background analysis only and does not constitute appraisal, investment advice, mortgage advice, tax advice, legal advice, tax planning, filing guidance, energy-efficiency assessment, real-time electricity information, electricity price analysis, outage risk determination, credit rating, default-risk assessment, a complete debt registry, real-time rights status, transaction decisions, or official endorsement. Latest and official information should be verified with competent-authority announcements, tax authorities, Taiwan Power Company, formal registration records, contract documents, and professional advice.',
+    footer: 'Data sources: Taipei public-data records related to real-price registration, residential price indexes, residential rent indexes, commercial office rent indexes, annual consumer price indexes by basic classification, Taipower Taipei electricity sales, land-use and development-control summary data, land value tax progressive starting points and brackets, building use permit summaries, land parcel and assessed land value statistics, village-level population age data, income per earner data, movable property pledge business statistics, movable property secured transaction registration data, and other real-estate and economic context data. The data is for data exploration, historical trend observation, and background analysis only and does not constitute appraisal, investment advice, mortgage advice, tax advice, legal advice, land-use control certificate, building permit, development-right determination, tax planning, filing guidance, energy-efficiency assessment, real-time electricity information, electricity price analysis, outage risk determination, credit rating, default-risk assessment, a complete debt registry, real-time rights status, transaction decisions, or official endorsement. Latest and official information should be verified with competent-authority announcements, urban development authorities, land administration authorities, tax authorities, Taiwan Power Company, formal registration records, contract documents, and professional advice.',
   },
 } as const;
 

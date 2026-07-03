@@ -26,6 +26,7 @@ try {
     consumerPriceBasicAnnualIndex: previous?.consumerPriceBasicAnnualIndex,
     taipowerTaipeiElectricitySales: previous?.taipowerTaipeiElectricitySales,
     landValueTaxProgressiveBrackets: previous?.landValueTaxProgressiveBrackets,
+    landUseZoningControlSummary: previous?.landUseZoningControlSummary,
   } as RealEstateSummary;
   const citywide = summary.latestByCategory.find((item) => item.category === 'citywide');
   const majorRoad = summary.latestByCategory.find((item) => item.category === 'major_roads');

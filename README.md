@@ -1,6 +1,6 @@
 # Taipei Real Estate & Demographics Dashboard / 台北實價與人口趨勢儀表板
 
-Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price trends: monthly and quarterly residential price indexes, including district-level quarterly comparison / 住宅價格趨勢：住宅價格月指數與季指數，包含行政區季資料比較, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, land value tax bracket and holding-cost policy context / 地價稅級距與持有成本政策背景, income-per-earner affordability context / 所得收入與負擔能力背景, prices and affordability context: annual CPI by basic classification / 物價與居住負擔背景：消費者物價指數基本分類年指數, urban electricity and economic activity indicators: Taipower Taipei electricity sales / 城市用電與經濟活動指標：台灣電力公司臺北市售電量, financing and collateral context: movable property secured transaction registration records / 融資與擔保背景：動產擔保登記資料, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
+Mobile-first bilingual dashboard for exploring Taipei real-price records, residential price trends: monthly and quarterly residential price indexes, including district-level quarterly comparison / 住宅價格趨勢：住宅價格月指數與季指數，包含行政區季資料比較, commercial office rent index trends for citywide and major-road categories / 全市與主要路段商辦租金指數趨勢, quarterly market analysis, residential rent index trends, building use-permit summary trends, land-stock and announced land-value context by district / 各行政區土地存量與公告土地現值背景, land-use and development-control context / 土地使用內容與使用管制背景, land value tax bracket and holding-cost policy context / 地價稅級距與持有成本政策背景, income-per-earner affordability context / 所得收入與負擔能力背景, prices and affordability context: annual CPI by basic classification / 物價與居住負擔背景：消費者物價指數基本分類年指數, urban electricity and economic activity indicators: Taipower Taipei electricity sales / 城市用電與經濟活動指標：台灣電力公司臺北市售電量, financing and collateral context: movable property secured transaction registration records / 融資與擔保背景：動產擔保登記資料, demographic context, and socioeconomic context: annual movable-property pledge business statistics / 社會經濟背景：年度動產質借處營業概況.
 
 ## Purpose
 
@@ -15,6 +15,7 @@ The site combines Taipei public-data sources:
 - [臺北市歷年使用執照摘要](https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733)
 - [臺北市115年度使用執照摘要](https://data.taipei/dataset/detail?id=0816f991-e6c8-4da0-a789-d022fee1462b)
 - [臺北市土地筆數面積及公告土地現值統計](https://data.taipei/dataset/detail?id=68c439fc-877a-42bb-9c35-a3701e8fc9c3)
+- [臺北市土地使用內容與使用管制彙整表](https://data.taipei/dataset/detail?id=d61ca24b-7b2b-4e75-8004-c568902e6300)
 - [臺北市所得收入者每人所得－行政區別按年別](https://data.taipei/dataset/detail?id=33da4ba0-c366-45eb-a71f-1991e6455ed6)
 - [臺北市消費者物價指數基本分類年指數](https://data.taipei/dataset/detail?id=7ee57050-4d27-482c-bae5-ebd15ca86702)
 - [台灣電力公司臺北市售電量](https://data.taipei/dataset/detail?id=9bfb5424-1996-461a-b19b-f75101e2f459)
@@ -23,7 +24,7 @@ The site combines Taipei public-data sources:
 - [臺北市動產質借處營業概況](https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9)
 - [臺北市動產擔保登記資料](https://data.taipei/dataset/detail?id=cb964837-c602-4238-b6c0-f63ad1094d5e)
 
-It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, tax judgment, tax advice, filing guidance, transaction advice, investment recommendation, lending advice, financial advice, energy-efficiency assessment, electricity price analysis, outage-risk determination, or price prediction tool. Population, income, CPI, electricity, land-value tax, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
+It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, zoning certificate, building permit, development-right determination, tax judgment, tax advice, filing guidance, transaction advice, investment recommendation, lending advice, financial advice, energy-efficiency assessment, electricity price analysis, outage-risk determination, or price prediction tool. Population, income, CPI, electricity, land-use control, land-value tax, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
 
 ## Data model and limitations
 
@@ -47,6 +48,9 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 - Population files contain city, district, village, male, female, and total rows. Conversion uses district rows where `性別=計` to avoid double counting.
 - ROC dates are converted by adding 1911. Failed parses remain in the conversion report.
 - Land-value CSV resource names provide ROC years. Source thousand-NTD values become NTD; per-hectare and urban public/private/joint ownership metrics are derived for district context only. No parcel-level map, market-price, appraisal, or investment claim is made.
+- Land-use and development-control summary is a separate `land_use_zoning_control_summary` module. Its UTF-8-SIG CSV is decoded with Big5/CP950 fallback and parses district, zoning name, source record count, building coverage ratio, FAR upper limit, and area.
+- Land-use conversion preserves missing BCR/FAR as missing while explicit `0` remains a real source value. It derives hectares, ping, district/city area shares, development-intensity buckets, and visualization-only estimated maximum floor area or footprint when source ratios exist.
+- Land-use data has no address, parcel number, coordinate, or geometry fields. It does not create map markers, zoning boundaries, parcel lookup, geocoding, legal zoning certificates, parcel capacity guarantees, building-permit conclusions, legal advice, or development-right guarantees.
 - Movable-property pledge business CSV resources are annual Big5 files. ROC resource years such as `112年度` become Gregorian years such as `2023`; branch, item, pledge-loan case count, pledge principal, cash interest income, sale total, sale principal, sale interest, and sale profit are parsed into annual records and summaries.
 - Movable-property pledge business statistics are socioeconomic background only. They are not real-estate price, rent, mortgage-stress, individual-credit, poverty, investment, lending, financial-advice, or forecast signals.
 - Movable-property pledge business statistics provide no branch addresses or coordinates, so no map markers or geocoding are generated.
@@ -98,6 +102,7 @@ data/raw/residential-rent-index/
 data/raw/population-by-age/
 data/raw/building-use-permits/
 data/raw/land-parcel-assessed-value-statistics/
+data/raw/land-use-zoning-control-summary/
 data/raw/income-per-earner-by-district-year/
 data/raw/consumer-price-basic-annual-index/
 data/raw/taipower-taipei-electricity-sales/
@@ -137,6 +142,8 @@ public/data/conversion-report.json
 public/data/building-use-permits/
 public/data/land-parcel-assessed-value-records.json
 public/data/land-parcel-assessed-value-summary.json
+public/data/land-use-zoning-control-summary.json
+public/data/land-use-zoning-control-summary-stats.json
 public/data/income-per-earner-by-district-year-records.json
 public/data/income-per-earner-by-district-year-summary.json
 public/data/income-per-earner-by-district-year-latest.json
@@ -176,6 +183,8 @@ npm run data:fetch:taipower-electricity
 npm run data:convert:taipower-electricity
 npm run data:fetch:land-value-tax-brackets
 npm run data:convert:land-value-tax-brackets
+npm run data:fetch:land-use-zoning
+npm run data:convert:land-use-zoning
 npm run data:fetch:pledge-business
 npm run data:convert:pledge-business
 npm run data:fetch:movable-secured-transactions

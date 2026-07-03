@@ -21,6 +21,8 @@ export type ConsumerPriceClassificationGroup = 'total' | 'food' | 'clothing' | '
 export type ConsumerPriceClassificationLevel = 'total' | 'main_category' | 'sub_category' | 'unknown';
 export type AnnualTrendDirection = 'increase' | 'decrease' | 'no_change' | 'first_record' | 'unknown';
 export type LandValueTaxPeriodCategory = 'annual' | 'full_period' | 'first_half' | 'second_half' | 'first_period' | 'second_period' | 'other' | 'unknown';
+export type LandUseZoningCategory = 'residential' | 'commercial' | 'industrial' | 'administrative_public_institution' | 'school_education' | 'park_green_open_space' | 'transportation' | 'market' | 'parking' | 'utility_infrastructure' | 'river_water' | 'cultural_religious_social_welfare' | 'medical' | 'agriculture' | 'special_district' | 'public_facility' | 'other' | 'unknown';
+export type DevelopmentIntensityCategory = 'no_ratio_or_not_applicable' | 'very_low' | 'low' | 'medium' | 'high' | 'very_high' | 'unknown';
 export type MovablePropertyPledgeItemCategory = 'total' | 'gold_jewelry' | 'watches' | 'motorcycle' | 'other' | 'unknown';
 export type SecuredTransactionCategory = 'movable_property_mortgage' | 'conditional_sale' | 'other' | 'unknown';
 export type MovableCollateralTypeCategory = 'machinery_equipment_or_tools' | 'vehicle_or_transport' | 'inventory_or_goods' | 'other' | 'unknown';
@@ -219,6 +221,34 @@ export type LandValueTaxProgressiveBracketSummary = {
   byGregorianYear: Array<{ gregorianYear: number; rocYear: number; recordCount: number; taxPeriods: string[]; progressiveStartingPointLandValue?: number; generalLandTaxBracketCount?: number; selfUseResidentialLandTaxRatePermille?: number; industrialLandTaxRatePermille?: number; publicFacilityReservedLandTaxRatePermille?: number }>;
   annualSeries: Array<Pick<LandValueTaxProgressiveBracketRecord, 'rocYear' | 'gregorianYear' | 'taxPeriod' | 'paymentPeriodStartDate' | 'paymentPeriodEndDate' | 'paymentPeriodMonth' | 'paymentPeriodDayCount' | 'generalLandProgressiveStartingPointLandValue' | 'generalLandLowestRatePermille' | 'generalLandHighestRatePermille' | 'generalLandTaxBracketCount' | 'selfUseResidentialLandTaxRatePermille' | 'industrialLandTaxRatePermille' | 'publicFacilityReservedLandTaxRatePermille' | 'yearOverYearProgressiveStartingPointChange' | 'yearOverYearProgressiveStartingPointPercentChange'>>;
   dataQuality: { missingYearCount: number; invalidYearCount: number; duplicateYearPeriodCount: number; missingTaxPeriodCount: number; unknownTaxPeriodCount: number; missingPaymentPeriodStartCount: number; invalidPaymentPeriodStartCount: number; missingPaymentPeriodEndCount: number; invalidPaymentPeriodEndCount: number; invalidPaymentPeriodRangeCount: number; missingGeneralLandFormulaCount: number; failedGeneralLandBracketParseCount: number; missingSelfUseResidentialFormulaCount: number; failedSelfUseResidentialRateParseCount: number; missingIndustrialFormulaCount: number; failedIndustrialRateParseCount: number; missingPublicFacilityReservedFormulaCount: number; failedPublicFacilityReservedRateParseCount: number; duplicateFallbackKeyCount: number };
+};
+
+export type LandUseZoningControlRecord = {
+  id: string; module: 'land_use_zoning_control_summary'; districtName: string; districtNameNormalized?: string; isTaipeiDistrict: boolean;
+  zoningName: string; zoningNameNormalized?: string; zoningCategory: LandUseZoningCategory; zoningUseFamily?: string; recordCount: number;
+  isResidentialZoning: boolean; isCommercialZoning: boolean; isIndustrialZoning: boolean; isPublicFacilityZoning: boolean; isTransportationZoning: boolean; isOpenSpaceOrGreenZoning: boolean; isRiverOrWaterZoning: boolean;
+  buildingCoverageRatioPercent?: number; buildingCoverageRatioDecimal?: number; hasBuildingCoverageRatio: boolean;
+  floorAreaRatioUpperLimitPercent?: number; floorAreaRatioUpperLimitDecimal?: number; hasFloorAreaRatioUpperLimit: boolean;
+  areaSquareMeters: number; areaHectares: number; areaPing: number; areaShareWithinDistrict?: number; areaShareCitywide?: number; recordCountShareWithinDistrict?: number;
+  developmentIntensityCategory: DevelopmentIntensityCategory;
+  estimatedMaxFloorAreaSquareMeters?: number; estimatedMaxFloorAreaHectares?: number; estimatedMaxFloorAreaPing?: number;
+  estimatedBuildingFootprintLimitSquareMeters?: number; estimatedBuildingFootprintLimitHectares?: number; estimatedBuildingFootprintLimitPing?: number;
+  sourceRecordHash?: string; source: string; sourceAgency: string;
+};
+
+export type LandUseZoningControlSummary = {
+  totalRecords: number; districtCount: number; uniqueZoningNameCount: number; totalSourceRecordCount: number; totalAreaSquareMeters: number; totalAreaHectares: number; totalAreaPing: number;
+  recordsWithBuildingCoverageRatio: number; recordsWithoutBuildingCoverageRatio: number; recordsWithFloorAreaRatioUpperLimit: number; recordsWithoutFloorAreaRatioUpperLimit: number;
+  minBuildingCoverageRatioPercent?: number; maxBuildingCoverageRatioPercent?: number; averageBuildingCoverageRatioPercent?: number;
+  minFloorAreaRatioUpperLimitPercent?: number; maxFloorAreaRatioUpperLimitPercent?: number; averageFloorAreaRatioUpperLimitPercent?: number;
+  totalEstimatedMaxFloorAreaSquareMeters?: number; totalEstimatedBuildingFootprintLimitSquareMeters?: number;
+  largestZoningCategoryByArea?: LandUseZoningCategory; largestDistrictByArea?: string; highestAverageFarDistrict?: string; highestAverageBcrDistrict?: string; publicFacilityOpenSpaceAreaShare?: number;
+  byDistrict: Array<{ districtName: string; recordRows: number; sourceRecordCount: number; uniqueZoningNameCount: number; totalAreaSquareMeters: number; totalAreaHectares: number; citywideAreaShare: number; averageBuildingCoverageRatioPercent?: number; averageFloorAreaRatioUpperLimitPercent?: number; maxBuildingCoverageRatioPercent?: number; maxFloorAreaRatioUpperLimitPercent?: number; recordsWithBuildingCoverageRatio: number; recordsWithFloorAreaRatioUpperLimit: number }>;
+  byZoningCategory: Array<{ zoningCategory: LandUseZoningCategory; recordRows: number; sourceRecordCount: number; districtCount: number; uniqueZoningNameCount: number; totalAreaSquareMeters: number; totalAreaHectares: number; citywideAreaShare: number; averageBuildingCoverageRatioPercent?: number; averageFloorAreaRatioUpperLimitPercent?: number }>;
+  byDevelopmentIntensityCategory: Array<{ developmentIntensityCategory: DevelopmentIntensityCategory; recordRows: number; totalAreaSquareMeters: number; citywideAreaShare: number }>;
+  topZoningNamesByArea: Array<{ zoningName: string; zoningCategory: LandUseZoningCategory; totalAreaSquareMeters: number; districtCount: number; sourceRecordCount: number }>;
+  topDistrictZoningCombinationsByArea: Array<Pick<LandUseZoningControlRecord, 'districtName' | 'zoningName' | 'zoningCategory' | 'areaSquareMeters' | 'areaShareWithinDistrict' | 'buildingCoverageRatioPercent' | 'floorAreaRatioUpperLimitPercent'>>;
+  dataQuality: { missingDistrictCount: number; unknownDistrictCount: number; missingZoningNameCount: number; missingRecordCountCount: number; invalidRecordCountCount: number; missingBuildingCoverageRatioCount: number; invalidBuildingCoverageRatioCount: number; missingFloorAreaRatioUpperLimitCount: number; invalidFloorAreaRatioUpperLimitCount: number; missingAreaCount: number; invalidAreaCount: number; duplicateDistrictZoningKeyCount: number; zeroAreaCount: number; zeroBuildingCoverageRatioCount: number; zeroFloorAreaRatioCount: number };
 };
 
 export function classifyBuildingConstructionType(raw: string | undefined): BuildingConstructionType {
@@ -671,5 +701,15 @@ export type RealEstateSummary = {
     latestGeneralLandHighestRatePermille?: number;
     latestGeneralLandTaxBracketCount?: number;
     latestYearOverYearProgressiveStartingPointPercentChange?: number;
+  };
+  landUseZoningControlSummary?: {
+    totalRecords?: number;
+    districtCount?: number;
+    uniqueZoningNameCount?: number;
+    totalAreaSquareMeters?: number;
+    maxFloorAreaRatioUpperLimitPercent?: number;
+    maxBuildingCoverageRatioPercent?: number;
+    largestZoningCategoryByArea?: string;
+    largestDistrictByArea?: string;
   };
 };

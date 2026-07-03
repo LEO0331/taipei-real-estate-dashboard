@@ -31,6 +31,7 @@ import { normalizeIncomeDistrict, parseNtdValue, parseRocYear as parseIncomeRocY
 import { classifyConsumerPriceGroup, classifyConsumerPriceLevel, makeConsumerPriceBasicAnnualIndexRecord, parseAnnualChangePercent, parseRocYear as parseCpiRocYear } from './convertConsumerPriceBasicAnnualIndex.ts';
 import { classifyAnnualTrend, convertTaipowerTaipeiElectricitySalesRows, parseIntegerMetric, parseTaipeiElectricityPeriod, safeShare, thousandKwhToKwh } from './convertTaipowerTaipeiElectricitySales.ts';
 import { calculatePaymentPeriodDayCount, classifyLandValueTaxPeriod, convertLandValueTaxProgressiveBracketRows, parseFlatLandTaxFormula, parseGeneralLandTaxFormula, parseLandValueTaxPaymentDate, parseLandValueTaxRocYear } from './convertLandValueTaxProgressiveBrackets.ts';
+import { classifyDevelopmentIntensity, classifyLandUseZoningCategory, convertLandUseZoningControlRows, parsePercentRatio, parseTaipeiDistrictName } from './convertLandUseZoningControlSummary.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -169,6 +170,24 @@ test('parses land value tax bracket formulas and annual trends', () => {
   assert.equal(records[1].industrialLandTaxRatePermille, 10);
   assert.equal(records[1].yearOverYearProgressiveStartingPointChange, 2165000);
   assert.equal(records[1].isLatestRecord, true);
+});
+
+test('parses land-use zoning controls and preserves missing ratios', () => {
+  assert.deepEqual(parseTaipeiDistrictName('台北市大安區').districtNameNormalized, '大安區');
+  assert.equal(parseTaipeiDistrictName('大安區').isTaipeiDistrict, true);
+  assert.equal(classifyLandUseZoningCategory('第三種住宅區'), 'residential');
+  assert.equal(classifyLandUseZoningCategory('變電所用地'), 'utility_infrastructure');
+  assert.deepEqual(parsePercentRatio('', '建蔽率/百分比'), { hasValue: false, warning: undefined });
+  assert.equal(parsePercentRatio('0', '容積率上限/百分比').decimal, 0);
+  assert.equal(classifyDevelopmentIntensity(800), 'very_high');
+  const records = convertLandUseZoningControlRows([
+    { 行政區: '中山區', 分區: '第三種住宅區', 筆數: '471', '建蔽率/百分比': '45', '容積率上限/百分比': '225', '面積/平方公尺': '1,579,600.5' },
+    { 行政區: '中山區', 分區: '公園用地', 筆數: '10', '建蔽率/百分比': '', '容積率上限/百分比': '', '面積/平方公尺': '10000' },
+  ]);
+  assert.equal(records[0].buildingCoverageRatioDecimal, 0.45);
+  assert.equal(records[0].estimatedMaxFloorAreaSquareMeters, 3554101.125);
+  assert.equal(records[1].hasFloorAreaRatioUpperLimit, false);
+  assert.equal(records[1].areaShareWithinDistrict, 10000 / 1589600.5);
 });
 
 test('classifies building and record types', () => {
