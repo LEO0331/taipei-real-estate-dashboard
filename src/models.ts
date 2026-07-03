@@ -20,6 +20,7 @@ export type CommercialOfficeRentIndexCategory = 'citywide' | 'major_roads' | 'ot
 export type ConsumerPriceClassificationGroup = 'total' | 'food' | 'clothing' | 'housing' | 'transport_communication' | 'healthcare' | 'education_recreation' | 'miscellaneous' | 'other' | 'unknown';
 export type ConsumerPriceClassificationLevel = 'total' | 'main_category' | 'sub_category' | 'unknown';
 export type AnnualTrendDirection = 'increase' | 'decrease' | 'no_change' | 'first_record' | 'unknown';
+export type LandValueTaxPeriodCategory = 'annual' | 'full_period' | 'first_half' | 'second_half' | 'first_period' | 'second_period' | 'other' | 'unknown';
 export type MovablePropertyPledgeItemCategory = 'total' | 'gold_jewelry' | 'watches' | 'motorcycle' | 'other' | 'unknown';
 export type SecuredTransactionCategory = 'movable_property_mortgage' | 'conditional_sale' | 'other' | 'unknown';
 export type MovableCollateralTypeCategory = 'machinery_equipment_or_tools' | 'vehicle_or_transport' | 'inventory_or_goods' | 'other' | 'unknown';
@@ -192,6 +193,32 @@ export type TaipowerTaipeiElectricitySalesSummary = {
   latestLightingShareOfTotalSales?: number; latestPowerShareOfTotalSales?: number;
   annualSeries: Array<Pick<TaipowerTaipeiElectricitySalesRecord, 'rocYear' | 'gregorianYear' | 'totalCustomerCount' | 'totalElectricitySalesThousandKwh' | 'totalElectricityUsePerCustomerKwh' | 'lightingElectricitySalesThousandKwh' | 'powerElectricitySalesThousandKwh' | 'lightingCustomerCount' | 'powerCustomerCount' | 'totalElectricitySalesYearOverYearChange' | 'totalElectricitySalesYearOverYearPercentChange' | 'totalCustomerCountYearOverYearChange' | 'totalElectricityUsePerCustomerYearOverYearChange' | 'lightingShareOfTotalSales' | 'powerShareOfTotalSales' | 'lightingMeteredBusinessElectricitySalesThousandKwh' | 'lightingMeteredNonBusinessElectricitySalesThousandKwh'>>;
   dataQuality: { missingPeriodCount: number; invalidPeriodCount: number; duplicateYearCount: number; missingTotalCustomerCountCount: number; invalidTotalCustomerCountCount: number; missingTotalElectricitySalesCount: number; invalidTotalElectricitySalesCount: number; missingPerCustomerUseCount: number; invalidPerCustomerUseCount: number; categorySumMismatchCount: number; duplicateFallbackKeyCount: number };
+};
+
+export type LandValueTaxBracket = {
+  bracketNumber: number; lowerBoundLandValue?: number; upperBoundLandValue?: number; isLowerBoundInclusive: boolean; isUpperBoundInclusive: boolean; isOpenEnded: boolean; ratePermille: number; progressiveDifferenceAmount?: number; rawLine: string;
+};
+
+export type LandValueTaxProgressiveBracketRecord = {
+  id: string; module: 'land_value_tax_progressive_brackets'; rocYearRaw?: string; rocYear: number; gregorianYear: number; yearLabelZh: string; yearLabelEn: string;
+  taxPeriodRaw: string; taxPeriod: string; taxPeriodCategory: LandValueTaxPeriodCategory;
+  paymentPeriodStartRaw?: string; paymentPeriodEndRaw?: string; paymentPeriodStartDate?: string; paymentPeriodEndDate?: string; paymentPeriodMonth?: number; paymentPeriodDayCount?: number;
+  generalLandTaxFormulaRaw: string; generalLandTaxBrackets: LandValueTaxBracket[]; generalLandTaxBracketCount: number; generalLandProgressiveStartingPointLandValue?: number; generalLandLowestRatePermille?: number; generalLandHighestRatePermille?: number; generalLandHighestBracketLowerBound?: number; generalLandFormulaHasHalfYearMultiplier: boolean;
+  selfUseResidentialLandTaxFormulaRaw: string; selfUseResidentialLandTaxRatePermille?: number; selfUseResidentialFormulaHasHalfYearMultiplier: boolean;
+  industrialLandTaxFormulaRaw: string; industrialLandTaxRatePermille?: number; industrialFormulaHasHalfYearMultiplier: boolean;
+  publicFacilityReservedLandTaxFormulaRaw: string; publicFacilityReservedLandTaxRatePermille?: number; publicFacilityReservedFormulaHasHalfYearMultiplier: boolean;
+  yearOverYearProgressiveStartingPointChange?: number; yearOverYearProgressiveStartingPointPercentChange?: number; isLatestRecord: boolean; sourceRecordHash?: string; source: string; sourceAgency: string;
+};
+
+export type LandValueTaxProgressiveBracketSummary = {
+  totalRecords: number; minRocYear?: number; maxRocYear?: number; minGregorianYear?: number; maxGregorianYear?: number;
+  latestRecord?: Pick<LandValueTaxProgressiveBracketRecord, 'rocYear' | 'gregorianYear' | 'taxPeriod' | 'paymentPeriodStartDate' | 'paymentPeriodEndDate' | 'generalLandProgressiveStartingPointLandValue' | 'generalLandLowestRatePermille' | 'generalLandHighestRatePermille' | 'generalLandTaxBracketCount' | 'selfUseResidentialLandTaxRatePermille' | 'industrialLandTaxRatePermille' | 'publicFacilityReservedLandTaxRatePermille' | 'yearOverYearProgressiveStartingPointChange' | 'yearOverYearProgressiveStartingPointPercentChange'>;
+  firstProgressiveStartingPointLandValue?: number; latestProgressiveStartingPointLandValue?: number; minProgressiveStartingPointLandValue?: number; maxProgressiveStartingPointLandValue?: number; averageProgressiveStartingPointLandValue?: number;
+  totalProgressiveStartingPointChange?: number; totalProgressiveStartingPointPercentChange?: number; minGeneralLandLowestRatePermille?: number; maxGeneralLandHighestRatePermille?: number;
+  byTaxPeriodCategory: Array<{ taxPeriodCategory: LandValueTaxPeriodCategory; count: number }>;
+  byGregorianYear: Array<{ gregorianYear: number; rocYear: number; recordCount: number; taxPeriods: string[]; progressiveStartingPointLandValue?: number; generalLandTaxBracketCount?: number; selfUseResidentialLandTaxRatePermille?: number; industrialLandTaxRatePermille?: number; publicFacilityReservedLandTaxRatePermille?: number }>;
+  annualSeries: Array<Pick<LandValueTaxProgressiveBracketRecord, 'rocYear' | 'gregorianYear' | 'taxPeriod' | 'paymentPeriodStartDate' | 'paymentPeriodEndDate' | 'paymentPeriodMonth' | 'paymentPeriodDayCount' | 'generalLandProgressiveStartingPointLandValue' | 'generalLandLowestRatePermille' | 'generalLandHighestRatePermille' | 'generalLandTaxBracketCount' | 'selfUseResidentialLandTaxRatePermille' | 'industrialLandTaxRatePermille' | 'publicFacilityReservedLandTaxRatePermille' | 'yearOverYearProgressiveStartingPointChange' | 'yearOverYearProgressiveStartingPointPercentChange'>>;
+  dataQuality: { missingYearCount: number; invalidYearCount: number; duplicateYearPeriodCount: number; missingTaxPeriodCount: number; unknownTaxPeriodCount: number; missingPaymentPeriodStartCount: number; invalidPaymentPeriodStartCount: number; missingPaymentPeriodEndCount: number; invalidPaymentPeriodEndCount: number; invalidPaymentPeriodRangeCount: number; missingGeneralLandFormulaCount: number; failedGeneralLandBracketParseCount: number; missingSelfUseResidentialFormulaCount: number; failedSelfUseResidentialRateParseCount: number; missingIndustrialFormulaCount: number; failedIndustrialRateParseCount: number; missingPublicFacilityReservedFormulaCount: number; failedPublicFacilityReservedRateParseCount: number; duplicateFallbackKeyCount: number };
 };
 
 export function classifyBuildingConstructionType(raw: string | undefined): BuildingConstructionType {
@@ -637,5 +664,12 @@ export type RealEstateSummary = {
     latestTotalElectricitySalesThousandKwh?: number;
     latestTotalElectricityUsePerCustomerKwh?: number;
     latestTotalElectricitySalesYearOverYearPercentChange?: number;
+  };
+  landValueTaxProgressiveBrackets?: {
+    latestYear?: number;
+    latestProgressiveStartingPointLandValue?: number;
+    latestGeneralLandHighestRatePermille?: number;
+    latestGeneralLandTaxBracketCount?: number;
+    latestYearOverYearProgressiveStartingPointPercentChange?: number;
   };
 };

@@ -30,6 +30,7 @@ import { classifyMovableCollateralType, classifySecuredTransactionType, makeMova
 import { normalizeIncomeDistrict, parseNtdValue, parseRocYear as parseIncomeRocYear } from './convertIncomePerEarnerByDistrictYear.ts';
 import { classifyConsumerPriceGroup, classifyConsumerPriceLevel, makeConsumerPriceBasicAnnualIndexRecord, parseAnnualChangePercent, parseRocYear as parseCpiRocYear } from './convertConsumerPriceBasicAnnualIndex.ts';
 import { classifyAnnualTrend, convertTaipowerTaipeiElectricitySalesRows, parseIntegerMetric, parseTaipeiElectricityPeriod, safeShare, thousandKwhToKwh } from './convertTaipowerTaipeiElectricitySales.ts';
+import { calculatePaymentPeriodDayCount, classifyLandValueTaxPeriod, convertLandValueTaxProgressiveBracketRows, parseFlatLandTaxFormula, parseGeneralLandTaxFormula, parseLandValueTaxPaymentDate, parseLandValueTaxRocYear } from './convertLandValueTaxProgressiveBrackets.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -140,6 +141,33 @@ test('parses Taipower Taipei electricity helper fields and annual trends', () =>
   assert.equal(records[1].totalElectricitySalesKwh, 16105223000);
   assert.equal(records[1].totalElectricitySalesYearOverYearChange, 16104223);
   assert.equal(records[1].totalElectricitySalesTrendDirection, 'increase');
+  assert.equal(records[1].isLatestRecord, true);
+});
+
+test('parses land value tax bracket formulas and annual trends', () => {
+  assert.deepEqual(parseLandValueTaxRocYear('114'), { raw: '114', rocYear: 114, gregorianYear: 2025 });
+  assert.equal(classifyLandValueTaxPeriod('上期'), 'first_period');
+  assert.equal(parseLandValueTaxPaymentDate('20251130').date, '2025-11-30');
+  assert.equal(calculatePaymentPeriodDayCount('2025-11-01', '2025-11-30'), 30);
+  const formula = `(課稅地價×稅率–累進差額)＝應納稅額
+(1)42,165,000以下×10/1000＝應納稅額
+(2)42,165,001~252,990,000×15/1000–210,825＝應納稅額
+(3)885,465,001以上×55/1000–22,979,925＝應納稅額`;
+  const parsed = parseGeneralLandTaxFormula(formula);
+  assert.equal(parsed.bracketCount, 3);
+  assert.equal(parsed.progressiveStartingPointLandValue, 42165000);
+  assert.equal(parsed.highestRatePermille, 55);
+  assert.equal(parsed.highestBracketLowerBound, 885465001);
+  assert.equal(parseFlatLandTaxFormula('課稅地價×2/1000=應納稅額').ratePermille, 2);
+  const records = convertLandValueTaxProgressiveBracketRows([
+    { 年度: '113', 年期: '全年', 繳納期間起日: '20241101', 繳納期間迄日: '20241130', 一般土地地價稅計算公式: formula.replaceAll('42,165,000', '40,000,000'), 自用住宅用地地價稅計算公式: '課稅地價×2/1000=應納稅額', 工業用地地價稅計算公式: '課稅地價×10/1000=應納稅額', 公共設施保留地地價稅計算公式: '課稅地價×6/1000=應納稅額' },
+    { 年度: '114', 年期: '全年', 繳納期間起日: '20251101', 繳納期間迄日: '20251130', 一般土地地價稅計算公式: formula, 自用住宅用地地價稅計算公式: '課稅地價×2/1000=應納稅額', 工業用地地價稅計算公式: '課稅地價×10/1000=應納稅額', 公共設施保留地地價稅計算公式: '課稅地價×6/1000=應納稅額' },
+  ]);
+  assert.equal(records[1].gregorianYear, 2025);
+  assert.equal(records[1].paymentPeriodDayCount, 30);
+  assert.equal(records[1].generalLandTaxBracketCount, 3);
+  assert.equal(records[1].industrialLandTaxRatePermille, 10);
+  assert.equal(records[1].yearOverYearProgressiveStartingPointChange, 2165000);
   assert.equal(records[1].isLatestRecord, true);
 });
 

@@ -1,4 +1,4 @@
-const CACHE = 'taipei-dashboard-v13';
+const CACHE = 'taipei-dashboard-v14';
 const ASSETS = [
   './',
   './manifest.webmanifest',
@@ -37,6 +37,8 @@ const ASSETS = [
   './data/consumer-price-basic-annual-index-latest.json',
   './data/taipower-taipei-electricity-sales.json',
   './data/taipower-taipei-electricity-sales-summary.json',
+  './data/land-value-tax-progressive-brackets.json',
+  './data/land-value-tax-progressive-bracket-summary.json',
   './data/building-use-permits/manifest.json',
   './data/building-use-permits/summary.json',
   './data/building-use-permits/yearly-summary.json',
