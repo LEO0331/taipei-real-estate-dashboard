@@ -23,6 +23,7 @@ The site combines Taipei public-data sources:
 - [臺北市各里人口數按年齡分](https://data.taipei/dataset/detail?id=a6394e3f-3514-4542-87bd-de4310a40db3)
 - [臺北市動產質借處營業概況](https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9)
 - [臺北市動產擔保登記資料](https://data.taipei/dataset/detail?id=cb964837-c602-4238-b6c0-f63ad1094d5e)
+- [臺北市違反不動產經紀業管理條例裁罰名單](https://data.taipei/dataset/detail?id=f1f30ba1-f081-47f3-b7a6-e38721f5600c)
 
 It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, zoning certificate, building permit, development-right determination, tax judgment, tax advice, filing guidance, transaction advice, investment recommendation, lending advice, financial advice, energy-efficiency assessment, electricity price analysis, outage-risk determination, or price prediction tool. Population, income, CPI, electricity, land-use control, land-value tax, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
 
@@ -59,6 +60,8 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 - The collateral value column supports both official `標的物總價格` and uploaded `標的物總金額`. NTD-derived amount fields are populated only when the source currency is `NTD`; non-NTD source values are preserved but not converted.
 - Districts are parsed from debtor address, secured party address, and collateral location text. The source has no official coordinates, so no geocoding or exact markers are generated.
 - Movable property secured transaction records are financing and collateral context only. They are not real-estate mortgage, housing loan, credit rating, default-risk, legal advice, investment advice, real-time rights status, or complete debt-registry data.
+- Real-estate brokerage penalty records are a separate `real_estate_broker_penalties` module. The CSV preserves the source fields for city, disposition date, brokerage/name, penalty amount, and violation rule, with UTF-8-SIG, Big5, and CP950 support. ROC and Gregorian dates and formatted amounts are normalized while raw values remain available.
+- Brokerage penalty records are historical public records for regulatory-compliance and public-data analysis only. They do not establish current non-compliance, operating status, service quality, creditworthiness, transaction safety, or official recommendation. The module has no address or coordinate data, creates no map markers, blacklist, risk score, or trust ranking, and does not provide legal, investment, or property-purchase advice.
 - Income-per-earner CSV is Big5/CP950 today, with UTF-8-SIG fallback for future files. ROC years such as `113年` become Gregorian years such as `2024`.
 - Income-per-earner conversion parses all source income, transfer, non-consumption expenditure, and disposable-income fields; derives composition ratios, disposable-income ratios, year-over-year metrics, and district rankings.
 - Income rankings exclude `總平均` and compare district-level rows only. The income module is affordability and socioeconomic context only; it is not individual income, tax, lending, financial, investment, appraisal, or prediction advice.
@@ -109,6 +112,7 @@ data/raw/taipower-taipei-electricity-sales/
 data/raw/land-value-tax-progressive-brackets/
 data/raw/movable-property-pledge-business-statistics/
 data/raw/movable-property-secured-transaction-records/
+data/raw/real-estate-broker-penalties/
 ```
 
 Build and preview:
@@ -160,6 +164,8 @@ public/data/movable-property-pledge-business-annual-summary.json
 public/data/movable-property-secured-transaction-records.json
 public/data/movable-property-secured-transaction-summary.json
 public/data/movable-property-secured-transaction-latest.json
+public/data/real-estate-broker-penalties/records.json
+public/data/real-estate-broker-penalties/summary.json
 ```
 
 Rent-index-only workflow:
@@ -189,6 +195,8 @@ npm run data:fetch:pledge-business
 npm run data:convert:pledge-business
 npm run data:fetch:movable-secured-transactions
 npm run data:convert:movable-secured-transactions
+npm run data:fetch:real-estate-broker-penalties
+npm run data:convert:real-estate-broker-penalties
 ```
 
 ## GitHub Pages

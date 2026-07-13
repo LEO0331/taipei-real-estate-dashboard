@@ -27,6 +27,7 @@ import {
 } from './data.ts';
 import { classifyMovablePropertyPledgeItemCategory, parseCaseCount, parseNtdAmount, parseYearFromResourceName } from './convertMovablePropertyPledgeBusinessStatistics.ts';
 import { classifyMovableCollateralType, classifySecuredTransactionType, makeMovablePropertySecuredTransactionRecord, parseRocDate } from './convertMovablePropertySecuredTransactionRecords.ts';
+import { classifySubjectType, makeRealEstateBrokerPenaltyRecord, parsePenaltyAmount } from './convertRealEstateBrokerPenalties.ts';
 import { normalizeIncomeDistrict, parseNtdValue, parseRocYear as parseIncomeRocYear } from './convertIncomePerEarnerByDistrictYear.ts';
 import { classifyConsumerPriceGroup, classifyConsumerPriceLevel, makeConsumerPriceBasicAnnualIndexRecord, parseAnnualChangePercent, parseRocYear as parseCpiRocYear } from './convertConsumerPriceBasicAnnualIndex.ts';
 import { classifyAnnualTrend, convertTaipowerTaipeiElectricitySalesRows, parseIntegerMetric, parseTaipeiElectricityPeriod, safeShare, thousandKwhToKwh } from './convertTaipowerTaipeiElectricitySales.ts';
@@ -90,6 +91,21 @@ test('parses movable-property secured transaction helper fields', () => {
   assert.equal(record.securedDebtAmountNtd, 30000000);
   assert.equal(record.hasMaskedDebtorBusinessNumber, true);
   assert.equal(record.debtorDistrict, '中正區');
+});
+
+test('normalizes real-estate brokerage penalty source fields without status inference', () => {
+  assert.equal(parsePenaltyAmount('新臺幣 1,200 元'), 1200);
+  assert.equal(parsePenaltyAmount('罰鍰 NT$ 50,000'), 50000);
+  assert.equal(parsePenaltyAmount('--'), undefined);
+  assert.equal(classifySubjectType('示範不動產有限公司'), 'brokerage');
+  assert.equal(classifySubjectType('王小明'), 'individual');
+  const result = makeRealEstateBrokerPenaltyRecord({
+    縣市: '臺北市', 處分日期: '113.05.20', '經紀業/姓名': '示範不動產有限公司', 處罰金額: '新臺幣 50,000 元', 違反規定: '違反不動產經紀業管理條例第21條第2項',
+  }, 1);
+  assert.equal(result.record?.dispositionDate, '2024-05-20');
+  assert.equal(result.record?.penaltyAmount, 50000);
+  assert.equal(result.record?.subjectType, 'brokerage');
+  assert.equal(result.record?.violationRuleRaw, '違反不動產經紀業管理條例第21條第2項');
 });
 
 test('parses income per earner helper fields', () => {

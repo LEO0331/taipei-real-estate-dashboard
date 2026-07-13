@@ -37,6 +37,8 @@ import {
   type MovablePropertyPledgeItemCategory,
   type MovablePropertySecuredTransactionRecord,
   type MovablePropertySecuredTransactionSummary,
+  type RealEstateBrokerPenaltyRecord,
+  type RealEstateBrokerPenaltySummary,
   type QuarterlyMarketRecord,
   type ResidentialPriceIndexCategory,
   type ResidentialPriceMonthlyIndexRecord,
@@ -96,6 +98,8 @@ type DataBundle = {
   pledgeSummary: MovablePropertyPledgeBusinessSummary;
   securedTransactionRecords: MovablePropertySecuredTransactionRecord[];
   securedTransactionSummary: MovablePropertySecuredTransactionSummary;
+  brokerPenaltyRecords: RealEstateBrokerPenaltyRecord[];
+  brokerPenaltySummary: RealEstateBrokerPenaltySummary;
 };
 
 const colors = ['#b24738', '#356f9d', '#737d68', '#c58a43', '#775f86', '#408579'];
@@ -1509,6 +1513,32 @@ function MovablePropertySecuredTransactions({ records, summary, language }: { re
   </>;
 }
 
+function RealEstateBrokerPenalties({ records, summary, language }: { records: RealEstateBrokerPenaltyRecord[]; summary: RealEstateBrokerPenaltySummary; language: Language }) {
+  const label = (zh: string, en: string) => language === 'zh' ? zh : en;
+  const [year, setYear] = useState(''); const [category, setCategory] = useState(''); const [subjectType, setSubjectType] = useState(''); const [city, setCity] = useState(''); const [minAmount, setMinAmount] = useState(''); const [maxAmount, setMaxAmount] = useState(''); const [search, setSearch] = useState(''); const [page, setPage] = useState(1);
+  const years = [...new Set(records.map((record) => record.dispositionYear).filter((value): value is number => value !== undefined))].sort((a, b) => b - a);
+  const cities = [...new Set(records.map((record) => record.cityName).filter((value): value is string => !!value))].sort();
+  const filtered = records.filter((record) => (!year || record.dispositionYear === Number(year)) && (!category || record.violationCategory === category) && (!subjectType || record.subjectType === subjectType) && (!city || record.cityName === city) && (!minAmount || (record.penaltyAmount ?? -Infinity) >= Number(minAmount)) && (!maxAmount || (record.penaltyAmount ?? Infinity) <= Number(maxAmount)) && (!search || `${record.subjectName ?? ''} ${record.violationRule ?? ''} ${record.cityName ?? ''} ${record.dispositionYear ?? ''}`.toLowerCase().includes(search.toLowerCase())));
+  useEffect(() => setPage(1), [year, category, subjectType, city, minAmount, maxAmount, search]);
+  const pageSize = 25; const pages = Math.max(1, Math.ceil(filtered.length / pageSize)); const visible = filtered.slice((Math.min(page, pages) - 1) * pageSize, Math.min(page, pages) * pageSize);
+  const typeLabel = (value: string) => ({ brokerage: label('經紀業', 'Brokerage'), individual: label('個人', 'Individual'), unknown: label('未分類', 'Unknown') }[value] ?? value);
+  return <>
+    <section className="section-intro"><h2>{label('不動產經紀業裁罰紀錄', 'Real Estate Brokerage Penalty Records')}</h2><p>{label('依處分日期、違反規定、處罰金額與資料來源中的經紀業或姓名，探索臺北市公開歷史裁罰紀錄。', 'Explore Taipei public historical penalty records by disposition date, source rule wording, penalty amount, and the brokerage or name provided in the source.')}</p><p className="notice">{label('本資料為臺北市不動產經紀業管理條例之歷史公開裁罰紀錄，僅供法規遵循與公共資料分析。歷史裁罰不代表目前違規、營業狀態、整體服務品質、信用狀況、交易安全或官方推薦；處罰金額亦非完整違規嚴重度指標。請向臺北市政府地政局或相關主管機關查證現行法令與案件狀態。', 'This dataset contains historical public penalty records under Taipei real-estate brokerage regulations. It is for regulatory-compliance and public-data analysis only. A historical penalty does not establish current non-compliance, operating status, overall service quality, creditworthiness, transaction safety, or official recommendation. Penalty amount alone should not be treated as a complete measure of violation severity. Verify current legal and case status with Taipei City Department of Land Administration or the relevant authority.')}</p><p className="notice">{label('資料不含地址或座標；本模組不建立地圖標記、不製作黑名單、風險分數或信任排名。', 'The source has no addresses or coordinates. This module creates no map markers, blacklist, risk score, or trust ranking.')}</p></section>
+    <MetricStrip items={[{ label: label('裁罰紀錄', 'Penalty records'), value: summary.totalRecords.toLocaleString() }, { label: label('最新年度', 'Latest available year'), value: String(summary.latestYear ?? '—') }, { label: label('裁罰總額', 'Total penalty amount'), value: formatNtd(summary.totalPenaltyAmount, language) }, { label: label('平均裁罰', 'Average penalty amount'), value: formatNtd(summary.averagePenaltyAmount, language) }, { label: label('裁罰中位數', 'Median penalty amount'), value: formatNtd(summary.medianPenaltyAmount, language) }, { label: label('最高單筆裁罰', 'Highest single penalty'), value: formatNtd(summary.highestPenaltyAmount, language) }, { label: label('不同主體數', 'Unique subjects'), value: summary.uniqueSubjectCount.toLocaleString() }, { label: label('最常見違反類別', 'Most common category'), value: summary.mostCommonViolationCategory ?? '—' }]} />
+    <div className="chart-grid">
+      <ChartSection title={label('年度裁罰紀錄數', 'Penalty Records by Year')}><ResponsiveContainer width="100%" height={280}><BarChart data={summary.byYear}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="year" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="recordCount" name={label('紀錄數', 'Records')} fill="#356f9d" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('年度裁罰金額與平均值', 'Penalty Amount by Year')}><ResponsiveContainer width="100%" height={280}><ComposedChart data={summary.byYear}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="year" /><YAxis yAxisId="amount" /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Bar yAxisId="amount" dataKey="totalPenaltyAmount" name={label('總額', 'Total')} fill="#b24738" /><Line yAxisId="amount" dataKey="averagePenaltyAmount" name={label('平均', 'Average')} stroke="#408579" /></ComposedChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('違反規定類別', 'Violation Categories')}><ResponsiveContainer width="100%" height={280}><BarChart data={summary.byViolationCategory.slice(0, 10)} layout="vertical"><CartesianGrid strokeDasharray="3 3" horizontal={false} /><XAxis type="number" /><YAxis type="category" dataKey="violationCategory" width={125} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="recordCount" name={label('紀錄數', 'Records')} fill="#737d68" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('違反類別裁罰金額', 'Penalty Amount by Category')}><ResponsiveContainer width="100%" height={280}><BarChart data={summary.byViolationCategory.slice(0, 10)} layout="vertical"><CartesianGrid strokeDasharray="3 3" horizontal={false} /><XAxis type="number" /><YAxis type="category" dataKey="violationCategory" width={125} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="totalPenaltyAmount" name={label('裁罰總額', 'Total penalty')} fill="#c58a43" /></BarChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('經紀業與個人紀錄', 'Brokerage and Individual Records')}><ResponsiveContainer width="100%" height={280}><PieChart><Pie data={summary.bySubjectType.map((item) => ({ ...item, label: typeLabel(item.subjectType) }))} dataKey="recordCount" nameKey="label" outerRadius={95}>{summary.bySubjectType.map((item, index) => <Cell key={item.subjectType} fill={colors[index]} />)}</Pie><Tooltip content={<ChartTooltip language={language} />} /><Legend /></PieChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('裁罰金額分布', 'Penalty Amount Distribution')}><ResponsiveContainer width="100%" height={280}><BarChart data={summary.penaltyAmountDistribution}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="recordCount" name={label('紀錄數', 'Records')} fill="#775f86" /></BarChart></ResponsiveContainer></ChartSection>
+    </div>
+    <section className="analysis-list"><h2>{label('資料表', 'Data Table')}</h2><details className="filters" open><summary>{label('篩選條件', 'Filters')}</summary><div className="filter-grid"><label><span>{label('處分年度', 'Disposition year')}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{label('全部年度', 'All years')}</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select></label><label><span>{label('違反類別', 'Violation category')}</span><select value={category} onChange={(event) => setCategory(event.target.value)}><option value="">{label('全部類別', 'All categories')}</option>{summary.byViolationCategory.map((item) => <option key={item.violationCategory} value={item.violationCategory}>{item.violationCategory}</option>)}</select></label><label><span>{label('主體類型', 'Subject type')}</span><select value={subjectType} onChange={(event) => setSubjectType(event.target.value)}><option value="">{label('全部類型', 'All types')}</option>{summary.bySubjectType.map((item) => <option key={item.subjectType} value={item.subjectType}>{typeLabel(item.subjectType)}</option>)}</select></label><label><span>{label('縣市', 'City')}</span><select value={city} onChange={(event) => setCity(event.target.value)}><option value="">{label('全部縣市', 'All cities')}</option>{cities.map((item) => <option key={item} value={item}>{item}</option>)}</select></label><label><span>{label('最低金額', 'Minimum amount')}</span><input type="number" min="0" value={minAmount} onChange={(event) => setMinAmount(event.target.value)} /></label><label><span>{label('最高金額', 'Maximum amount')}</span><input type="number" min="0" value={maxAmount} onChange={(event) => setMaxAmount(event.target.value)} /></label><label className="search-field"><span>{label('搜尋', 'Search')}</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={label('搜尋經紀業或姓名、違反規定、縣市、年度', 'Search subject, violation rule, city, or year')} /></label></div></details><p className="table-count">{filtered.length.toLocaleString()} {label('筆紀錄', 'records')}</p><div className="table-wrap"><table><thead><tr>{[label('處分日期', 'Disposition date'), label('經紀業或姓名', 'Brokerage or individual'), label('主體類型', 'Subject type'), label('違反規定', 'Violation rule'), label('處罰金額', 'Penalty amount'), label('縣市', 'City')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}><td>{record.dispositionDate ?? record.dispositionDateRaw ?? '—'}</td><td>{record.subjectName ?? '—'}</td><td>{typeLabel(record.subjectType)}</td><td>{record.violationRule ?? '—'}</td><td>{formatNtd(record.penaltyAmount, language)}</td><td>{record.cityName ?? '—'}</td></tr>)}</tbody></table></div><nav className="pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{label('上一頁', 'Previous')}</button><span>{label('第', 'Page')} {Math.min(page, pages)} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{label('下一頁', 'Next')}</button></nav></section>
+    <section className="analysis-list"><h2>{label('資料品質', 'Data Quality')}</h2><MetricStrip items={[{ label: label('無效日期', 'Invalid dates'), value: summary.dataQuality.invalidDateCount.toLocaleString() }, { label: label('無效金額', 'Invalid amounts'), value: summary.dataQuality.invalidAmountCount.toLocaleString() }, { label: label('缺漏欄位', 'Missing fields'), value: summary.dataQuality.missingFieldCount.toLocaleString() }, { label: label('移除重複紀錄', 'Duplicates removed'), value: summary.dataQuality.duplicateCount.toLocaleString() }, { label: label('已解析日期', 'Parsed dates'), value: summary.dataQuality.recordsWithParsedDate.toLocaleString() }, { label: label('已解析金額', 'Parsed amounts'), value: summary.dataQuality.recordsWithParsedAmount.toLocaleString() }]} /></section>
+    <section className="analysis-list"><h2>{label('資料說明', 'Data Notes')}</h2><p>{label('違反規定欄位保留來源原文；較高層級類別僅從可見條文號碼整理，因此可由紀錄中的原始規定回溯。主體類型只依名稱文字的明顯經紀業用語分類，並不推論個人身分、公司資格或目前營業狀態。', 'Violation rules retain the source wording. Broader categories are only derived from visible article numbers, so they remain reversible through each record’s original rule. Subject type is classified only from clear brokerage wording in the source name and does not infer identity, legal status, or current operating status.')}</p></section>
+  </>;
+}
+
 export default function App() {
   const [language, setLanguage] = useState<Language>('zh');
   const [tab, setTab] = useState(0);
@@ -1519,6 +1549,7 @@ export default function App() {
   const [buildingType, setBuildingType] = useState('');
   const [search, setSearch] = useState('');
   const t = copy[language];
+  const tabLabels = language === 'zh' ? [...t.tabs.slice(0, 16), '不動產經紀業裁罰', ...t.tabs.slice(16)] : t.tabs;
 
   useEffect(() => {
     Promise.all([
@@ -1555,8 +1586,10 @@ export default function App() {
       loadJson<MovablePropertyPledgeBusinessSummary>('movable-property-pledge-business-summary.json'),
       loadJson<MovablePropertySecuredTransactionRecord[]>('movable-property-secured-transaction-records.json'),
       loadJson<MovablePropertySecuredTransactionSummary>('movable-property-secured-transaction-summary.json'),
-    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary]) =>
-      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary }),
+      loadJson<RealEstateBrokerPenaltyRecord[]>('real-estate-broker-penalties/records.json'),
+      loadJson<RealEstateBrokerPenaltySummary>('real-estate-broker-penalties/summary.json'),
+    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary, brokerPenaltyRecords, brokerPenaltySummary]) =>
+      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary, brokerPenaltyRecords, brokerPenaltySummary }),
     ).catch(() => setError(true));
   }, []);
 
@@ -1582,7 +1615,7 @@ export default function App() {
         <button className={language === 'en' ? 'active' : ''} onClick={() => setLanguage('en')}>EN</button>
       </div>
     </header>
-    <nav className="tabs" aria-label="Main sections">{t.tabs.map((label, index) =>
+    <nav className="tabs" aria-label="Main sections">{tabLabels.map((label, index) =>
       <button key={label} className={tab === index ? 'active' : ''} onClick={() => setTab(index)}>{label}</button>)}</nav>
     <main>
       <Filters language={language} district={district} setDistrict={setDistrict} recordType={recordType} setRecordType={setRecordType} buildingType={buildingType} setBuildingType={setBuildingType} search={search} setSearch={setSearch} />
@@ -1605,9 +1638,10 @@ export default function App() {
         {tab === 13 && <TaipowerTaipeiElectricitySales records={data.electricityRecords} summary={data.electricitySummary} language={language} />}
         {tab === 14 && <MovablePropertyPledgeBusiness records={data.pledgeRecords} summary={data.pledgeSummary} language={language} />}
         {tab === 15 && <MovablePropertySecuredTransactions records={data.securedTransactionRecords} summary={data.securedTransactionSummary} language={language} />}
-        {tab === 16 && <DemographicContext data={data} language={language} />}
-        {tab === 17 && <DataTable records={filteredRecords} language={language} />}
-        {tab === 18 && <DataNotes language={language} />}
+        {tab === 16 && <RealEstateBrokerPenalties records={data.brokerPenaltyRecords} summary={data.brokerPenaltySummary} language={language} />}
+        {tab === 17 && <DemographicContext data={data} language={language} />}
+        {tab === 18 && <DataTable records={filteredRecords} language={language} />}
+        {tab === 19 && <DataNotes language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

@@ -712,4 +712,50 @@ export type RealEstateSummary = {
     largestZoningCategoryByArea?: string;
     largestDistrictByArea?: string;
   };
+  realEstateBrokerPenalties?: {
+    totalRecords?: number;
+    latestYear?: number;
+    totalPenaltyAmount?: number;
+  };
+};
+
+export type RealEstateBrokerPenaltySubjectType = 'brokerage' | 'individual' | 'unknown';
+export type RealEstateBrokerPenaltyRecord = {
+  id: string;
+  module: 'real_estate_broker_penalties';
+  source: string;
+  sourceAgency: string;
+  sourceRecordHash: string;
+  cityNameRaw?: string;
+  cityName?: string;
+  dispositionDateRaw?: string;
+  dispositionDate?: string;
+  dispositionYear?: number;
+  dispositionMonth?: number;
+  subjectNameRaw?: string;
+  subjectName?: string;
+  subjectNameNormalized?: string;
+  penaltyAmountRaw?: string;
+  penaltyAmount?: number;
+  violationRuleRaw?: string;
+  violationRule?: string;
+  violationRuleNormalized?: string;
+  violationCategory: string;
+  subjectType: RealEstateBrokerPenaltySubjectType;
+};
+
+export type RealEstateBrokerPenaltySummary = {
+  totalRecords: number;
+  latestYear?: number;
+  totalPenaltyAmount: number;
+  averagePenaltyAmount?: number;
+  medianPenaltyAmount?: number;
+  highestPenaltyAmount?: number;
+  uniqueSubjectCount: number;
+  mostCommonViolationCategory?: string;
+  byYear: Array<{ year: number; recordCount: number; totalPenaltyAmount: number; averagePenaltyAmount?: number }>;
+  byViolationCategory: Array<{ violationCategory: string; recordCount: number; totalPenaltyAmount: number }>;
+  bySubjectType: Array<{ subjectType: RealEstateBrokerPenaltySubjectType; recordCount: number }>;
+  penaltyAmountDistribution: Array<{ label: string; min: number; max?: number; recordCount: number }>;
+  dataQuality: { invalidDateCount: number; invalidAmountCount: number; missingFieldCount: number; duplicateCount: number; recordsWithParsedDate: number; recordsWithParsedAmount: number };
 };
