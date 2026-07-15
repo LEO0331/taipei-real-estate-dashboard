@@ -1,4 +1,4 @@
-const CACHE = 'taipei-dashboard-v17';
+const CACHE = 'taipei-dashboard-v18';
 const ASSETS = [
   './',
   './manifest.webmanifest',
