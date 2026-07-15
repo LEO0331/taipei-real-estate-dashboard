@@ -69,7 +69,7 @@ type QuarterlySummary = {
 };
 
 type DataBundle = {
-  pppRecords?: Array<{id:string;pppType:string;projectName?:string;privateInvestmentAmount?:number;accumulatedRoyaltyAmount?:number;annualLandRentAmount?:number;contractingAgency:string;contractPeriodRaw:string;contractDurationYears?:number;signingDate?:string;signingYear?:number;commissionedCompany:string;note:string}>;
+  pppRecords: Array<{id:string;pppType:string;projectName?:string;privateInvestmentAmount?:number;accumulatedRoyaltyAmount?:number;annualLandRentAmount?:number;contractingAgency:string;contractPeriodRaw:string;contractDurationYears?:number;signingDate?:string;signingYear?:number;commissionedCompany:string;note:string}>;
   records: RealPriceRecord[];
   realEstate: RealEstateSummary;
   quarterly: QuarterlyMarketRecord[];
@@ -1584,7 +1584,7 @@ export default function App() {
   const [buildingType, setBuildingType] = useState('');
   const [search, setSearch] = useState('');
   const t = copy[language];
-  const tabLabels = language === 'zh' ? [...t.tabs.slice(0, 16), '不動產經紀業裁罰', '社會住宅工程進度', '市有閒置房地出租招標', ...t.tabs.slice(16)] : [...t.tabs.slice(0, 16), 'Real Estate Brokerage Penalties', 'Social Housing Construction Progress', 'Municipal Idle Property Lease Tenders', ...t.tabs.slice(16)];
+  const tabLabels = language === 'zh' ? [...t.tabs.slice(0, 16), '不動產經紀業裁罰', '社會住宅工程進度', '市有閒置房地出租招標', '促參案件簽約概況', ...t.tabs.slice(16)] : [...t.tabs.slice(0, 16), 'Real Estate Brokerage Penalties', 'Social Housing Construction Progress', 'Municipal Idle Property Lease Tenders', 'Public-Private Partnership Contracts', ...t.tabs.slice(16)];
 
   useEffect(() => {
     Promise.all([
@@ -1627,8 +1627,9 @@ export default function App() {
       loadJson<SocialHousingConstructionProgressSummary>('social-housing-construction-progress/summary.json'),
       loadJson<MunicipalIdlePropertyLeaseTenderRecord[]>('municipal-idle-property-lease-tenders/records.json'),
       loadJson<MunicipalIdlePropertyLeaseTenderSummary>('municipal-idle-property-lease-tenders/summary.json'),
-    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary, brokerPenaltyRecords, brokerPenaltySummary, socialHousingRecords, socialHousingSummary, municipalIdlePropertyLeaseTenderRecords, municipalIdlePropertyLeaseTenderSummary]) =>
-      setData({ records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary, brokerPenaltyRecords, brokerPenaltySummary, socialHousingRecords, socialHousingSummary, municipalIdlePropertyLeaseTenderRecords, municipalIdlePropertyLeaseTenderSummary }),
+      loadJson<DataBundle['pppRecords']>('public-private-partnership-contracts/records.json'),
+    ]).then(([records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary, brokerPenaltyRecords, brokerPenaltySummary, socialHousingRecords, socialHousingSummary, municipalIdlePropertyLeaseTenderRecords, municipalIdlePropertyLeaseTenderSummary, pppRecords]) =>
+      setData({ pppRecords, records, realEstate, quarterly, quarterlySummary, population, comparison, priceIndexRecords, priceIndexSummary, quarterlyPriceIndexRecords, quarterlyPriceIndexSummary, quarterlyPriceIndexLatest, commercialRentRecords, commercialRentSummary, rentIndexRecords, rentIndexSummary, landValueRecords, landValueSummary, landUseZoningRecords, landUseZoningSummary, incomeRecords, incomeSummary, incomeLatest, cpiRecords, cpiSummary, cpiLatest, electricityRecords, electricitySummary, landValueTaxRecords, landValueTaxSummary, pledgeRecords, pledgeSummary, securedTransactionRecords, securedTransactionSummary, brokerPenaltyRecords, brokerPenaltySummary, socialHousingRecords, socialHousingSummary, municipalIdlePropertyLeaseTenderRecords, municipalIdlePropertyLeaseTenderSummary }),
     ).catch(() => setError(true));
   }, []);
 
@@ -1680,9 +1681,10 @@ export default function App() {
         {tab === 16 && <RealEstateBrokerPenalties records={data.brokerPenaltyRecords} summary={data.brokerPenaltySummary} language={language} />}
         {tab === 17 && <SocialHousingProgress records={data.socialHousingRecords} summary={data.socialHousingSummary} language={language} />}
         {tab === 18 && <MunicipalIdlePropertyLeaseTenders records={data.municipalIdlePropertyLeaseTenderRecords} summary={data.municipalIdlePropertyLeaseTenderSummary} language={language} />}
-        {tab === 19 && <DemographicContext data={data} language={language} />}
-        {tab === 20 && <DataTable records={filteredRecords} language={language} />}
-        {tab === 21 && <DataNotes language={language} />}
+        {tab === 19 && <PublicPrivatePartnershipContracts records={data.pppRecords} language={language} />}
+        {tab === 20 && <DemographicContext data={data} language={language} />}
+        {tab === 21 && <DataTable records={filteredRecords} language={language} />}
+        {tab === 22 && <DataNotes language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>
