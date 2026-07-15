@@ -59,6 +59,7 @@ tbody tr { transition: background .16s ease; }
 tbody tr:hover, tbody tr:focus-within { background: rgba(53,111,157,.06); }
 .sort-button { border: 0; padding: 0; background: transparent; color: inherit; font-weight: 800; cursor: pointer; }
 .table-count { color: var(--muted); font-size: .82rem; }
+.table-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 1rem 0; }
 .pagination button { min-height: 40px; padding: .5rem .8rem; border: 1px solid var(--line); background: transparent; cursor: pointer; }
 .pagination button:disabled { opacity: .35; cursor: default; }

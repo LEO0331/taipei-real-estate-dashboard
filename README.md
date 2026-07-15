@@ -24,6 +24,8 @@ The site combines Taipei public-data sources:
 - [臺北市動產質借處營業概況](https://data.taipei/dataset/detail?id=da9ed005-8f06-446a-b61a-d46e7d8d6ac9)
 - [臺北市動產擔保登記資料](https://data.taipei/dataset/detail?id=cb964837-c602-4238-b6c0-f63ad1094d5e)
 - [臺北市違反不動產經紀業管理條例裁罰名單](https://data.taipei/dataset/detail?id=f1f30ba1-f081-47f3-b7a6-e38721f5600c)
+- [臺北市市有閒置房地出租招標結果](https://data.taipei/dataset/detail?id=be46d539-5a32-4d12-9022-76228006b0e8)
+- [臺北市政府財政局促參案件簽約概況](https://data.taipei/dataset/detail?id=55e72e92-61ae-49e4-81f3-a6c17a07f51d)
 
 It is an informational public-data dashboard, not a property appraisal, rent appraisal, building-safety assessment, title verification, legal-use determination, zoning certificate, building permit, development-right determination, tax judgment, tax advice, filing guidance, transaction advice, investment recommendation, lending advice, financial advice, energy-efficiency assessment, electricity price analysis, outage-risk determination, or price prediction tool. Population, income, CPI, electricity, land-use control, land-value tax, use-permit, land-value, pledge-business, rent-index, and price-index data provide context only and do not imply causation.
 
@@ -113,6 +115,7 @@ data/raw/land-value-tax-progressive-brackets/
 data/raw/movable-property-pledge-business-statistics/
 data/raw/movable-property-secured-transaction-records/
 data/raw/real-estate-broker-penalties/
+data/raw/municipal-idle-property-lease-tenders/
 ```
 
 Build and preview:
@@ -166,6 +169,8 @@ public/data/movable-property-secured-transaction-summary.json
 public/data/movable-property-secured-transaction-latest.json
 public/data/real-estate-broker-penalties/records.json
 public/data/real-estate-broker-penalties/summary.json
+public/data/municipal-idle-property-lease-tenders/records.json
+public/data/municipal-idle-property-lease-tenders/summary.json
 ```
 
 Rent-index-only workflow:
@@ -197,6 +202,8 @@ npm run data:fetch:movable-secured-transactions
 npm run data:convert:movable-secured-transactions
 npm run data:fetch:real-estate-broker-penalties
 npm run data:convert:real-estate-broker-penalties
+npm run data:fetch:municipal-idle-property-lease-tenders
+npm run data:convert:municipal-idle-property-lease-tenders
 ```
 
 ## GitHub Pages

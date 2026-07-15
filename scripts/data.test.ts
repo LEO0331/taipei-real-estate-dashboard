@@ -28,6 +28,7 @@ import {
 import { classifyMovablePropertyPledgeItemCategory, parseCaseCount, parseNtdAmount, parseYearFromResourceName } from './convertMovablePropertyPledgeBusinessStatistics.ts';
 import { classifyMovableCollateralType, classifySecuredTransactionType, makeMovablePropertySecuredTransactionRecord, parseRocDate } from './convertMovablePropertySecuredTransactionRecords.ts';
 import { classifySubjectType, makeRealEstateBrokerPenaltyRecord, parsePenaltyAmount } from './convertRealEstateBrokerPenalties.ts';
+import { makeMunicipalIdlePropertyLeaseTenderRecord } from './convertMunicipalIdlePropertyLeaseTenders.ts';
 import { normalizeIncomeDistrict, parseNtdValue, parseRocYear as parseIncomeRocYear } from './convertIncomePerEarnerByDistrictYear.ts';
 import { classifyConsumerPriceGroup, classifyConsumerPriceLevel, makeConsumerPriceBasicAnnualIndexRecord, parseAnnualChangePercent, parseRocYear as parseCpiRocYear } from './convertConsumerPriceBasicAnnualIndex.ts';
 import { classifyAnnualTrend, convertTaipowerTaipeiElectricitySalesRows, parseIntegerMetric, parseTaipeiElectricityPeriod, safeShare, thousandKwhToKwh } from './convertTaipowerTaipeiElectricitySales.ts';
@@ -335,4 +336,18 @@ test('district sale-price medians exclude rental prices', () => {
   assert.equal(summary.transactionCount, 2);
   assert.equal(summary.medianTotalPriceNtd, 20_000_000);
   assert.equal(summary.medianUnitPricePerPingNtd, 800_000);
+});
+
+test('converts municipal idle-property tenders without turning blanks into zero', () => {
+  const { record } = makeMunicipalIdlePropertyLeaseTenderRecord({ 序號: '1', 案件: '測試案', 年度: '114', '建物門牌/地號': '臺北市中正區仁愛路一段1號', '出租面積_㎡': '100', '標租底價_元': '1,000', '得標價_元': '1,250' }, 1);
+  assert.equal(record.year, 2025);
+  assert.equal(record.premiumAmount, 250);
+  assert.equal(record.premiumRate, 0.25);
+  assert.equal(record.awardedRentPerSquareMeter, 12.5);
+  assert.equal(record.externalMapQuery, '臺北市中正區仁愛路一段1號');
+  const blank = makeMunicipalIdlePropertyLeaseTenderRecord({ 年度: '114', '建物門牌/地號': '臺北市中正區土地段123地號', '出租面積_㎡': '', '標租底價_元': '', '得標價_元': '' }, 2).record;
+  assert.equal(blank.leasedAreaSquareMeters, undefined);
+  assert.equal(blank.reserveRent, undefined);
+  assert.equal(blank.awardedRent, undefined);
+  assert.equal(blank.externalMapQuery, undefined);
 });

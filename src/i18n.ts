@@ -167,7 +167,7 @@ export const copy = {
   en: {
     appTitle: 'Taipei Real Estate & Demographics Dashboard',
     appSubtitle: 'Explore Taipei real-price records, residential price monthly and quarterly indexes, rent indexes, income, consumer price indexes, city electricity demand, land-use control, land value tax brackets, building use permits, and demographic context',
-    tabs: ['Market Overview', 'Monthly Price', 'Quarterly Price', 'Residential Rent', 'Office Rent', 'District Comparison', 'Quarterly Analysis', 'Use Permits', 'Land Value', 'Land Use Control', 'Land Value Tax', 'Income', 'Annual CPI', 'Electricity Sales', 'Pledge Loans', 'Movable Collateral', 'Broker Penalties', 'Demographic Context', 'Data Table', 'Data Notes'],
+    tabs: ['Market Overview', 'Monthly Price', 'Quarterly Price', 'Residential Rent', 'Office Rent', 'District Comparison', 'Quarterly Analysis', 'Use Permits', 'Land Value', 'Land Use Control', 'Land Value Tax', 'Income', 'Annual CPI', 'Electricity Sales', 'Pledge Loans', 'Movable Collateral', 'Broker Penalties', 'Social Housing Progress', 'Demographic Context', 'Data Table', 'Data Notes'],
     filters: 'Filters',
     allDistricts: 'All districts',
     allTypes: 'All types',

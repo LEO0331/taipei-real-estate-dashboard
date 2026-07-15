@@ -759,3 +759,24 @@ export type RealEstateBrokerPenaltySummary = {
   penaltyAmountDistribution: Array<{ label: string; min: number; max?: number; recordCount: number }>;
   dataQuality: { invalidDateCount: number; invalidAmountCount: number; missingFieldCount: number; duplicateCount: number; recordsWithParsedDate: number; recordsWithParsedAmount: number };
 };
+
+export type SocialHousingConstructionStageCategory = 'planning' | 'design' | 'tendering' | 'under_construction' | 'completed' | 'occupied' | 'other' | 'unknown';
+export type SocialHousingConstructionProgressRecord = { id: string; module: 'social_housing_construction_progress'; projectName?: string; projectNameNormalized?: string; districtName?: string; districtNameNormalized?: string; address?: string; addressNormalized?: string; latitudeRaw?: string; longitudeRaw?: string; latitude?: number; longitude?: number; hasValidCoordinates: boolean; plannedHouseholdsRaw?: string; plannedHouseholds?: number; plannedHouseholdsNumber?: number; residentPopulationRaw?: string; residentPopulation?: number; residentPopulationNumber?: number; floorDescription?: string; floorNumbers: number[]; constructionStage?: string; constructionStageNormalized?: string; constructionStageCategory: SocialHousingConstructionStageCategory; personsPerHousehold?: number; sourceRaw: Record<string, unknown> };
+export type SocialHousingConstructionProgressSummary = { totalProjects: number; validCoordinateCount: number; districtCount: number; totalPlannedHouseholds: number; totalResidentPopulation: number; underConstructionCount: number; completedOrOccupiedCount: number; districtWithMostProjects?: string; districtWithMostPlannedHouseholds?: string; builtAt: string; byStage: Array<{ constructionStageCategory: SocialHousingConstructionStageCategory; recordCount: number }>; byDistrict: Array<{ districtName: string; recordCount: number; plannedHouseholds: number; residentPopulation: number }>; dataQuality: { invalidCoordinateCount: number; invalidNumberCount: number; missingNameCount: number; duplicateCount: number; unknownProgressCount: number } };
+
+export type MunicipalIdlePropertyLeaseTenderRecord = {
+  id: string; module: 'municipal_idle_property_lease_tenders'; source: string; sourceAgency: string; sourceRaw: Record<string, string>;
+  sourceSequenceNumberRaw?: string; caseNameRaw?: string; yearRaw?: string; propertyLocationRaw?: string; leasedAreaSquareMetersRaw?: string; reserveRentRaw?: string; awardedRentRaw?: string;
+  year?: number; rocYear?: number; caseNameNormalized?: string; propertyLocationNormalized?: string;
+  leasedAreaSquareMeters?: number; reserveRent?: number; awardedRent?: number; premiumAmount?: number; premiumRate?: number;
+  reserveRentPerSquareMeter?: number; awardedRentPerSquareMeter?: number; hasAwardedRent: boolean; districtNameFromLocation?: string; externalMapQuery?: string;
+};
+export type MunicipalIdlePropertyLeaseTenderSummary = {
+  totalRecords: number; latestYear?: number; totalLeasedAreaSquareMeters: number; totalReserveRent: number; totalAwardedRent: number; recordsWithAwardedRent: number;
+  medianAwardedRent?: number; medianAwardedRentPerSquareMeter?: number; averagePremiumRate?: number; highestAwardedRent?: number;
+  byYear: Array<{ year: number; recordCount: number; totalLeasedAreaSquareMeters: number; totalReserveRent: number; totalAwardedRent: number }>;
+  premiumRateDistribution: Array<{ label: string; recordCount: number }>;
+  awardedRentPerSquareMeterDistribution: Array<{ label: string; recordCount: number }>;
+  byDistrict: Array<{ districtName: string; recordCount: number }>;
+  dataQuality: { invalidYearCount: number; invalidAmountCount: number; invalidAreaCount: number; duplicateCount: number; missingFieldCount: number; recordsWithUsableMapQuery: number };
+};
