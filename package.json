@@ -38,7 +38,9 @@
     "data:fetch:real-estate-broker-penalties": "tsx scripts/fetchRealEstateBrokerPenalties.ts",
     "data:fetch:municipal-idle-property-lease-tenders": "tsx scripts/fetchMunicipalIdlePropertyLeaseTenders.ts",
     "data:convert:municipal-idle-property-lease-tenders": "tsx scripts/convertMunicipalIdlePropertyLeaseTenders.ts",
-    "data:convert:real-estate-broker-penalties": "tsx scripts/convertRealEstateBrokerPenalties.ts && tsx scripts/buildRealEstateBrokerPenaltySummary.ts"
+    "data:convert:real-estate-broker-penalties": "tsx scripts/convertRealEstateBrokerPenalties.ts && tsx scripts/buildRealEstateBrokerPenaltySummary.ts",
+    "data:fetch:rental-housing-service-businesses": "tsx scripts/fetchRentalHousingServiceBusinesses.ts",
+    "data:convert:rental-housing-service-businesses": "tsx scripts/convertRentalHousingServiceBusinesses.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

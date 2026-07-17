@@ -1,0 +1,12 @@
+import { createHash } from 'node:crypto';
+import { getColumn, listCsvFiles, readCsv, writeJson } from './data.ts';
+
+const clean = (value: unknown) => { const text = String(value ?? '').trim(); return text && !['-', '--'].includes(text) ? text : undefined; };
+const normalize = (value: string | undefined) => value?.replace(/\s+/g, '').toLowerCase();
+const status = (value: string | undefined) => /終止|廢止|撤銷/.test(value ?? '') ? 'terminated' : /停業|暫停/.test(value ?? '') ? 'suspended' : /執業|營業|開業/.test(value ?? '') ? 'active' : 'unknown';
+export async function convertRentalHousingServiceBusinesses() {
+  const file = (await listCsvFiles('data/raw/rental-housing-service-businesses')).at(-1); const rows = file ? await readCsv(file) : []; const seen = new Set<string>(); let duplicates = 0;
+  const records = rows.flatMap((row) => { const cityName = clean(getColumn(row, ['縣市'])); const authorityCode = clean(getColumn(row, ['機關代碼'])); const registrationNumber = clean(getColumn(row, ['登錄號碼'])); const businessName = clean(getColumn(row, ['租賃業名稱'])); const practiceStatusRaw = clean(getColumn(row, ['執業狀態'])); const key = registrationNumber ?? [businessName, authorityCode, cityName].join('|'); if (seen.has(key)) { duplicates += 1; return []; } seen.add(key); return [{ id: createHash('sha1').update(key).digest('hex').slice(0, 16), cityName, authorityCode, registrationNumber, businessName, practiceStatusRaw, practiceStatusNormalized: status(practiceStatusRaw), cityNameNormalized: normalize(cityName), authorityCodeNormalized: normalize(authorityCode), registrationNumberNormalized: normalize(registrationNumber), businessNameNormalized: normalize(businessName), hasRegistrationNumber: !!registrationNumber, sourceRaw: row }]; });
+  await writeJson('public/data/rental-housing-service-businesses/records.json', records); await writeJson('public/data/rental-housing-service-businesses/summary.json', { totalRecords: records.length, dataQuality: { duplicateRegistrationNumberCount: duplicates, missingBusinessNameCount: records.filter(r => !r.businessName).length, missingRegistrationNumberCount: records.filter(r => !r.registrationNumber).length, unknownCityCount: records.filter(r => !r.cityName).length, unmappedPracticeStatusCount: records.filter(r => r.practiceStatusNormalized === 'unknown').length } }); return records;
+}
+if (process.argv[1]?.endsWith('convertRentalHousingServiceBusinesses.ts')) console.log((await convertRentalHousingServiceBusinesses()).length);
