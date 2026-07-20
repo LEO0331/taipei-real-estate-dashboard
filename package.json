@@ -40,7 +40,9 @@
     "data:convert:municipal-idle-property-lease-tenders": "tsx scripts/convertMunicipalIdlePropertyLeaseTenders.ts",
     "data:convert:real-estate-broker-penalties": "tsx scripts/convertRealEstateBrokerPenalties.ts && tsx scripts/buildRealEstateBrokerPenaltySummary.ts",
     "data:fetch:rental-housing-service-businesses": "tsx scripts/fetchRentalHousingServiceBusinesses.ts",
-    "data:convert:rental-housing-service-businesses": "tsx scripts/convertRentalHousingServiceBusinesses.ts"
+    "data:convert:rental-housing-service-businesses": "tsx scripts/convertRentalHousingServiceBusinesses.ts",
+    "data:fetch:public-works-excellence-award-projects": "tsx scripts/fetchPublicWorksExcellenceAwardProjects.ts",
+    "data:convert:public-works-excellence-award-projects": "tsx scripts/convertPublicWorksExcellenceAwardProjects.ts"
   },
   "dependencies": {
     "react": "^19.1.0",
