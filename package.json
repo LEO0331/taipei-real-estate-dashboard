@@ -46,7 +46,9 @@
     "data:fetch:mrt-joint-development-rents": "tsx scripts/fetchMrtJointDevelopmentRents.ts",
     "data:convert:mrt-joint-development-rents": "tsx scripts/convertMrtJointDevelopmentRents.ts",
     "data:fetch:real-estate-brokerage-business-directory": "tsx scripts/fetchRealEstateBrokerageBusinessDirectory.ts",
-    "data:convert:real-estate-brokerage-business-directory": "tsx scripts/convertRealEstateBrokerageBusinessDirectory.ts"
+    "data:convert:real-estate-brokerage-business-directory": "tsx scripts/convertRealEstateBrokerageBusinessDirectory.ts",
+    "data:fetch:real-estate-consumer-disputes": "tsx scripts/fetchRealEstateConsumerDisputes.ts",
+    "data:convert:real-estate-consumer-disputes": "tsx scripts/convertRealEstateConsumerDisputes.ts"
   },
   "dependencies": {
     "react": "^19.1.0",
