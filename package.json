@@ -48,7 +48,9 @@
     "data:fetch:real-estate-brokerage-business-directory": "tsx scripts/fetchRealEstateBrokerageBusinessDirectory.ts",
     "data:convert:real-estate-brokerage-business-directory": "tsx scripts/convertRealEstateBrokerageBusinessDirectory.ts",
     "data:fetch:real-estate-consumer-disputes": "tsx scripts/fetchRealEstateConsumerDisputes.ts",
-    "data:convert:real-estate-consumer-disputes": "tsx scripts/convertRealEstateConsumerDisputes.ts"
+    "data:convert:real-estate-consumer-disputes": "tsx scripts/convertRealEstateConsumerDisputes.ts",
+    "data:fetch:real-estate-appraiser-directory": "tsx scripts/fetchRealEstateAppraiserDirectory.ts",
+    "data:convert:real-estate-appraiser-directory": "tsx scripts/convertRealEstateAppraiserDirectory.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

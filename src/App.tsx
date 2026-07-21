@@ -7,6 +7,7 @@ import { filterCommercialRentIndexRecords, filterPriceIndexRecords, filterRecord
 import { MrtJointDevelopmentRents } from './MrtJointDevelopmentRents';
 import { RealEstateBrokerageBusinessDirectory } from './RealEstateBrokerageBusinessDirectory';
 import { RealEstateConsumerDisputes } from './RealEstateConsumerDisputes';
+import { RealEstateAppraiserDirectory } from './RealEstateAppraiserDirectory';
 import { buildingTypeLabel, commercialOfficeRentCategoryLabel, copy, districtEn, priceIndexCategoryLabel, recordTypeLabel, rentIndexCategoryLabel } from './i18n';
 import {
   DISTRICTS,
@@ -1709,6 +1710,7 @@ export default function App() {
         {language === 'zh' ? '不動產消費爭議案件處理資料' : 'Real Estate Consumer Dispute Records'}
       </button>
     </nav>
+    <nav className="tabs" aria-label="Real estate appraisers"><button className={tab === 29 ? 'active' : ''} onClick={() => setTab(29)}>{language === 'zh' ? '開業不動產估價師名冊' : 'Practicing Real Estate Appraiser Directory'}</button></nav>
     <main>
       <Filters language={language} district={district} setDistrict={setDistrict} recordType={recordType} setRecordType={setRecordType} buildingType={buildingType} setBuildingType={setBuildingType} search={search} setSearch={setSearch} />
       {error && <p className="status">{t.loadError}</p>}
@@ -1743,6 +1745,7 @@ export default function App() {
         {tab === 26 && <MrtJointDevelopmentRents language={language} />}
         {tab === 27 && <RealEstateBrokerageBusinessDirectory language={language} />}
         {tab === 28 && <RealEstateConsumerDisputes language={language} />}
+        {tab === 29 && <RealEstateAppraiserDirectory language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>
