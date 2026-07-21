@@ -169,6 +169,8 @@ public/data/movable-property-secured-transaction-summary.json
 public/data/movable-property-secured-transaction-latest.json
 public/data/mrt-joint-development-rents/records.json
 public/data/mrt-joint-development-rents/summary.json
+public/data/real-estate-brokerage-business-directory/records.json
+public/data/real-estate-brokerage-business-directory/summary.json
 public/data/real-estate-broker-penalties/records.json
 public/data/real-estate-broker-penalties/summary.json
 public/data/municipal-idle-property-lease-tenders/records.json

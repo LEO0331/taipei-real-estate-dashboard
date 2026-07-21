@@ -44,7 +44,9 @@
     "data:fetch:public-works-excellence-award-projects": "tsx scripts/fetchPublicWorksExcellenceAwardProjects.ts",
     "data:convert:public-works-excellence-award-projects": "tsx scripts/convertPublicWorksExcellenceAwardProjects.ts",
     "data:fetch:mrt-joint-development-rents": "tsx scripts/fetchMrtJointDevelopmentRents.ts",
-    "data:convert:mrt-joint-development-rents": "tsx scripts/convertMrtJointDevelopmentRents.ts"
+    "data:convert:mrt-joint-development-rents": "tsx scripts/convertMrtJointDevelopmentRents.ts",
+    "data:fetch:real-estate-brokerage-business-directory": "tsx scripts/fetchRealEstateBrokerageBusinessDirectory.ts",
+    "data:convert:real-estate-brokerage-business-directory": "tsx scripts/convertRealEstateBrokerageBusinessDirectory.ts"
   },
   "dependencies": {
     "react": "^19.1.0",
