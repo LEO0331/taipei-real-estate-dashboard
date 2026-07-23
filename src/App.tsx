@@ -9,6 +9,7 @@ import { RealEstateBrokerageBusinessDirectory } from './RealEstateBrokerageBusin
 import { RealEstateConsumerDisputes } from './RealEstateConsumerDisputes';
 import { RealEstateAppraiserDirectory } from './RealEstateAppraiserDirectory';
 import { AnnouncedLandExpropriationRegistry } from './AnnouncedLandExpropriationRegistry';
+import { LandReadjustmentSaleResults } from './LandReadjustmentSaleResults';
 import { buildingTypeLabel, commercialOfficeRentCategoryLabel, copy, districtEn, priceIndexCategoryLabel, recordTypeLabel, rentIndexCategoryLabel } from './i18n';
 import {
   DISTRICTS,
@@ -1713,6 +1714,7 @@ export default function App() {
     </nav>
     <nav className="tabs" aria-label="Real estate appraisers"><button className={tab === 29 ? 'active' : ''} onClick={() => setTab(29)}>{language === 'zh' ? '開業不動產估價師名冊' : 'Practicing Real Estate Appraiser Directory'}</button></nav>
     <nav className="tabs" aria-label="Announced land expropriation"><button className={tab === 30 ? 'active' : ''} onClick={() => setTab(30)}>{language === 'zh' ? '公告徵收清冊' : 'Announced Land Expropriation Registry'}</button></nav>
+    <nav className="tabs" aria-label="Land readjustment sale results"><button className={tab === 31 ? 'active' : ''} onClick={() => setTab(31)}>{language === 'zh' ? '市地重劃區抵費地標售成果' : 'Land Readjustment Sale Results'}</button></nav>
     <main>
       <Filters language={language} district={district} setDistrict={setDistrict} recordType={recordType} setRecordType={setRecordType} buildingType={buildingType} setBuildingType={setBuildingType} search={search} setSearch={setSearch} />
       {error && <p className="status">{t.loadError}</p>}
@@ -1749,6 +1751,7 @@ export default function App() {
         {tab === 28 && <RealEstateConsumerDisputes language={language} />}
         {tab === 29 && <RealEstateAppraiserDirectory language={language} />}
         {tab === 30 && <AnnouncedLandExpropriationRegistry language={language} />}
+        {tab === 31 && <LandReadjustmentSaleResults language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

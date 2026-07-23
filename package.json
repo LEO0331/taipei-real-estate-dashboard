@@ -52,7 +52,9 @@
     "data:fetch:real-estate-appraiser-directory": "tsx scripts/fetchRealEstateAppraiserDirectory.ts",
     "data:convert:real-estate-appraiser-directory": "tsx scripts/convertRealEstateAppraiserDirectory.ts",
     "data:fetch:announced-land-expropriation-registry": "tsx scripts/fetchAnnouncedLandExpropriationRegistry.ts",
-    "data:convert:announced-land-expropriation-registry": "tsx scripts/convertAnnouncedLandExpropriationRegistry.ts"
+    "data:convert:announced-land-expropriation-registry": "tsx scripts/convertAnnouncedLandExpropriationRegistry.ts",
+    "data:fetch:land-readjustment-sale-results": "tsx scripts/fetchLandReadjustmentSaleResults.ts",
+    "data:convert:land-readjustment-sale-results": "tsx scripts/convertLandReadjustmentSaleResults.ts"
   },
   "dependencies": {
     "react": "^19.1.0",
