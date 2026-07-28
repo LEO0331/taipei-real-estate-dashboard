@@ -12,6 +12,7 @@ import { AnnouncedLandExpropriationRegistry } from './AnnouncedLandExpropriation
 import { LandReadjustmentSaleResults } from './LandReadjustmentSaleResults';
 import { DeclaredLandValueRecords } from './DeclaredLandValueRecords';
 import { GeneralExpropriationCompensationCustody } from './GeneralExpropriationCompensationCustody';
+import { ConsumerPriceNatureMonthlyIndex } from './ConsumerPriceNatureMonthlyIndex';
 import { buildingTypeLabel, commercialOfficeRentCategoryLabel, copy, districtEn, priceIndexCategoryLabel, recordTypeLabel, rentIndexCategoryLabel } from './i18n';
 import {
   DISTRICTS,
@@ -1719,6 +1720,7 @@ export default function App() {
     <nav className="tabs" aria-label="Land readjustment sale results"><button className={tab === 31 ? 'active' : ''} onClick={() => setTab(31)}>{language === 'zh' ? '市地重劃區抵費地標售成果' : 'Land Readjustment Sale Results'}</button></nav>
     <nav className="tabs" aria-label="Declared land values"><button className={tab === 32 ? 'active' : ''} onClick={() => setTab(32)}>{language === 'zh' ? '申報地價' : 'Taipei Declared Land Values'}</button></nav>
     <nav className="tabs" aria-label="Expropriation custody"><button className={tab === 33 ? 'active' : ''} onClick={() => setTab(33)}>{language === 'zh' ? '一般徵收保管清冊統計' : 'General Expropriation Compensation Custody'}</button></nav>
+    <nav className="tabs" aria-label="Consumer prices"><button className={tab === 34 ? 'active' : ''} onClick={() => setTab(34)}>{language === 'zh' ? '臺北市消費者物價趨勢' : 'Taipei Consumer Price Trends'}</button></nav>
     <main>
       <Filters language={language} district={district} setDistrict={setDistrict} recordType={recordType} setRecordType={setRecordType} buildingType={buildingType} setBuildingType={setBuildingType} search={search} setSearch={setSearch} />
       {error && <p className="status">{t.loadError}</p>}
@@ -1758,6 +1760,7 @@ export default function App() {
         {tab === 31 && <LandReadjustmentSaleResults language={language} />}
         {tab === 32 && <DeclaredLandValueRecords language={language} />}
         {tab === 33 && <GeneralExpropriationCompensationCustody language={language} />}
+        {tab === 34 && <ConsumerPriceNatureMonthlyIndex language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>
