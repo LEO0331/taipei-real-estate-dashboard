@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "node --import tsx --test scripts/data.test.ts scripts/buildingUsePermits.test.ts src/dashboard.test.ts",
+    "test": "node --import tsx --test scripts/data.test.ts scripts/buildingUsePermits.test.ts scripts/metroEngineeringMilestones.test.ts src/dashboard.test.ts",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "data:fetch": "tsx scripts/fetchRealEstateData.ts && tsx scripts/fetchResidentialPriceMonthlyIndex.ts && tsx scripts/fetchResidentialPriceQuarterlyIndex.ts && tsx scripts/fetchResidentialRentIndex.ts && tsx scripts/fetchCommercialOfficeRentIndex.ts && tsx scripts/fetchBuildingUsePermits.ts && tsx scripts/fetchMovablePropertyPledgeBusinessStatistics.ts && tsx scripts/fetchMovablePropertySecuredTransactionRecords.ts && tsx scripts/fetchIncomePerEarnerByDistrictYear.ts && tsx scripts/fetchConsumerPriceBasicAnnualIndex.ts && tsx scripts/fetchTaipowerTaipeiElectricitySales.ts && tsx scripts/fetchLandValueTaxProgressiveBrackets.ts && tsx scripts/fetchLandUseZoningControlSummary.ts && tsx scripts/fetchRealEstateBrokerPenalties.ts && tsx scripts/fetchMunicipalIdlePropertyLeaseTenders.ts",
@@ -57,6 +57,8 @@
     "data:convert:land-readjustment-sale-results": "tsx scripts/convertLandReadjustmentSaleResults.ts",
     "data:fetch:cadastral-clearing-sale-proceeds-custody": "tsx scripts/fetchCadastralClearingSaleProceedsCustody.ts",
     "data:convert:cadastral-clearing-sale-proceeds-custody": "tsx scripts/convertCadastralClearingSaleProceedsCustody.ts"
+    ,"data:fetch:metro-engineering-milestones": "tsx scripts/fetchMetroEngineeringMilestones.ts"
+    ,"data:convert:metro-engineering-milestones": "tsx scripts/convertMetroEngineeringMilestones.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

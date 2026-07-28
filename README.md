@@ -216,6 +216,8 @@ npm run data:fetch:municipal-idle-property-lease-tenders
 npm run data:convert:municipal-idle-property-lease-tenders
 npm run data:fetch:cadastral-clearing-sale-proceeds-custody
 npm run data:convert:cadastral-clearing-sale-proceeds-custody
+npm run data:fetch:metro-engineering-milestones
+npm run data:convert:metro-engineering-milestones
 ```
 
 ### Cadastral-clearing custody privacy and reconciliation
