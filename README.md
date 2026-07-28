@@ -179,6 +179,8 @@ public/data/real-estate-broker-penalties/records.json
 public/data/real-estate-broker-penalties/summary.json
 public/data/municipal-idle-property-lease-tenders/records.json
 public/data/municipal-idle-property-lease-tenders/summary.json
+public/data/cadastral-clearing-sale-proceeds-custody/records.public.json
+public/data/cadastral-clearing-sale-proceeds-custody/metadata.json
 ```
 
 Rent-index-only workflow:
@@ -212,7 +214,13 @@ npm run data:fetch:real-estate-broker-penalties
 npm run data:convert:real-estate-broker-penalties
 npm run data:fetch:municipal-idle-property-lease-tenders
 npm run data:convert:municipal-idle-property-lease-tenders
+npm run data:fetch:cadastral-clearing-sale-proceeds-custody
+npm run data:convert:cadastral-clearing-sale-proceeds-custody
 ```
+
+### Cadastral-clearing custody privacy and reconciliation
+
+`data/raw/cadastral-clearing-sale-proceeds-custody/` is a local protected ingestion location and is intentionally ignored by Git because the official CSV contains recipient names. The converter writes only `records.public.json`: recipient values are masked, non-personal fields are preserved, and the public export excludes full names. Reconciliation is a derived review aid (`sale − taxes − administrative fee − reward` versus deposited and source-recorded claimable amounts, with an NT$1 tolerance); it does not correct source records or determine current claimability, account balances, eligibility, or legal entitlement.
 
 ## GitHub Pages
 

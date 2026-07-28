@@ -54,7 +54,9 @@
     "data:fetch:announced-land-expropriation-registry": "tsx scripts/fetchAnnouncedLandExpropriationRegistry.ts",
     "data:convert:announced-land-expropriation-registry": "tsx scripts/convertAnnouncedLandExpropriationRegistry.ts",
     "data:fetch:land-readjustment-sale-results": "tsx scripts/fetchLandReadjustmentSaleResults.ts",
-    "data:convert:land-readjustment-sale-results": "tsx scripts/convertLandReadjustmentSaleResults.ts"
+    "data:convert:land-readjustment-sale-results": "tsx scripts/convertLandReadjustmentSaleResults.ts",
+    "data:fetch:cadastral-clearing-sale-proceeds-custody": "tsx scripts/fetchCadastralClearingSaleProceedsCustody.ts",
+    "data:convert:cadastral-clearing-sale-proceeds-custody": "tsx scripts/convertCadastralClearingSaleProceedsCustody.ts"
   },
   "dependencies": {
     "react": "^19.1.0",
