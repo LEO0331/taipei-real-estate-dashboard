@@ -48,6 +48,14 @@
       "dependencies": ["feat-005"],
       "status": "complete",
       "evidence": "2026-08-11: implemented network-first static-data revalidation, a Data Status & Coverage view, opt-in official-name search/display/export, and a five-valid-award threshold for comparative auction analytics."
+    },
+    {
+      "id": "feat-007",
+      "name": "Categorized responsive dashboard navigation",
+      "description": "Replace the oversized flat dashboard-tab presentation with a searchable, categorized navigation pattern that preserves every module.",
+      "dependencies": ["feat-001"],
+      "status": "complete",
+      "evidence": "2026-08-11: implemented a five-category desktop navigator, current-page breadcrumb, searchable dataset catalogue, and native mobile dialog. npm.cmd test passed (32/32); npm.cmd run build passed."
     }
   ]
 }

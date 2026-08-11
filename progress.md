@@ -2,7 +2,7 @@
 
 ## Current State
 
-**Last Updated:** 2026-08-11 11:05 Asia/Taipei
+**Last Updated:** 2026-08-11 12:05 Asia/Taipei
 **Session ID:** Codex desktop
 **Active Feature:** None
 
@@ -17,11 +17,12 @@
 
 - [x] Completed evidence-based review of decision and technical notes.
 - [x] Implemented freshness, privacy-default, and small-sample safeguards.
+- [x] Replaced the oversized flat tab treatment with categorized, searchable dashboard navigation.
 
 ### What's Next
 
-1. Consider adding automated service-worker and UI interaction tests for these safeguards.
-2. Begin the next user-scoped feature only after updating `feature_list.json`.
+1. Consider adding automated service-worker and UI interaction tests for the decision safeguards and dashboard navigator.
+2. Consider hash-based deep links if users need to share a specific dashboard view.
 
 ## Blockers / Risks
 
@@ -48,6 +49,7 @@
 - `docs/dashboard-decision-insights-and-technical-notes.md` - customer-facing decision guardrails and prioritized technical risks.
 - `public/sw.js` and `src/DataFreshness.tsx` - static-data freshness controls and visible data-status view.
 - `src/CadastralCleanupLandAuctionResults.tsx` - opt-in name fields and small-sample analytical gates.
+- `src/App.tsx` and `src/styles.css` - five-category dataset navigation, desktop catalogue, and mobile browse dialog.
 
 ## Evidence of Completion
 
@@ -56,6 +58,7 @@
 - [x] Data sanity check: 35 source rows; unsuccessful bids did not become zero-valued awards.
 - [x] Whole-project review: 0 critical, 1 high, and 3 medium findings documented; test and build passed.
 - [x] Safeguard implementation: production build passed on 2026-08-11; final tests pending this session.
+- [x] Responsive navigation: `npm.cmd test` passed (32/32) and `npm.cmd run build` passed on 2026-08-11.
 
 ## Notes for Next Session
 

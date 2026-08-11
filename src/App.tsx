@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Line, LineChart,
   Pie, PieChart, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis,
@@ -1608,6 +1608,123 @@ function PublicWorksAwardDirectory({ language }: { language: Language }) {
   return <><section className="section-intro"><h2>{label('公共工程卓越獎獲獎工程', 'Public Works Excellence Award Projects')}</h2><p className="notice">{label('本資料為歷年獲獎工程紀錄；獎項與列載契約金額不代表目前工程進度、最終支出、完工品質、履約表現或參與單位整體表現。', 'Award records and listed contract values do not represent current progress, final expenditure, completed quality, contract performance, or overall organization performance.')}</p></section><MetricStrip items={[{label:label('獲獎工程','Awarded projects'),value:String(filtered.length)},{label:label('年度範圍','Award years'),value:`${Math.min(...filtered.map(r=>r.year??Infinity)) || '—'} – ${Math.max(...filtered.map(r=>r.year??0)) || '—'}`},{label:label('列載契約金額','Listed contract amount'),value:formatNtd(filtered.reduce((s,r)=>s+(r.contractAmountNtd??0),0),language)}]}/><section className="analysis-list"><h2>{label('工程目錄','Project Directory')}</h2><div className="filter-grid"><label className="search-field"><span>{label('搜尋','Search')}</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder={label('搜尋工程、類別或參與單位','Search project, category, or organizations')}/></label></div><div className="table-wrap"><table><thead><tr>{[label('年度','Year'),label('類別','Category'),label('工程','Project'),label('契約金額','Listed contract amount'),label('主辦機關','Agency'),label('施工單位','Contractor'),label('設計單位','Design'),label('監造單位','Supervision')].map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{visible.map(r=><tr key={r.id}><td>{r.year??'—'}</td><td>{r.awardCategory??'—'}</td><td>{r.projectName??'—'}</td><td>{r.contractAmountThousandNtd===undefined?'—':`${r.contractAmountThousandNtd.toLocaleString()} ${label('千元（來源）','thousand NTD (source)')} / ${formatNtd(r.contractAmountNtd,language)}`}</td><td>{r.contractingAgency??'—'}</td><td>{r.contractor??'—'}</td><td>{r.designUnit??'—'}</td><td>{r.supervisionUnit??'—'}</td></tr>)}</tbody></table></div><nav className="pagination"><button disabled={page===1} onClick={()=>setPage(p=>p-1)}>{label('上一頁','Previous')}</button><span>{page} / {pages}</span><button disabled={page===pages} onClick={()=>setPage(p=>p+1)}>{label('下一頁','Next')}</button></nav></section></>;
 }
 
+type NavigationCategory = 'market' | 'land' | 'city' | 'services' | 'tools';
+type LocalizedText = { zh: string; en: string };
+type DashboardModule = {
+  tab: number;
+  category: NavigationCategory;
+  label: LocalizedText;
+  keywords: string[];
+};
+
+const navigationCategories: Record<NavigationCategory, LocalizedText & { description: LocalizedText }> = {
+  market: { zh: '\u5e02\u5834\u89c0\u5bdf', en: 'Market insights', description: { zh: '\u623f\u50f9\u3001\u79df\u91d1\u8207\u4ea4\u6613\u8da8\u52e2', en: 'Prices, rents, and transaction trends' } },
+  land: { zh: '\u571f\u5730\u8207\u958b\u767c', en: 'Land & development', description: { zh: '\u571f\u5730\u50f9\u503c\u3001\u7ba1\u5236\u8207\u958b\u767c\u7ba1\u7406', en: 'Land values, controls, and development administration' } },
+  city: { zh: '\u5c45\u4f4f\u8207\u57ce\u5e02', en: 'Housing & city', description: { zh: '\u5c45\u4f4f\u3001\u4eba\u53e3\u8207\u57ce\u5e02\u751f\u6d3b\u8108\u7d61', en: 'Housing, population, and urban context' } },
+  services: { zh: '\u670d\u52d9\u8207\u516c\u5171\u7d00\u9304', en: 'Services & public records', description: { zh: '\u5c08\u696d\u670d\u52d9\u3001\u516c\u5171\u8cc7\u7522\u8207\u5de5\u7a0b\u7d00\u9304', en: 'Professional services, public assets, and project records' } },
+  tools: { zh: '\u8cc7\u6599\u5de5\u5177', en: 'Data tools', description: { zh: '\u8cc7\u6599\u67e5\u8a62\u3001\u65b9\u6cd5\u8207\u66f4\u65b0\u72c0\u614b', en: 'Tables, methodology, and data status' } },
+};
+
+const dashboardModules: DashboardModule[] = [
+  { tab: 0, category: 'market', label: { zh: '\u5e02\u5834\u7e3d\u89bd', en: 'Market Overview' }, keywords: ['overview', 'market'] },
+  { tab: 1, category: 'market', label: { zh: '\u623f\u50f9\u6708\u6307\u6578', en: 'Monthly Price' }, keywords: ['price', 'monthly'] },
+  { tab: 2, category: 'market', label: { zh: '\u623f\u50f9\u5b63\u6307\u6578', en: 'Quarterly Price' }, keywords: ['price', 'quarterly'] },
+  { tab: 3, category: 'market', label: { zh: '\u4f4f\u5b85\u79df\u91d1', en: 'Residential Rent' }, keywords: ['rent', 'housing'] },
+  { tab: 4, category: 'market', label: { zh: '\u5546\u8fa6\u79df\u91d1', en: 'Office Rent' }, keywords: ['office', 'rent'] },
+  { tab: 5, category: 'market', label: { zh: '\u884c\u653f\u5340\u6bd4\u8f03', en: 'District Comparison' }, keywords: ['district', 'comparison'] },
+  { tab: 6, category: 'market', label: { zh: '\u6bcf\u5b63\u52d5\u614b', en: 'Quarterly Analysis' }, keywords: ['transactions', 'quarterly'] },
+  { tab: 7, category: 'land', label: { zh: '\u4f7f\u7528\u57f7\u7167', en: 'Use Permits' }, keywords: ['building', 'permit'] },
+  { tab: 8, category: 'land', label: { zh: '\u571f\u5730\u73fe\u503c', en: 'Land Value' }, keywords: ['land', 'assessed value'] },
+  { tab: 9, category: 'land', label: { zh: '\u571f\u5730\u4f7f\u7528\u7ba1\u5236', en: 'Land Use Control' }, keywords: ['zoning', 'control'] },
+  { tab: 10, category: 'land', label: { zh: '\u5730\u50f9\u7a05\u7d1a\u8ddd', en: 'Land Value Tax' }, keywords: ['tax', 'bracket'] },
+  { tab: 30, category: 'land', label: { zh: '\u516c\u544a\u5fb5\u6536\u6e05\u518a', en: 'Land Expropriation Registry' }, keywords: ['expropriation', 'registry'] },
+  { tab: 31, category: 'land', label: { zh: '\u5e02\u5730\u91cd\u5283\u6a19\u552e\u6210\u679c', en: 'Land Readjustment Sale Results' }, keywords: ['readjustment', 'sale'] },
+  { tab: 32, category: 'land', label: { zh: '\u7533\u5831\u5730\u50f9', en: 'Declared Land Values' }, keywords: ['declared', 'land value'] },
+  { tab: 33, category: 'land', label: { zh: '\u5f81\u6536\u88dc\u511f\u8cbb\u4fdd\u7ba1', en: 'Expropriation Compensation Custody' }, keywords: ['expropriation', 'custody'] },
+  { tab: 36, category: 'land', label: { zh: '\u5730\u7c4d\u6e05\u7406\u50f9\u91d1\u4fdd\u7ba1', en: 'Cadastral Clearing Sale Proceeds' }, keywords: ['cadastral', 'clearing'] },
+  { tab: 38, category: 'land', label: { zh: '\u5730\u7c4d\u6e05\u7406\u958b\u6a19\u7d50\u679c', en: 'Cadastral Cleanup Auction Results' }, keywords: ['cadastral', 'auction'] },
+  { tab: 11, category: 'city', label: { zh: '\u6240\u5f97\u6536\u5165', en: 'Income' }, keywords: ['income', 'earnings'] },
+  { tab: 12, category: 'city', label: { zh: '\u6d88\u8cbb\u8005\u7269\u50f9', en: 'Consumer Prices' }, keywords: ['consumer', 'cpi'] },
+  { tab: 13, category: 'city', label: { zh: '\u7528\u96fb\u91cf', en: 'Electricity Sales' }, keywords: ['electricity', 'power'] },
+  { tab: 17, category: 'city', label: { zh: '\u793e\u6703\u4f4f\u5b85\u5de5\u7a0b\u9032\u5ea6', en: 'Social Housing Progress' }, keywords: ['social housing', 'construction'] },
+  { tab: 20, category: 'city', label: { zh: '\u4eba\u53e3\u5e74\u9f61\u8cc7\u6599', en: 'Demographic Context' }, keywords: ['population', 'demographic'] },
+  { tab: 24, category: 'city', label: { zh: '\u79df\u8cc3\u4f4f\u5b85\u670d\u52d9\u696d\u8005', en: 'Rental Housing Service Businesses' }, keywords: ['rental', 'housing service'] },
+  { tab: 35, category: 'city', label: { zh: '\u57f7\u696d\u79df\u8cc3\u4f4f\u5b85\u670d\u52d9\u696d\u8005', en: 'Active Rental Housing Service Providers' }, keywords: ['active', 'rental'] },
+  { tab: 14, category: 'services', label: { zh: '\u52d5\u7522\u8cea\u501f', en: 'Pledge Loans' }, keywords: ['pledge', 'loan'] },
+  { tab: 15, category: 'services', label: { zh: '\u52d5\u7522\u64d4\u4fdd', en: 'Movable Collateral' }, keywords: ['collateral', 'secured transaction'] },
+  { tab: 16, category: 'services', label: { zh: '\u4e0d\u52d5\u7522\u7d93\u7d00\u696d\u88c1\u7f70', en: 'Broker Penalties' }, keywords: ['broker', 'penalty'] },
+  { tab: 18, category: 'services', label: { zh: '\u5e02\u6709\u9592\u7f6e\u623f\u5730\u51fa\u79df\u62db\u6a19', en: 'Municipal Idle Property Lease Tenders' }, keywords: ['municipal', 'lease'] },
+  { tab: 19, category: 'services', label: { zh: '\u4fc3\u53c3\u6848\u4ef6\u7c3d\u7d04\u6982\u6cc1', en: 'Public-Private Partnership Contracts' }, keywords: ['ppp', 'contract'] },
+  { tab: 23, category: 'services', label: { zh: '\u5e02\u6709\u516c\u7528\u571f\u5730\u6e05\u518a', en: 'Municipal Public-Use Land Inventory' }, keywords: ['municipal', 'public land'] },
+  { tab: 25, category: 'services', label: { zh: '\u516c\u5171\u5de5\u7a0b\u5353\u8d8a\u734e\u5f97\u734e\u5de5\u7a0b', en: 'Public Works Excellence Award Projects' }, keywords: ['public works', 'award'] },
+  { tab: 26, category: 'services', label: { zh: '\u6377\u904b\u806f\u5408\u958b\u767c\u79df\u91d1', en: 'MRT Joint Development Rents' }, keywords: ['mrt', 'joint development'] },
+  { tab: 27, category: 'services', label: { zh: '\u4e0d\u52d5\u7522\u7d93\u7d00\u696d\u540d\u518a', en: 'Brokerage Business Directory' }, keywords: ['brokerage', 'directory'] },
+  { tab: 28, category: 'services', label: { zh: '\u4e0d\u52d5\u7522\u6d88\u8cbb\u722d\u8b70', en: 'Consumer Disputes' }, keywords: ['consumer', 'dispute'] },
+  { tab: 29, category: 'services', label: { zh: '\u4e0d\u52d5\u7522\u4f30\u50f9\u5e2b\u540d\u518a', en: 'Real Estate Appraisers' }, keywords: ['appraiser', 'directory'] },
+  { tab: 37, category: 'services', label: { zh: '\u6377\u904b\u5de5\u7a0b\u5927\u4e8b\u8a18', en: 'Metro Engineering Milestones' }, keywords: ['metro', 'milestone'] },
+  { tab: 21, category: 'tools', label: { zh: '\u8cc7\u6599\u8868', en: 'Data Table' }, keywords: ['table', 'records'] },
+  { tab: 22, category: 'tools', label: { zh: '\u8cc7\u6599\u8207\u65b9\u6cd5', en: 'Data Notes' }, keywords: ['method', 'source'] },
+  { tab: 34, category: 'tools', label: { zh: '\u53f0\u5317\u5e02\u6d88\u8cbb\u8005\u7269\u50f9\u8da8\u52e2', en: 'Taipei Consumer Price Trends' }, keywords: ['consumer', 'prices'] },
+  { tab: 39, category: 'tools', label: { zh: '\u8cc7\u6599\u72c0\u614b\u8207\u66f4\u65b0', en: 'Data Status & Coverage' }, keywords: ['freshness', 'coverage', 'update'] },
+];
+
+function DashboardNavigator({ language, tab, setTab }: { language: Language; tab: number; setTab: (tab: number) => void }) {
+  const [expandedCategory, setExpandedCategory] = useState<NavigationCategory | null>(null);
+  const [catalogSearch, setCatalogSearch] = useState('');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const currentModule = dashboardModules.find((module) => module.tab === tab) ?? dashboardModules[0];
+  const normalizedSearch = catalogSearch.trim().toLocaleLowerCase();
+  const matchesSearch = (module: DashboardModule) => !normalizedSearch || [module.label.zh, module.label.en, ...module.keywords]
+    .some((value) => value.toLocaleLowerCase().includes(normalizedSearch));
+  const visibleModules = normalizedSearch
+    ? dashboardModules.filter(matchesSearch)
+    : dashboardModules.filter((module) => module.category === expandedCategory);
+  const text = (value: LocalizedText) => value[language];
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (mobileOpen && !dialog.open) dialog.showModal();
+    if (!mobileOpen && dialog.open) dialog.close();
+  }, [mobileOpen]);
+
+  const chooseModule = (module: DashboardModule) => {
+    setTab(module.tab);
+    setExpandedCategory(null);
+    setMobileOpen(false);
+    setCatalogSearch('');
+  };
+
+  return <nav className="dashboard-nav" aria-label={language === 'zh' ? '\u5100\u8868\u677f\u5c0e\u89bd' : 'Dashboard navigation'}>
+    <div className="dashboard-nav__bar">
+      <button className="catalog-toggle" type="button" aria-haspopup="dialog" onClick={() => setMobileOpen(true)}>
+        {language === 'zh' ? '\u700f\u89bd\u8cc7\u6599\u96c6' : 'Browse datasets'} <span aria-hidden="true">↗</span>
+      </button>
+      <div className="category-controls" aria-label={language === 'zh' ? '\u8cc7\u6599\u4e3b\u984c' : 'Data topics'}>
+        {(Object.keys(navigationCategories) as NavigationCategory[]).map((category) => {
+          const isExpanded = expandedCategory === category;
+          const containsCurrent = currentModule.category === category;
+          return <button key={category} className={containsCurrent ? 'active' : ''} type="button" aria-expanded={isExpanded} aria-controls="dataset-catalog" onClick={() => setExpandedCategory(isExpanded ? null : category)}>
+            {text(navigationCategories[category])}
+          </button>;
+        })}
+      </div>
+      <label className="catalog-search"><span className="sr-only">{language === 'zh' ? '\u641c\u5c0b\u8cc7\u6599\u96c6' : 'Search datasets'}</span><input value={catalogSearch} onFocus={() => setExpandedCategory(currentModule.category)} onChange={(event) => setCatalogSearch(event.target.value)} type="search" placeholder={language === 'zh' ? '\u641c\u5c0b\u8cc7\u6599\u96c6' : 'Search datasets'} /></label>
+    </div>
+    <p className="dashboard-breadcrumb"><span>{text(navigationCategories[currentModule.category])}</span><span aria-hidden="true">/</span><strong>{text(currentModule.label)}</strong></p>
+    {expandedCategory && <section id="dataset-catalog" className="dataset-catalog" aria-label={language === 'zh' ? '\u8cc7\u6599\u96c6\u76ee\u9304' : 'Dataset catalogue'}>
+      <div><strong>{normalizedSearch ? (language === 'zh' ? '\u641c\u5c0b\u7d50\u679c' : 'Search results') : text(navigationCategories[expandedCategory])}</strong><p>{normalizedSearch ? `${visibleModules.length} ${language === 'zh' ? '\u500b\u7d50\u679c' : 'results'}` : text(navigationCategories[expandedCategory].description)}</p></div>
+      <div className="dataset-links">{visibleModules.map((module) => <button key={module.tab} className={module.tab === tab ? 'active' : ''} type="button" aria-current={module.tab === tab ? 'page' : undefined} onClick={() => chooseModule(module)}>{text(module.label)}</button>)}</div>
+    </section>}
+    <dialog ref={dialogRef} className="catalog-dialog" aria-label={language === 'zh' ? '\u700f\u89bd\u8cc7\u6599\u96c6' : 'Browse datasets'} onClose={() => setMobileOpen(false)}>
+      <div className="catalog-dialog__header"><strong>{language === 'zh' ? '\u700f\u89bd\u8cc7\u6599\u96c6' : 'Browse datasets'}</strong><button type="button" onClick={() => setMobileOpen(false)}>{language === 'zh' ? '\u95dc\u9589' : 'Close'}</button></div>
+      <label className="catalog-dialog__search"><span className="sr-only">{language === 'zh' ? '\u641c\u5c0b\u8cc7\u6599\u96c6' : 'Search datasets'}</span><input autoFocus value={catalogSearch} onChange={(event) => setCatalogSearch(event.target.value)} type="search" placeholder={language === 'zh' ? '\u641c\u5c0b\u8cc7\u6599\u96c6' : 'Search datasets'} /></label>
+      {normalizedSearch ? <div className="dataset-links">{dashboardModules.filter(matchesSearch).map((module) => <button key={module.tab} className={module.tab === tab ? 'active' : ''} type="button" onClick={() => chooseModule(module)}>{text(module.label)}</button>)}</div> : (Object.keys(navigationCategories) as NavigationCategory[]).map((category) => <details key={category} open={category === currentModule.category}><summary>{text(navigationCategories[category])}<small>{text(navigationCategories[category].description)}</small></summary><div className="dataset-links">{dashboardModules.filter((module) => module.category === category).map((module) => <button key={module.tab} className={module.tab === tab ? 'active' : ''} type="button" onClick={() => chooseModule(module)}>{text(module.label)}</button>)}</div></details>)}
+    </dialog>
+  </nav>;
+}
+
 export default function App() {
   const [language, setLanguage] = useState<Language>('zh');
   const [tab, setTab] = useState(0);
@@ -1618,7 +1735,6 @@ export default function App() {
   const [buildingType, setBuildingType] = useState('');
   const [search, setSearch] = useState('');
   const t = copy[language];
-  const tabLabels = language === 'zh' ? [...t.tabs.slice(0, 16), '不動產經紀業裁罰', '社會住宅工程進度', '市有閒置房地出租招標', '促參案件簽約概況', ...t.tabs.slice(16)] : [...t.tabs.slice(0, 16), 'Real Estate Brokerage Penalties', 'Social Housing Construction Progress', 'Municipal Idle Property Lease Tenders', 'Public-Private Partnership Contracts', ...t.tabs.slice(16)];
 
   useEffect(() => {
     Promise.all([
@@ -1695,8 +1811,9 @@ export default function App() {
         <button className={language === 'en' ? 'active' : ''} onClick={() => setLanguage('en')}>EN</button>
       </div>
     </header>
-    <nav className="tabs" aria-label="Main sections">{tabLabels.map((label, index) =>
-      <button key={label} className={tab === index ? 'active' : ''} onClick={() => setTab(index)}>{label}</button>)}
+    <DashboardNavigator language={language} tab={tab} setTab={setTab} />
+    <nav className="tabs" aria-label="Main sections">{dashboardModules.slice(0, 0).map((_, index) =>
+      <button key={index} className={tab === index ? 'active' : ''} onClick={() => setTab(index)}>{index}</button>)}
       <button className={tab === 23 ? 'active' : ''} onClick={() => setTab(23)}>{language === 'zh' ? '市有公用土地清冊' : 'Municipal Public-Use Land Inventory'}</button>
     </nav>
     <nav className="tabs" aria-label="Rental housing directory"><button className={tab === 24 ? 'active' : ''} onClick={() => setTab(24)}>{language === 'zh' ? '租賃住宅服務業業者名冊' : 'Rental Housing Service Businesses'}</button></nav>
