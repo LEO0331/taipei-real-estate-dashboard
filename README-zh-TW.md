@@ -81,10 +81,3 @@ npm.cmd run build
 Vite 的基礎路徑是 `/taipei-real-estate-dashboard/`。GitHub Actions 會測試、轉換資料、建置並將 `dist` 部署至 GitHub Pages。
 
 請在儲存庫設定中啟用 **Pages → Build and deployment → GitHub Actions**。
-
-## 文件語言
-
-- [English](README.md)（英文為主版本）
-- [繁體中文](README-zh-TW.md)
-
-更新對外文件時，請在同一個變更中同步更新兩個版本，並保持章節順序一致。

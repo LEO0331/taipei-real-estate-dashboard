@@ -4,8 +4,6 @@
 
 A bilingual, responsive dashboard for exploring Taipei public data on housing, prices, rents, land, development, public records, and city context.
 
-**Live site:** https://LEO0331.github.io/taipei-real-estate-dashboard/
-
 ## What it is for
 
 The dashboard makes public datasets easier to browse together. Its five topic groups are:
@@ -75,16 +73,3 @@ npm.cmd run build
 ```
 
 The project’s standard startup and verification path is also available through `bash ./init.sh` on environments with Bash support.
-
-## Deployment
-
-The Vite base path is `/taipei-real-estate-dashboard/`. The GitHub Actions workflow tests, converts, builds, and deploys `dist` to GitHub Pages.
-
-In repository settings, enable **Pages → Build and deployment → GitHub Actions**.
-
-## Documentation languages
-
-- [English](README.md) (canonical source)
-- [繁體中文](README-zh-TW.md)
-
-When updating project-facing documentation, update both versions in the same change and preserve the same heading order.
