@@ -1,0 +1,44 @@
+{
+  "features": [
+    {
+      "id": "feat-001",
+      "name": "Baseline verification",
+      "description": "Keep the Vite dashboard reproducible through the standard test and production-build commands.",
+      "dependencies": [],
+      "status": "complete",
+      "evidence": "2026-08-11: npm.cmd test passed (32 tests); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-002",
+      "name": "Cadastral cleanup land auction results",
+      "description": "Static, bilingual administrative auction-results analytics with preserved source fields and conservative derived metrics.",
+      "dependencies": ["feat-001"],
+      "status": "complete",
+      "evidence": "2026-08-11: implemented local records/metadata, filters, export, charts, source-detail table, methodology, PWA cache, and README notes."
+    },
+    {
+      "id": "feat-003",
+      "name": "Auction-results verification coverage",
+      "description": "Maintain converter and UI checks for the cadastral-cleanup auction-results module.",
+      "dependencies": ["feat-002"],
+      "status": "complete",
+      "evidence": "2026-08-11: source sanity check confirmed 35 rows, 3 valid awards, 23 unsuccessful-bid strings, and zero fabricated award values; project test and build passed."
+    },
+    {
+      "id": "feat-004",
+      "name": "Dataset documentation",
+      "description": "Keep source attribution, privacy handling, reserve-price semantics, and methodology notes current.",
+      "dependencies": ["feat-003"],
+      "status": "complete",
+      "evidence": "2026-08-11: README documents the module boundaries and total-reserve comparison policy."
+    },
+    {
+      "id": "feat-005",
+      "name": "Next dataset or dashboard change",
+      "description": "Use this as the sole active feature only when a new scoped request is received.",
+      "dependencies": ["feat-004"],
+      "status": "not-started",
+      "evidence": "No active feature."
+    }
+  ]
+}
