@@ -1,4 +1,4 @@
-const CACHE = 'taipei-dashboard-v34';
+const CACHE = 'taipei-dashboard-v35';
 const ASSETS = [
   './',
   './manifest.webmanifest',
@@ -99,6 +99,17 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   if (event.request.mode === 'navigate') {
     event.respondWith(fetch(event.request).catch(() => caches.match('./')));
+    return;
+  }
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin === self.location.origin && requestUrl.pathname.includes('/data/') && requestUrl.pathname.endsWith('.json')) {
+    event.respondWith(fetch(event.request).then(async (response) => {
+      if (response.ok) {
+        const cache = await caches.open(CACHE);
+        cache.put(event.request, response.clone());
+      }
+      return response;
+    }).catch(async () => (await caches.match(event.request)) ?? Response.error()));
     return;
   }
   event.respondWith(caches.match(event.request).then(async (cached) => {

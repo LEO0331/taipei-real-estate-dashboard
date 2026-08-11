@@ -17,6 +17,7 @@ import { ActiveRentalHousingServiceProviders } from './ActiveRentalHousingServic
 import { CadastralClearingSaleProceedsCustody } from './CadastralClearingSaleProceedsCustody';
 import { MetroEngineeringMilestones } from './MetroEngineeringMilestones';
 import { CadastralCleanupLandAuctionResults } from './CadastralCleanupLandAuctionResults';
+import { DataFreshness } from './DataFreshness';
 import { buildingTypeLabel, commercialOfficeRentCategoryLabel, copy, districtEn, priceIndexCategoryLabel, recordTypeLabel, rentIndexCategoryLabel } from './i18n';
 import {
   DISTRICTS,
@@ -1729,6 +1730,7 @@ export default function App() {
     <nav className="tabs" aria-label="Cadastral clearing custody"><button className={tab === 36 ? 'active' : ''} onClick={() => setTab(36)}>{language === 'zh' ? '地籍清理標售價金保管款' : 'Cadastral Clearing Sale Proceeds in Custody'}</button></nav>
     <nav className="tabs" aria-label="Metro engineering milestones"><button className={tab === 37 ? 'active' : ''} onClick={() => setTab(37)}>{language === 'zh' ? '臺北捷運工程大事紀要' : 'Taipei Metro Engineering Milestones'}</button></nav>
     <nav className="tabs" aria-label="Cadastral cleanup land auction results"><button className={tab === 38 ? 'active' : ''} onClick={() => setTab(38)}>{language === 'zh' ? '地籍清理公告開標結果土地清冊' : 'Cadastral Cleanup Land Auction Results'}</button></nav>
+    <nav className="tabs" aria-label="Data freshness"><button className={tab === 39 ? 'active' : ''} onClick={() => setTab(39)}>{language === 'zh' ? '資料狀態與更新期間' : 'Data Status & Coverage'}</button></nav>
     <main>
       <Filters language={language} district={district} setDistrict={setDistrict} recordType={recordType} setRecordType={setRecordType} buildingType={buildingType} setBuildingType={setBuildingType} search={search} setSearch={setSearch} />
       {error && <p className="status">{t.loadError}</p>}
@@ -1773,6 +1775,7 @@ export default function App() {
         {tab === 36 && <CadastralClearingSaleProceedsCustody language={language} />}
         {tab === 37 && <MetroEngineeringMilestones language={language} />}
         {tab === 38 && <CadastralCleanupLandAuctionResults language={language} />}
+        {tab === 39 && <DataFreshness language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

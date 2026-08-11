@@ -2,7 +2,7 @@
 
 ## Current State
 
-**Last Updated:** 2026-08-11 10:20 Asia/Taipei
+**Last Updated:** 2026-08-11 11:05 Asia/Taipei
 **Session ID:** Codex desktop
 **Active Feature:** None
 
@@ -16,10 +16,11 @@
 ### What's In Progress
 
 - [x] Completed evidence-based review of decision and technical notes.
+- [x] Implemented freshness, privacy-default, and small-sample safeguards.
 
 ### What's Next
 
-1. Address the documented PWA freshness, privacy-default, and small-sample chart issues when implementation scope is approved.
+1. Consider adding automated service-worker and UI interaction tests for these safeguards.
 2. Begin the next user-scoped feature only after updating `feature_list.json`.
 
 ## Blockers / Risks
@@ -35,6 +36,8 @@
   - Context: grouped continuation rows omit that field in the official CSV.
 - **Decision notes are evidence-led**: consulting guidance records data-period mismatch, cache behavior, privacy posture, and sample-size limits without making investment or legal claims.
   - Context: the dashboard is a research aid, not a decision engine.
+- **Freshness over permanent cache-first data**: local JSON uses network-first delivery with cache fallback, while the new Data Status view surfaces coverage and recorded update fields.
+  - Context: decision-support data must not appear current merely because an old cache is available.
 
 ## Files Modified This Session
 
@@ -43,6 +46,8 @@
 - `progress.md` - restartable handoff state.
 - `init.sh` and `session-handoff.md` - standard bootstrap and handoff templates.
 - `docs/dashboard-decision-insights-and-technical-notes.md` - customer-facing decision guardrails and prioritized technical risks.
+- `public/sw.js` and `src/DataFreshness.tsx` - static-data freshness controls and visible data-status view.
+- `src/CadastralCleanupLandAuctionResults.tsx` - opt-in name fields and small-sample analytical gates.
 
 ## Evidence of Completion
 
@@ -50,7 +55,8 @@
 - [x] Type check and production build clean: `npm.cmd run build` — passed on 2026-08-11.
 - [x] Data sanity check: 35 source rows; unsuccessful bids did not become zero-valued awards.
 - [x] Whole-project review: 0 critical, 1 high, and 3 medium findings documented; test and build passed.
+- [x] Safeguard implementation: production build passed on 2026-08-11; final tests pending this session.
 
 ## Notes for Next Session
 
-Run `bash ./init.sh` (or its two PowerShell-safe commands) before the next change. The highest-value approved follow-up is improving data freshness delivery; next are privacy-default adjustments and small-sample chart gates. Do not overwrite local source files or generated data without preserving source-field and methodology constraints.
+Run `bash ./init.sh` (or its two PowerShell-safe commands) before the next change. Data freshness delivery, privacy defaults, and small-sample chart gates are implemented; consider automated interaction coverage next. Do not overwrite local source files or generated data without preserving source-field and methodology constraints.

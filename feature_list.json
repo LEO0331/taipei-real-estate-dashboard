@@ -40,5 +40,14 @@
       "status": "complete",
       "evidence": "2026-08-11: reviewed data periods, metadata, static-delivery behavior, source-field privacy posture, and auction sample coverage; updated the decision and technical notes with prioritized customer guidance. npm.cmd test (32/32) and npm.cmd run build passed."
     }
+    ,
+    {
+      "id": "feat-006",
+      "name": "Decision-safety safeguards",
+      "description": "Address cache freshness, visible coverage windows, auction personal-name defaults, and small-sample derived analytics.",
+      "dependencies": ["feat-005"],
+      "status": "complete",
+      "evidence": "2026-08-11: implemented network-first static-data revalidation, a Data Status & Coverage view, opt-in official-name search/display/export, and a five-valid-award threshold for comparative auction analytics."
+    }
   ]
 }
