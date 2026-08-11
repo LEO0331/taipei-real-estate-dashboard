@@ -56,7 +56,9 @@
     "data:fetch:land-readjustment-sale-results": "tsx scripts/fetchLandReadjustmentSaleResults.ts",
     "data:convert:land-readjustment-sale-results": "tsx scripts/convertLandReadjustmentSaleResults.ts",
     "data:fetch:cadastral-clearing-sale-proceeds-custody": "tsx scripts/fetchCadastralClearingSaleProceedsCustody.ts",
-    "data:convert:cadastral-clearing-sale-proceeds-custody": "tsx scripts/convertCadastralClearingSaleProceedsCustody.ts"
+    "data:convert:cadastral-clearing-sale-proceeds-custody": "tsx scripts/convertCadastralClearingSaleProceedsCustody.ts",
+    "data:fetch:cadastral-cleanup-land-auction-results": "tsx scripts/fetchCadastralCleanupLandAuctionResults.ts",
+    "data:convert:cadastral-cleanup-land-auction-results": "tsx scripts/convertCadastralCleanupLandAuctionResults.ts"
     ,"data:fetch:metro-engineering-milestones": "tsx scripts/fetchMetroEngineeringMilestones.ts"
     ,"data:convert:metro-engineering-milestones": "tsx scripts/convertMetroEngineeringMilestones.ts"
   },

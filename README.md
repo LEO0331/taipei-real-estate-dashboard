@@ -32,6 +32,7 @@ It is an informational public-data dashboard, not a property appraisal, rent app
 ## Data model and limitations
 
 - The frontend reads static JSON from `public/data`; it does not call Taipei Open Data directly.
+- `cadastral_cleanup_land_auction_results` is a separate administrative auction-results explorer based on the Taipei Cadastral Cleanup Land Auction Results list. It preserves all official source fields, including person-name fields, without external enrichment or profiles; it does not infer current ownership, listings, geometry, market value, or investment suitability. Its per-square-metre and award-to-reserve measures are derived auction metrics only. The source's `標售總底價金額` is used as the comparison denominator only where the source explicitly provides it; continuation rows with blank merged cells remain preserved source rows.
 - The use-permit XML files are parsed with a Node stream at build time. The raw XML remains under `data/raw/building-use-permits/`, including current-year files such as `data/raw/building-use-permits/115/Taipei02.xml`, and is never served to the browser.
 - Generated use-permit records are chunked by issue year; the dashboard loads a year chunk only when the table needs it and loads detailed records on demand.
 - ROC permit dates become Gregorian ISO dates. Districts are extracted from source addresses; no geocoding or exact-map markers are used in v1.
@@ -116,6 +117,7 @@ data/raw/movable-property-pledge-business-statistics/
 data/raw/movable-property-secured-transaction-records/
 data/raw/real-estate-broker-penalties/
 data/raw/municipal-idle-property-lease-tenders/
+data/raw/cadastral-cleanup-land-auction-results.csv
 ```
 
 Build and preview:
@@ -181,6 +183,8 @@ public/data/municipal-idle-property-lease-tenders/records.json
 public/data/municipal-idle-property-lease-tenders/summary.json
 public/data/cadastral-clearing-sale-proceeds-custody/records.public.json
 public/data/cadastral-clearing-sale-proceeds-custody/metadata.json
+public/data/cadastral-cleanup-land-auction-results/records.json
+public/data/cadastral-cleanup-land-auction-results/metadata.json
 ```
 
 Rent-index-only workflow:
@@ -216,6 +220,8 @@ npm run data:fetch:municipal-idle-property-lease-tenders
 npm run data:convert:municipal-idle-property-lease-tenders
 npm run data:fetch:cadastral-clearing-sale-proceeds-custody
 npm run data:convert:cadastral-clearing-sale-proceeds-custody
+npm run data:fetch:cadastral-cleanup-land-auction-results
+npm run data:convert:cadastral-cleanup-land-auction-results
 npm run data:fetch:metro-engineering-milestones
 npm run data:convert:metro-engineering-milestones
 ```

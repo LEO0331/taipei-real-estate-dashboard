@@ -4,4 +4,5 @@ dist/
 *.tsbuildinfo
 data/raw/cadastral-clearing-sale-proceeds-custody/
 data/raw/metro-engineering-milestones/
+data/raw/cadastral-cleanup-land-auction-results.csv
 .omx
