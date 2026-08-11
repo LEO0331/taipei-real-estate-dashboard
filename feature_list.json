@@ -56,6 +56,14 @@
       "dependencies": ["feat-001"],
       "status": "complete",
       "evidence": "2026-08-11: implemented a five-category desktop navigator, current-page breadcrumb, searchable dataset catalogue, and native mobile dialog. npm.cmd test passed (32/32); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-008",
+      "name": "Bilingual README localization",
+      "description": "Provide separate, synchronized English and Traditional Chinese repository landing documentation.",
+      "dependencies": ["feat-004"],
+      "status": "complete",
+      "evidence": "2026-08-11: rewrote the English README as the canonical concise landing page; added README-zh-TW.md with matching Traditional Chinese sections and reciprocal language links. npm.cmd test passed (32/32); npm.cmd run build passed."
     }
   ]
 }
