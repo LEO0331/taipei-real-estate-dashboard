@@ -21,6 +21,7 @@
 - [x] Split project landing documentation into English and Traditional Chinese README files.
 - [x] Added the `urban_renewal_regulations` static bilingual reference module with preserved source rows, conservative ROC-date conversion, filters, charts, source details, data-quality disclosure, and filtered CSV export.
 - [x] Added the `municipal_property_portfolio` static bilingual module with additive-row safeguards, property composition, annual trends, source details, data quality, and filtered CSV export.
+- [x] Completed a customer-facing whole-dashboard review; updated decision notes for data recency, public-asset interpretation, legal-reference limits, filter scope, directory-status caveats, partial failures, and release checks.
 
 ### What's Next
 
@@ -59,6 +60,7 @@
 - `README.md` and `README-zh-TW.md` - concise, parallel English and Traditional Chinese project documentation with reciprocal language links.
 - `src/UrbanRenewalRegulations.tsx`, `scripts/fetchUrbanRenewalRegulations.ts`, `scripts/convertUrbanRenewalRegulations.ts`, and `public/data/urban-renewal-regulations/` - urban-renewal regulation reference module and static data pipeline.
 - `src/MunicipalPropertyPortfolio.tsx`, `scripts/fetchMunicipalPropertyPortfolio.ts`, `scripts/convertMunicipalPropertyPortfolio.ts`, and `public/data/municipal-property-portfolio/` - municipal property portfolio module and static data pipeline.
+- `docs/dashboard-decision-insights-and-technical-notes.md` - evidence-backed customer decision guidance and operational release risks.
 
 ## Evidence of Completion
 
