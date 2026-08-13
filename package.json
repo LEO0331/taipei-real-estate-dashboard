@@ -61,6 +61,8 @@
     "data:convert:cadastral-cleanup-land-auction-results": "tsx scripts/convertCadastralCleanupLandAuctionResults.ts"
     ,"data:fetch:metro-engineering-milestones": "tsx scripts/fetchMetroEngineeringMilestones.ts"
     ,"data:convert:metro-engineering-milestones": "tsx scripts/convertMetroEngineeringMilestones.ts"
+    ,"data:fetch:urban-renewal-regulations": "tsx scripts/fetchUrbanRenewalRegulations.ts"
+    ,"data:convert:urban-renewal-regulations": "tsx scripts/convertUrbanRenewalRegulations.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

@@ -2,9 +2,9 @@
 
 ## Current State
 
-**Last Updated:** 2026-08-11 12:40 Asia/Taipei
+**Last Updated:** 2026-08-13 Asia/Taipei
 **Session ID:** Codex desktop
-**Active Feature:** None
+**Active Feature:** feat-009 (complete)
 
 ## Status
 
@@ -19,6 +19,7 @@
 - [x] Implemented freshness, privacy-default, and small-sample safeguards.
 - [x] Replaced the oversized flat tab treatment with categorized, searchable dashboard navigation.
 - [x] Split project landing documentation into English and Traditional Chinese README files.
+- [x] Added the `urban_renewal_regulations` static bilingual reference module with preserved source rows, conservative ROC-date conversion, filters, charts, source details, data-quality disclosure, and filtered CSV export.
 
 ### What's Next
 
@@ -29,6 +30,7 @@
 ## Blockers / Risks
 
 - [ ] The official auction CSV may change without notice; re-run fetch and conversion before publishing a refresh.
+- [ ] Urban-renewal regulation records update irregularly; rerun their fetcher and converter before publishing a refresh.
 
 ## Decisions Made
 
@@ -53,6 +55,7 @@
 - `src/CadastralCleanupLandAuctionResults.tsx` - opt-in name fields and small-sample analytical gates.
 - `src/App.tsx` and `src/styles.css` - five-category dataset navigation, desktop catalogue, and mobile browse dialog.
 - `README.md` and `README-zh-TW.md` - concise, parallel English and Traditional Chinese project documentation with reciprocal language links.
+- `src/UrbanRenewalRegulations.tsx`, `scripts/fetchUrbanRenewalRegulations.ts`, `scripts/convertUrbanRenewalRegulations.ts`, and `public/data/urban-renewal-regulations/` - urban-renewal regulation reference module and static data pipeline.
 
 ## Evidence of Completion
 
@@ -63,6 +66,7 @@
 - [x] Safeguard implementation: production build passed on 2026-08-11; final tests pending this session.
 - [x] Responsive navigation: `npm.cmd test` passed (32/32) and `npm.cmd run build` passed on 2026-08-11.
 - [x] Bilingual README: `npm.cmd test` passed (32/32) and `npm.cmd run build` passed on 2026-08-11.
+- [x] Urban renewal regulations: `npm.cmd test` passed (33/33) and `npm.cmd run build` passed on 2026-08-13.
 
 ## Notes for Next Session
 

@@ -34,6 +34,7 @@ import { classifyConsumerPriceGroup, classifyConsumerPriceLevel, makeConsumerPri
 import { classifyAnnualTrend, convertTaipowerTaipeiElectricitySalesRows, parseIntegerMetric, parseTaipeiElectricityPeriod, safeShare, thousandKwhToKwh } from './convertTaipowerTaipeiElectricitySales.ts';
 import { calculatePaymentPeriodDayCount, classifyLandValueTaxPeriod, convertLandValueTaxProgressiveBracketRows, parseFlatLandTaxFormula, parseGeneralLandTaxFormula, parseLandValueTaxPaymentDate, parseLandValueTaxRocYear } from './convertLandValueTaxProgressiveBrackets.ts';
 import { classifyDevelopmentIntensity, classifyLandUseZoningCategory, convertLandUseZoningControlRows, parsePercentRatio, parseTaipeiDistrictName } from './convertLandUseZoningControlSummary.ts';
+import { buildUrbanRenewalRegulationsSummary, convertUrbanRenewalRegulationRows, parseRocDate as parseUrbanRenewalRocDate, stableRegulationId } from './convertUrbanRenewalRegulations.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -350,4 +351,20 @@ test('converts municipal idle-property tenders without turning blanks into zero'
   assert.equal(blank.reserveRent, undefined);
   assert.equal(blank.awardedRent, undefined);
   assert.equal(blank.externalMapQuery, undefined);
+});
+
+test('converts urban renewal regulation records conservatively', () => {
+  assert.deepEqual(parseUrbanRenewalRocDate('1120616'), { rocYear: 112, rocMonth: 6, rocDay: 16, gregorianYear: 2023, gregorianDate: '2023-06-16', hasValidDate: true });
+  assert.equal(parseUrbanRenewalRocDate('112/02/30').hasValidDate, false);
+  assert.equal(parseUrbanRenewalRocDate('').gregorianDate, null);
+  const raw = { SeqNo: '001', ItemName: ' Test regulation ', RocDate: '112/05/01', ArticleType: 'A', CountyCode: '063000', Note: 'preserved' };
+  const [record] = convertUrbanRenewalRegulationRows([raw]);
+  assert.equal(record.id, 'urban-renewal-regulation-001');
+  assert.equal(record.countyCode, '063000');
+  assert.equal(record.title, 'Test regulation');
+  assert.equal(record.sourceRaw.Note, 'preserved');
+  assert.equal(stableRegulationId('', raw).startsWith('urban-renewal-regulation-'), true);
+  const summary = buildUrbanRenewalRegulationsSummary([record, { ...record, id: 'second', sourceSequenceNumber: '002' }]);
+  assert.equal(summary.dataQuality.duplicateTitleCount, 1);
+  assert.equal(summary.byArticleType[0].value, 'A');
 });

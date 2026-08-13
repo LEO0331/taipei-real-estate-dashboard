@@ -42,6 +42,7 @@ The project combines Taipei City Open Data and official public records, includin
 - [Income per earner by district](https://data.taipei/dataset/detail?id=33da4ba0-c366-45eb-a71f-1991e6455ed6)
 - [Taipei consumer price index](https://data.taipei/dataset/detail?id=7ee57050-4d27-482c-bae5-ebd15ca86702)
 - [Taipei electricity sales](https://data.taipei/dataset/detail?id=9bfb5424-1996-461a-b19b-f75101e2f459)
+- [Taipei urban renewal regulations](https://data.taipei/dataset/detail?id=6bc30ace-9322-412c-9092-aa151bdf4a03)
 
 Source availability and coverage vary by dataset. The dashboard preserves raw source strings where material and documents derived metrics in the corresponding view.
 

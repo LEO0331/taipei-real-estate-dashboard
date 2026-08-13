@@ -18,6 +18,7 @@ import { CadastralClearingSaleProceedsCustody } from './CadastralClearingSalePro
 import { MetroEngineeringMilestones } from './MetroEngineeringMilestones';
 import { CadastralCleanupLandAuctionResults } from './CadastralCleanupLandAuctionResults';
 import { DataFreshness } from './DataFreshness';
+import { UrbanRenewalRegulations } from './UrbanRenewalRegulations';
 import { buildingTypeLabel, commercialOfficeRentCategoryLabel, copy, districtEn, priceIndexCategoryLabel, recordTypeLabel, rentIndexCategoryLabel } from './i18n';
 import {
   DISTRICTS,
@@ -1641,6 +1642,7 @@ const dashboardModules: DashboardModule[] = [
   { tab: 31, category: 'land', label: { zh: '\u5e02\u5730\u91cd\u5283\u6a19\u552e\u6210\u679c', en: 'Land Readjustment Sale Results' }, keywords: ['readjustment', 'sale'] },
   { tab: 32, category: 'land', label: { zh: '\u7533\u5831\u5730\u50f9', en: 'Declared Land Values' }, keywords: ['declared', 'land value'] },
   { tab: 33, category: 'land', label: { zh: '\u5f81\u6536\u88dc\u511f\u8cbb\u4fdd\u7ba1', en: 'Expropriation Compensation Custody' }, keywords: ['expropriation', 'custody'] },
+  { tab: 40, category: 'land', label: { zh: '\u90fd\u5e02\u66f4\u65b0\u76f8\u95dc\u6cd5\u898f', en: 'Urban Renewal Regulations' }, keywords: ['urban renewal', 'regulations', 'legal reference'] },
   { tab: 36, category: 'land', label: { zh: '\u5730\u7c4d\u6e05\u7406\u50f9\u91d1\u4fdd\u7ba1', en: 'Cadastral Clearing Sale Proceeds' }, keywords: ['cadastral', 'clearing'] },
   { tab: 38, category: 'land', label: { zh: '\u5730\u7c4d\u6e05\u7406\u958b\u6a19\u7d50\u679c', en: 'Cadastral Cleanup Auction Results' }, keywords: ['cadastral', 'auction'] },
   { tab: 11, category: 'city', label: { zh: '\u6240\u5f97\u6536\u5165', en: 'Income' }, keywords: ['income', 'earnings'] },
@@ -1893,6 +1895,7 @@ export default function App() {
         {tab === 37 && <MetroEngineeringMilestones language={language} />}
         {tab === 38 && <CadastralCleanupLandAuctionResults language={language} />}
         {tab === 39 && <DataFreshness language={language} />}
+        {tab === 40 && <UrbanRenewalRegulations language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

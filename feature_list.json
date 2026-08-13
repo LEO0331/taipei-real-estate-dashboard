@@ -64,6 +64,14 @@
       "dependencies": ["feat-004"],
       "status": "complete",
       "evidence": "2026-08-11: rewrote the English README as the canonical concise landing page; added README-zh-TW.md with matching Traditional Chinese sections and reciprocal language links. npm.cmd test passed (32/32); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-009",
+      "name": "Urban renewal regulations reference module",
+      "description": "Provide a static, bilingual searchable reference directory for Taipei urban-renewal regulation source records without legal-status inference.",
+      "dependencies": ["feat-001", "feat-007"],
+      "status": "complete",
+      "evidence": "2026-08-13: inspected the official 37-row CSV; added conservative ROC-date conversion, filters, charts, source details, CSV export, data-quality notes, PWA cache paths, and converter tests. npm.cmd test passed (33/33); npm.cmd run build passed."
     }
   ]
 }
