@@ -65,6 +65,8 @@
     ,"data:convert:urban-renewal-regulations": "tsx scripts/convertUrbanRenewalRegulations.ts"
     ,"data:fetch:municipal-property-portfolio": "tsx scripts/fetchMunicipalPropertyPortfolio.ts"
     ,"data:convert:municipal-property-portfolio": "tsx scripts/convertMunicipalPropertyPortfolio.ts"
+    ,"data:fetch:civil-engineering-price-index": "tsx scripts/fetchCivilEngineeringPriceIndex.ts"
+    ,"data:convert:civil-engineering-price-index": "tsx scripts/convertCivilEngineeringPriceIndex.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

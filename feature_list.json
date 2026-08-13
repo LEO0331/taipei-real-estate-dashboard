@@ -80,6 +80,14 @@
       "dependencies": ["feat-001", "feat-007"],
       "status": "complete",
       "evidence": "2026-08-13: inspected the official Big5 CSV (120 additive detail rows across 2021–2025); added safe parsing, total-row detection, filtering, charts, source details, export, data-quality notes, PWA cache paths, and converter tests. npm.cmd test passed (34/34); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-011",
+      "name": "Civil engineering price index",
+      "description": "Provide static, bilingual construction-input price analytics without cost forecasting, project estimates, or housing-price causality claims.",
+      "dependencies": ["feat-001", "feat-007"],
+      "status": "complete",
+      "evidence": "2026-08-13: inspected and converted the official 4,245-row, 15-category monthly source through 2026-07; added local data, category mapping, filters, charts, source details, CSV export, PWA cache, and converter tests. npm.cmd test passed (35/35); npm.cmd run build passed."
     }
   ]
 }

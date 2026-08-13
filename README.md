@@ -44,6 +44,7 @@ The project combines Taipei City Open Data and official public records, includin
 - [Taipei electricity sales](https://data.taipei/dataset/detail?id=9bfb5424-1996-461a-b19b-f75101e2f459)
 - [Taipei urban renewal regulations](https://data.taipei/dataset/detail?id=6bc30ace-9322-412c-9092-aa151bdf4a03)
 - [Taipei municipal property inventory (past five years)](https://data.taipei/dataset/detail?id=fb19bfcb-33e5-4f82-8d0e-2460152282c4)
+- [Taipei civil engineering price index](https://data.taipei/dataset/detail?id=e0cfb477-9dbd-4af2-a0a6-6cb132821584)
 
 Source availability and coverage vary by dataset. The dashboard preserves raw source strings where material and documents derived metrics in the corresponding view.
 

@@ -1,0 +1,4 @@
+import { mkdir, writeFile } from 'node:fs/promises'; import { listCsvFiles } from './data.ts';
+const directory='data/raw/civil-engineering-price-index'; const url='https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=e261547b-b9f5-47ee-b5ee-400fbcd449c3';
+export async function fetchCivilEngineeringPriceIndex(){await mkdir(directory,{recursive:true});if((await listCsvFiles(directory)).length&&!process.argv.includes('--force'))return;const response=await fetch(url,{signal:AbortSignal.timeout(30_000)});if(!response.ok)throw new Error(`Civil price index download failed: HTTP ${response.status}`);await writeFile(`${directory}/source.csv`,Buffer.from(await response.arrayBuffer()));}
+if(process.argv[1]?.endsWith('fetchCivilEngineeringPriceIndex.ts'))await fetchCivilEngineeringPriceIndex();

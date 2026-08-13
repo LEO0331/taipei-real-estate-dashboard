@@ -36,6 +36,7 @@ import { calculatePaymentPeriodDayCount, classifyLandValueTaxPeriod, convertLand
 import { classifyDevelopmentIntensity, classifyLandUseZoningCategory, convertLandUseZoningControlRows, parsePercentRatio, parseTaipeiDistrictName } from './convertLandUseZoningControlSummary.ts';
 import { buildUrbanRenewalRegulationsSummary, convertUrbanRenewalRegulationRows, parseRocDate as parseUrbanRenewalRocDate, stableRegulationId } from './convertUrbanRenewalRegulations.ts';
 import { buildMunicipalPropertyPortfolioSummary, convertMunicipalPropertyPortfolioRows, parsePortfolioAmount, parsePortfolioMonth, parsePortfolioYear } from './convertMunicipalPropertyPortfolio.ts';
+import { buildCivilEngineeringPriceSummary, convertCivilEngineeringPriceRows, parseCivilNumber, parseCivilPeriod } from './convertCivilEngineeringPriceIndex.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -387,4 +388,14 @@ test('converts municipal property portfolio values without treating missing amou
   assert.equal(summary.validAmountCount, 1);
   assert.equal(summary.byYear[0].amountTwd, 1000);
   assert.equal(summary.aggregation.officialTotalRowsDetected, false);
+});
+
+test('parses civil engineering price index periods and missing year-over-year rates conservatively', () => {
+  assert.deepEqual(parseCivilPeriod('115年 7月'), { rocYear: 115, month: 7, gregorianYear: 2026, period: '2026-07' });
+  assert.equal(parseCivilPeriod('115年 13月').period, null);
+  assert.equal(parseCivilNumber('--', true), null);
+  const records = convertCivilEngineeringPriceRows([{ 縣市別代碼: '63000', 統計期: '115年 7月', 基本分類: '總指數', '原始值[統計數值]': '142.08', '年增率[%]': '2.83' }]);
+  assert.equal(records[0].category, 'overall');
+  assert.equal(records[0].yearOverYearRate, 2.83);
+  assert.equal(buildCivilEngineeringPriceSummary(records).latestPeriod, '2026-07');
 });
