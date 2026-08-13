@@ -63,6 +63,8 @@
     ,"data:convert:metro-engineering-milestones": "tsx scripts/convertMetroEngineeringMilestones.ts"
     ,"data:fetch:urban-renewal-regulations": "tsx scripts/fetchUrbanRenewalRegulations.ts"
     ,"data:convert:urban-renewal-regulations": "tsx scripts/convertUrbanRenewalRegulations.ts"
+    ,"data:fetch:municipal-property-portfolio": "tsx scripts/fetchMunicipalPropertyPortfolio.ts"
+    ,"data:convert:municipal-property-portfolio": "tsx scripts/convertMunicipalPropertyPortfolio.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

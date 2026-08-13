@@ -72,6 +72,14 @@
       "dependencies": ["feat-001", "feat-007"],
       "status": "complete",
       "evidence": "2026-08-13: inspected the official 37-row CSV; added conservative ROC-date conversion, filters, charts, source details, CSV export, data-quality notes, PWA cache paths, and converter tests. npm.cmd test passed (33/33); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-010",
+      "name": "Municipal property portfolio",
+      "description": "Provide static, bilingual municipal-property composition and trend analytics without market-value or investment inference.",
+      "dependencies": ["feat-001", "feat-007"],
+      "status": "complete",
+      "evidence": "2026-08-13: inspected the official Big5 CSV (120 additive detail rows across 2021–2025); added safe parsing, total-row detection, filtering, charts, source details, export, data-quality notes, PWA cache paths, and converter tests. npm.cmd test passed (34/34); npm.cmd run build passed."
     }
   ]
 }

@@ -35,6 +35,7 @@ import { classifyAnnualTrend, convertTaipowerTaipeiElectricitySalesRows, parseIn
 import { calculatePaymentPeriodDayCount, classifyLandValueTaxPeriod, convertLandValueTaxProgressiveBracketRows, parseFlatLandTaxFormula, parseGeneralLandTaxFormula, parseLandValueTaxPaymentDate, parseLandValueTaxRocYear } from './convertLandValueTaxProgressiveBrackets.ts';
 import { classifyDevelopmentIntensity, classifyLandUseZoningCategory, convertLandUseZoningControlRows, parsePercentRatio, parseTaipeiDistrictName } from './convertLandUseZoningControlSummary.ts';
 import { buildUrbanRenewalRegulationsSummary, convertUrbanRenewalRegulationRows, parseRocDate as parseUrbanRenewalRocDate, stableRegulationId } from './convertUrbanRenewalRegulations.ts';
+import { buildMunicipalPropertyPortfolioSummary, convertMunicipalPropertyPortfolioRows, parsePortfolioAmount, parsePortfolioMonth, parsePortfolioYear } from './convertMunicipalPropertyPortfolio.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -367,4 +368,23 @@ test('converts urban renewal regulation records conservatively', () => {
   const summary = buildUrbanRenewalRegulationsSummary([record, { ...record, id: 'second', sourceSequenceNumber: '002' }]);
   assert.equal(summary.dataQuality.duplicateTitleCount, 1);
   assert.equal(summary.byArticleType[0].value, 'A');
+});
+
+test('converts municipal property portfolio values without treating missing amounts as zero', () => {
+  assert.deepEqual(parsePortfolioYear('114'), { rocYear: 114, gregorianYear: 2025 });
+  assert.equal(parsePortfolioMonth('12'), 12);
+  assert.equal(parsePortfolioMonth('13'), null);
+  assert.equal(parsePortfolioAmount('1,234,567'), 1_234_567);
+  assert.equal(parsePortfolioAmount('-'), null);
+  const records = convertMunicipalPropertyPortfolioRows([
+    { Year: '114', Month: '12', PropertyNature: 'Public', Item: 'Land', Amount: '1,000' },
+    { Year: '114', Month: '12', PropertyNature: 'Public', Item: 'Equipment', Amount: '' },
+  ]);
+  assert.equal(records[0].gregorianYear, 2025);
+  assert.equal(records[0].amountTwd, 1000);
+  assert.equal(records[1].amountTwd, null);
+  const summary = buildMunicipalPropertyPortfolioSummary(records);
+  assert.equal(summary.validAmountCount, 1);
+  assert.equal(summary.byYear[0].amountTwd, 1000);
+  assert.equal(summary.aggregation.officialTotalRowsDetected, false);
 });
