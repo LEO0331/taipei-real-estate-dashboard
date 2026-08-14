@@ -37,6 +37,7 @@ import { classifyDevelopmentIntensity, classifyLandUseZoningCategory, convertLan
 import { buildUrbanRenewalRegulationsSummary, convertUrbanRenewalRegulationRows, parseRocDate as parseUrbanRenewalRocDate, stableRegulationId } from './convertUrbanRenewalRegulations.ts';
 import { buildMunicipalPropertyPortfolioSummary, convertMunicipalPropertyPortfolioRows, parsePortfolioAmount, parsePortfolioMonth, parsePortfolioYear } from './convertMunicipalPropertyPortfolio.ts';
 import { buildCivilEngineeringPriceSummary, convertCivilEngineeringPriceRows, parseCivilNumber, parseCivilPeriod } from './convertCivilEngineeringPriceIndex.ts';
+import { buildLowIncomeHouseholdLivingAssistanceSummary, convertLowIncomeHouseholdLivingAssistanceRows, parseLowIncomeAssistancePeriod } from './convertLowIncomeHouseholdLivingAssistance.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -95,6 +96,14 @@ test('parses movable-property secured transaction helper fields', () => {
   assert.equal(record.securedDebtAmountNtd, 30000000);
   assert.equal(record.hasMaskedDebtorBusinessNumber, true);
   assert.equal(record.debtorDistrict, '中正區');
+});
+
+test('converts low-income household living assistance quarterly source fields', () => {
+  assert.deepEqual(parseLowIncomeAssistancePeriod('114年第3季'), { periodRaw: '114年第3季', rocYear: 114, year: 2025, quarter: 3, period: '2025-Q3' });
+  const records = convertLowIncomeHouseholdLivingAssistanceRows([{ '年/季': '114年第3季', '總金額': '380,849,801', '第0類低收入戶人次': '2409', '第0類低收入戶發放標準': '20379', '第0類低收入戶金額': '46956609', '第1類低收入戶人次': '4997', '第1類低收入戶發放標準': '15317', '第1類低收入戶金額': '75678396', '第2類低收入戶戶次': '12340', '第2類低收入戶發放標準': '7911', '第2類低收入戶金額': '97118696' }]);
+  assert.equal(records[0].totalAmountNtd, 380849801);
+  assert.equal(records[0].category2HouseholdOccurrences, 12340);
+  assert.equal(buildLowIncomeHouseholdLivingAssistanceSummary(records).latestPeriod, '2025-Q3');
 });
 
 test('normalizes real-estate brokerage penalty source fields without status inference', () => {

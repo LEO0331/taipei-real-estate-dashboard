@@ -88,6 +88,14 @@
       "dependencies": ["feat-001", "feat-007"],
       "status": "complete",
       "evidence": "2026-08-13: inspected and converted the official 4,245-row, 15-category monthly source through 2026-07; added local data, category mapping, filters, charts, source details, CSV export, PWA cache, and converter tests. npm.cmd test passed (35/35); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-012",
+      "name": "Low-income household living assistance",
+      "description": "Provide static, bilingual quarterly low-income household living-assistance statistics with preserved source fields and no eligibility or payment inference.",
+      "dependencies": ["feat-001", "feat-007"],
+      "status": "complete",
+      "evidence": "2026-08-14: downloaded the official Taipei City Department of Social Welfare quarterly CSV (43 rows, 2015-Q1 through 2025-Q3); added a static bilingual module, conservative converter, navigation, PWA cache paths, and regression coverage. npm.cmd test passed (36/36); npm.cmd run build passed."
     }
   ]
 }

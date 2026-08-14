@@ -67,6 +67,8 @@
     ,"data:convert:municipal-property-portfolio": "tsx scripts/convertMunicipalPropertyPortfolio.ts"
     ,"data:fetch:civil-engineering-price-index": "tsx scripts/fetchCivilEngineeringPriceIndex.ts"
     ,"data:convert:civil-engineering-price-index": "tsx scripts/convertCivilEngineeringPriceIndex.ts"
+    ,"data:fetch:low-income-household-living-assistance": "tsx scripts/fetchLowIncomeHouseholdLivingAssistance.ts"
+    ,"data:convert:low-income-household-living-assistance": "tsx scripts/convertLowIncomeHouseholdLivingAssistance.ts"
   },
   "dependencies": {
     "react": "^19.1.0",
