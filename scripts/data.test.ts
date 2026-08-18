@@ -38,6 +38,7 @@ import { buildUrbanRenewalRegulationsSummary, convertUrbanRenewalRegulationRows,
 import { buildMunicipalPropertyPortfolioSummary, convertMunicipalPropertyPortfolioRows, parsePortfolioAmount, parsePortfolioMonth, parsePortfolioYear } from './convertMunicipalPropertyPortfolio.ts';
 import { buildCivilEngineeringPriceSummary, convertCivilEngineeringPriceRows, parseCivilNumber, parseCivilPeriod } from './convertCivilEngineeringPriceIndex.ts';
 import { buildLowIncomeHouseholdLivingAssistanceSummary, convertLowIncomeHouseholdLivingAssistanceRows, parseLowIncomeAssistancePeriod } from './convertLowIncomeHouseholdLivingAssistance.ts';
+import { buildMrtJointDevelopmentAuctionPropertySummary, classifyParking, convertMrtJointDevelopmentAuctionPropertyRows } from './convertMrtJointDevelopmentAuctionProperties.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -104,6 +105,17 @@ test('converts low-income household living assistance quarterly source fields', 
   assert.equal(records[0].totalAmountNtd, 380849801);
   assert.equal(records[0].category2HouseholdOccurrences, 12340);
   assert.equal(buildLowIncomeHouseholdLivingAssistanceSummary(records).latestPeriod, '2025-Q3');
+});
+
+test('converts MRT joint-development auction property fields and derived metrics', () => {
+  const records = convertMrtJointDevelopmentAuctionPropertyRows([{ '序號': '1', '區位代號': 'F24-A01', '門牌號碼': '示範路 1 號', '產權面積 平方公尺': '54.4', '產權面積坪': '16.46', '公設百分比%': '38.81%', '標售底價 核定金額': '7,921,046', '應繳押標金 核定金額': '792,100', '車位說明': '升降平面車位 B1-1' }]);
+  assert.equal(records[0].reservePriceNtd, 7921046);
+  assert.equal(Number(records[0].reservePricePerPing?.toFixed(2)), 481230.01);
+  assert.equal(records[0].normalizedParkingType, 'with_parking');
+  assert.equal(classifyParking('無車位'), 'without_parking');
+  const summary = buildMrtJointDevelopmentAuctionPropertySummary(records);
+  assert.equal(summary.locationCount, 1);
+  assert.ok(Math.abs((summary.medianDepositRatio ?? 0) - 0.1) < 0.00001);
 });
 
 test('normalizes real-estate brokerage penalty source fields without status inference', () => {

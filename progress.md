@@ -2,9 +2,9 @@
 
 ## Current State
 
-**Last Updated:** 2026-08-13 Asia/Taipei
+**Last Updated:** 2026-08-18 Asia/Taipei
 **Session ID:** Codex desktop
-**Active Feature:** feat-012 (in progress)
+**Active Feature:** feat-013 (complete)
 
 ## Status
 
@@ -24,6 +24,7 @@
 - [x] Added the `civil_engineering_price_index` static bilingual construction-cost module with official category mappings, long-term trends, latest YoY ranking, source details, and filtered CSV export.
 - [x] Completed a customer-facing whole-dashboard review; updated decision notes for data recency, public-asset interpretation, legal-reference limits, filter scope, directory-status caveats, partial failures, and release checks.
 - [x] Added a static bilingual low-income household living-assistance module from the official quarterly Social Affairs source. It preserves each source column and explicitly distinguishes person-times (categories 0/1) from household occurrences (category 2).
+- [x] Added a static bilingual MRT joint-development public-property auction module from the official 45-row source. It preserves source fields, calculates reserve price per ping and bid-deposit ratio only from valid inputs, and clearly distinguishes historical reserve prices from transaction prices.
 
 ### What's Next
 
@@ -38,6 +39,7 @@
 - [ ] Municipal-property source records update annually; re-run their fetcher and converter before publishing a refresh.
 - [ ] Civil-engineering price index updates monthly; re-run its fetcher and converter before publishing a refresh.
 - [ ] Low-income household living-assistance data updates quarterly; re-run its fetcher and converter before publishing a refresh.
+- [ ] MRT joint-development auction data updates irregularly and is historical; re-run its fetcher and converter before publishing a refresh, and do not treat records as current listings.
 
 ## Decisions Made
 
@@ -66,6 +68,7 @@
 - `src/MunicipalPropertyPortfolio.tsx`, `scripts/fetchMunicipalPropertyPortfolio.ts`, `scripts/convertMunicipalPropertyPortfolio.ts`, and `public/data/municipal-property-portfolio/` - municipal property portfolio module and static data pipeline.
 - `src/CivilEngineeringPriceIndex.tsx`, `scripts/fetchCivilEngineeringPriceIndex.ts`, `scripts/convertCivilEngineeringPriceIndex.ts`, and `public/data/civil-engineering-price-index/` - civil engineering price-index module and static data pipeline.
 - `src/LowIncomeHouseholdLivingAssistance.tsx`, `scripts/fetchLowIncomeHouseholdLivingAssistance.ts`, `scripts/convertLowIncomeHouseholdLivingAssistance.ts`, and `public/data/low-income-household-living-assistance/` - quarterly low-income household living-assistance module and static data pipeline.
+- `src/MrtJointDevelopmentAuctionProperties.tsx`, `scripts/fetchMrtJointDevelopmentAuctionProperties.ts`, `scripts/convertMrtJointDevelopmentAuctionProperties.ts`, and `public/data/mrt-joint-development-auction-properties/` - MRT joint-development public-property auction module and static data pipeline.
 - `docs/dashboard-decision-insights-and-technical-notes.md` - evidence-backed customer decision guidance and operational release risks.
 
 ## Evidence of Completion
@@ -81,6 +84,7 @@
 - [x] Municipal property portfolio: `npm.cmd test` passed (34/34) and `npm.cmd run build` passed on 2026-08-13.
 - [x] Civil engineering price index: `npm.cmd test` passed (35/35) and `npm.cmd run build` passed on 2026-08-13.
 - [x] Low-income household living assistance: `npm.cmd test` passed (36/36) and `npm.cmd run build` passed on 2026-08-14.
+- [x] MRT joint-development public-property auctions: source sanity check confirmed 45 valid price-and-area rows with no duplicates or missing addresses/location codes; `npm.cmd test` passed (37/37) and `npm.cmd run build` passed on 2026-08-18.
 
 ## Notes for Next Session
 

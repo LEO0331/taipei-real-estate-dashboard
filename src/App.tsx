@@ -22,6 +22,7 @@ import { UrbanRenewalRegulations } from './UrbanRenewalRegulations';
 import { MunicipalPropertyPortfolio } from './MunicipalPropertyPortfolio';
 import { CivilEngineeringPriceIndex } from './CivilEngineeringPriceIndex';
 import { LowIncomeHouseholdLivingAssistance } from './LowIncomeHouseholdLivingAssistance';
+import { MrtJointDevelopmentAuctionProperties } from './MrtJointDevelopmentAuctionProperties';
 import { buildingTypeLabel, commercialOfficeRentCategoryLabel, copy, districtEn, priceIndexCategoryLabel, recordTypeLabel, rentIndexCategoryLabel } from './i18n';
 import {
   DISTRICTS,
@@ -1649,6 +1650,7 @@ const dashboardModules: DashboardModule[] = [
   { tab: 41, category: 'services', label: { zh: '\u81fa\u5317\u5e02\u5e02\u6709\u8ca1\u7522\u7e3d\u76ee\u9304', en: 'Taipei Municipal Property Portfolio' }, keywords: ['municipal property', 'public assets', 'portfolio'] },
   { tab: 42, category: 'market', label: { zh: '\u81fa\u5317\u5e02\u571f\u6728\u5de5\u7a0b\u7269\u50f9\u6307\u6578', en: 'Taipei Civil Engineering Price Index' }, keywords: ['construction costs', 'civil engineering', 'price index'] },
   { tab: 43, category: 'city', label: { zh: '\u4f4e\u6536\u5165\u6236\u751f\u6d3b\u6276\u52a9', en: 'Low-Income Household Living Assistance' }, keywords: ['low income', 'living assistance', 'social welfare'] },
+  { tab: 44, category: 'market', label: { zh: '\u6377\u904b\u806f\u958b\u6a19\u552e', en: 'MRT Joint Development Auctions' }, keywords: ['mrt', 'joint development', 'auction', 'reserve price'] },
   { tab: 36, category: 'land', label: { zh: '\u5730\u7c4d\u6e05\u7406\u50f9\u91d1\u4fdd\u7ba1', en: 'Cadastral Clearing Sale Proceeds' }, keywords: ['cadastral', 'clearing'] },
   { tab: 38, category: 'land', label: { zh: '\u5730\u7c4d\u6e05\u7406\u958b\u6a19\u7d50\u679c', en: 'Cadastral Cleanup Auction Results' }, keywords: ['cadastral', 'auction'] },
   { tab: 11, category: 'city', label: { zh: '\u6240\u5f97\u6536\u5165', en: 'Income' }, keywords: ['income', 'earnings'] },
@@ -1905,6 +1907,7 @@ export default function App() {
         {tab === 41 && <MunicipalPropertyPortfolio language={language} />}
         {tab === 42 && <CivilEngineeringPriceIndex language={language} />}
         {tab === 43 && <LowIncomeHouseholdLivingAssistance language={language} />}
+        {tab === 44 && <MrtJointDevelopmentAuctionProperties language={language} />}
       </>}
     </main>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>

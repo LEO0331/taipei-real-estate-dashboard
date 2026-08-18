@@ -96,6 +96,14 @@
       "dependencies": ["feat-001", "feat-007"],
       "status": "complete",
       "evidence": "2026-08-14: downloaded the official Taipei City Department of Social Welfare quarterly CSV (43 rows, 2015-Q1 through 2025-Q3); added a static bilingual module, conservative converter, navigation, PWA cache paths, and regression coverage. npm.cmd test passed (36/36); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-013",
+      "name": "MRT joint-development public-property auctions",
+      "description": "Provide static, bilingual reserve-price analytics for Taipei MRT joint-development public-property auction records, preserving official source fields and clearly separating reserve prices from transaction prices.",
+      "dependencies": ["feat-001", "feat-007"],
+      "status": "complete",
+      "evidence": "2026-08-18: downloaded and inspected the official 45-row CSV (2016-04-26 through 2023-06-16); added normalization, data-quality checks, derived reserve price per ping and deposit ratio, filters, charts, location comparisons, accessible property details, PWA cache paths, and regression coverage. npm.cmd test passed (37/37); npm.cmd run build passed."
     }
   ]
 }
