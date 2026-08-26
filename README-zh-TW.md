@@ -45,6 +45,7 @@
 - [臺北市消費者物價指數](https://data.taipei/dataset/detail?id=7ee57050-4d27-482c-bae5-ebd15ca86702)
 - [臺北市售電量](https://data.taipei/dataset/detail?id=9bfb5424-1996-461a-b19b-f75101e2f459)
 - [臺北捷運聯合開發公有不動產標售物件資料](https://data.taipei/dataset/detail?id=9527ea34-7c55-4c23-9f0e-80164f888f06)
+- [臺北捷運土地開發作業](https://data.taipei/dataset/detail?id=0b5048f7-1608-4da4-ac30-4e26f3f452f2)
 
 各資料集的可用性與涵蓋期間不同。儀表板會在必要處保留原始字串，並在對應視圖中說明衍生指標。
 

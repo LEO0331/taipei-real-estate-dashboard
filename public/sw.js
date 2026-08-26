@@ -1,4 +1,4 @@
-const CACHE = 'taipei-dashboard-v39';
+const CACHE = 'taipei-dashboard-v40';
 const ASSETS = [
   './',
   './manifest.webmanifest',
@@ -79,6 +79,9 @@ const ASSETS = [
   './data/mrt-joint-development-auction-properties/records.json',
   './data/mrt-joint-development-auction-properties/summary.json',
   './data/mrt-joint-development-auction-properties/metadata.json',
+  './data/mrt-land-development/records.json',
+  './data/mrt-land-development/summary.json',
+  './data/mrt-land-development/metadata.json',
   './data/income-per-earner-by-district-year-records.json',
   './data/income-per-earner-by-district-year-summary.json',
   './data/income-per-earner-by-district-year-latest.json',

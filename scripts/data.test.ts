@@ -39,6 +39,7 @@ import { buildMunicipalPropertyPortfolioSummary, convertMunicipalPropertyPortfol
 import { buildCivilEngineeringPriceSummary, convertCivilEngineeringPriceRows, parseCivilNumber, parseCivilPeriod } from './convertCivilEngineeringPriceIndex.ts';
 import { buildLowIncomeHouseholdLivingAssistanceSummary, convertLowIncomeHouseholdLivingAssistanceRows, parseLowIncomeAssistancePeriod } from './convertLowIncomeHouseholdLivingAssistance.ts';
 import { buildMrtJointDevelopmentAuctionPropertySummary, classifyParking, convertMrtJointDevelopmentAuctionPropertyRows } from './convertMrtJointDevelopmentAuctionProperties.ts';
+import { buildMrtLandDevelopmentSummary, convertMrtLandDevelopmentRows, normalizeStatus, splitSiteNames } from './convertMrtLandDevelopment.ts';
 
 test('parses quoted CSV fields with commas and escaped quotes', () => {
   assert.deepEqual(parseCsv('a,b\n"x,y","say ""hi"""'), [
@@ -116,6 +117,18 @@ test('converts MRT joint-development auction property fields and derived metrics
   const summary = buildMrtJointDevelopmentAuctionPropertySummary(records);
   assert.equal(summary.locationCount, 1);
   assert.ok(Math.abs((summary.medianDepositRatio ?? 0) - 0.1) < 0.00001);
+});
+
+test('expands MRT land-development source rows without splitting site identifiers inside parentheses', () => {
+  assert.deepEqual(splitSiteNames('大坪林站（捷4、5）、新店站（捷24、25）'), ['大坪林站（捷4、5）', '新店站（捷24、25）']);
+  assert.equal(normalizeStatus('施工中（取得建照）'), 'construction');
+  const records = convertMrtLandDevelopmentRows([{ 序號: '1', 線別: '新店線(2基地)', 基地名稱: '大坪林站（捷4、5）、新店站（捷24、25）', 基地狀況: '已完工（取得使照）', 備註: 'source note' }, { 序號: '2', 線別: '萬大線(1基地)', 基地名稱: '連城錦和站（捷3）', 基地狀況: '施工中（取得建照）', 備註: '' }]);
+  assert.equal(records.length, 3);
+  assert.ok(records.some((record) => record.lineName === '萬大線'));
+  const summary = buildMrtLandDevelopmentSummary(records);
+  assert.equal(summary.recordCount, 3);
+  assert.equal(summary.completedCount, 2);
+  assert.equal(summary.constructionCount, 1);
 });
 
 test('normalizes real-estate brokerage penalty source fields without status inference', () => {

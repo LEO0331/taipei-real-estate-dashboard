@@ -118,6 +118,11 @@ tbody tr:hover, tbody tr:focus-within { background: rgba(53,111,157,.06); }
 .negative { color: #9f1239; font-weight: 800; }
 .notes { border-top: 2px solid var(--ink); padding-top: 1.2rem; }
 .source-links { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.5rem; }
+.pipeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; margin: 1rem 0; }
+.pipeline-step { position: relative; display: grid; gap: .35rem; min-height: 84px; padding: .8rem; border: 1px solid var(--line); background: rgba(255,255,255,.18); }
+.pipeline-step span { color: var(--muted); font-size: .76rem; font-weight: 700; line-height: 1.35; }
+.pipeline-step strong { font-family: "Iowan Old Style", "Baskerville", "Georgia", serif; font-size: 1.65rem; }
+.pipeline-step i { position: absolute; z-index: 1; right: -.7rem; top: calc(50% - .65rem); color: var(--red); font-size: 1.25rem; font-style: normal; }
 .source-links a { color: var(--blue); text-underline-offset: 3px; }
 .status { min-height: 40vh; display: grid; place-items: center; color: var(--muted); }
 footer { padding: 2rem clamp(1rem, 4vw, 3.5rem); border-top: 1px solid var(--line); color: var(--muted); font-size: .75rem; line-height: 1.7; }
@@ -137,6 +142,10 @@ footer { padding: 2rem clamp(1rem, 4vw, 3.5rem); border-top: 1px solid var(--lin
   .catalog-toggle { display: flex; align-items: center; }
   .dashboard-breadcrumb { padding-bottom: .65rem; }
   .dataset-catalog { display: none; }
+}
+@media (max-width: 699px) {
+  .pipeline { grid-template-columns: 1fr; }
+  .pipeline-step i { right: auto; left: calc(50% - .45rem); top: auto; bottom: -.75rem; transform: rotate(90deg); }
 }
 @media (min-width: 1100px) {
   main { max-width: 1500px; margin: 0 auto; }

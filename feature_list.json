@@ -104,6 +104,14 @@
       "dependencies": ["feat-001", "feat-007"],
       "status": "complete",
       "evidence": "2026-08-18: downloaded and inspected the official 45-row CSV (2016-04-26 through 2023-06-16); added normalization, data-quality checks, derived reserve price per ping and deposit ratio, filters, charts, location comparisons, accessible property details, PWA cache paths, and regression coverage. npm.cmd test passed (37/37); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-014",
+      "name": "MRT land development",
+      "description": "Provide static, bilingual MRT land-development stage and line-distribution analytics while preserving source status text and avoiding inferred locations.",
+      "dependencies": ["feat-001", "feat-007"],
+      "status": "complete",
+      "evidence": "2026-08-26: downloaded the official CP950 CSV and conservatively expanded its top-level listed site names into 87 sites (65 completed, 6 under construction, 7 design, 9 investment/preparation). Added filters, sortable expandable table, line/status charts, a current-status-only pipeline, source metadata, PWA cache, and regression coverage. npm.cmd test passed (38/38); npm.cmd run build passed."
     }
   ]
 }

@@ -2,9 +2,9 @@
 
 ## Current State
 
-**Last Updated:** 2026-08-18 Asia/Taipei
+**Last Updated:** 2026-08-26 Asia/Taipei
 **Session ID:** Codex desktop
-**Active Feature:** feat-013 (complete)
+**Active Feature:** feat-014 (complete)
 
 ## Status
 
@@ -25,6 +25,7 @@
 - [x] Completed a customer-facing whole-dashboard review; updated decision notes for data recency, public-asset interpretation, legal-reference limits, filter scope, directory-status caveats, partial failures, and release checks.
 - [x] Added a static bilingual low-income household living-assistance module from the official quarterly Social Affairs source. It preserves each source column and explicitly distinguishes person-times (categories 0/1) from household occurrences (category 2).
 - [x] Added a static bilingual MRT joint-development public-property auction module from the official 45-row source. It preserves source fields, calculates reserve price per ping and bid-deposit ratio only from valid inputs, and clearly distinguishes historical reserve prices from transaction prices.
+- [x] Added a static bilingual MRT land-development module from the official Taipei Open Data CSV. It expands source-listed sites only at top-level delimiters, preserves raw status/source rows, supports filters and sorting, and presents status, line, and current-stage pipeline analytics without inferring locations.
 
 ### What's Next
 
@@ -40,6 +41,7 @@
 - [ ] Civil-engineering price index updates monthly; re-run its fetcher and converter before publishing a refresh.
 - [ ] Low-income household living-assistance data updates quarterly; re-run its fetcher and converter before publishing a refresh.
 - [ ] MRT joint-development auction data updates irregularly and is historical; re-run its fetcher and converter before publishing a refresh, and do not treat records as current listings.
+- [ ] MRT land-development data updates irregularly; re-run its fetcher and converter before publishing a refresh. The source has no coordinates or addresses, so do not add site markers without a separate authoritative high-confidence location source.
 
 ## Decisions Made
 
@@ -69,6 +71,7 @@
 - `src/CivilEngineeringPriceIndex.tsx`, `scripts/fetchCivilEngineeringPriceIndex.ts`, `scripts/convertCivilEngineeringPriceIndex.ts`, and `public/data/civil-engineering-price-index/` - civil engineering price-index module and static data pipeline.
 - `src/LowIncomeHouseholdLivingAssistance.tsx`, `scripts/fetchLowIncomeHouseholdLivingAssistance.ts`, `scripts/convertLowIncomeHouseholdLivingAssistance.ts`, and `public/data/low-income-household-living-assistance/` - quarterly low-income household living-assistance module and static data pipeline.
 - `src/MrtJointDevelopmentAuctionProperties.tsx`, `scripts/fetchMrtJointDevelopmentAuctionProperties.ts`, `scripts/convertMrtJointDevelopmentAuctionProperties.ts`, and `public/data/mrt-joint-development-auction-properties/` - MRT joint-development public-property auction module and static data pipeline.
+- `src/MrtLandDevelopment.tsx`, `scripts/fetchMrtLandDevelopment.ts`, `scripts/convertMrtLandDevelopment.ts`, and `public/data/mrt-land-development/` - MRT land-development module and static data pipeline.
 - `docs/dashboard-decision-insights-and-technical-notes.md` - evidence-backed customer decision guidance and operational release risks.
 
 ## Evidence of Completion
@@ -85,6 +88,7 @@
 - [x] Civil engineering price index: `npm.cmd test` passed (35/35) and `npm.cmd run build` passed on 2026-08-13.
 - [x] Low-income household living assistance: `npm.cmd test` passed (36/36) and `npm.cmd run build` passed on 2026-08-14.
 - [x] MRT joint-development public-property auctions: source sanity check confirmed 45 valid price-and-area rows with no duplicates or missing addresses/location codes; `npm.cmd test` passed (37/37) and `npm.cmd run build` passed on 2026-08-18.
+- [x] MRT land development: official source expanded to 87 site records matching the source-noted stage totals (65 completed, 6 construction, 7 design, 9 investment/preparation); `npm.cmd test` passed (38/38) and `npm.cmd run build` passed on 2026-08-26.
 
 ## Notes for Next Session
 

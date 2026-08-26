@@ -46,6 +46,7 @@ The project combines Taipei City Open Data and official public records, includin
 - [Taipei municipal property inventory (past five years)](https://data.taipei/dataset/detail?id=fb19bfcb-33e5-4f82-8d0e-2460152282c4)
 - [Taipei civil engineering price index](https://data.taipei/dataset/detail?id=e0cfb477-9dbd-4af2-a0a6-6cb132821584)
 - [MRT joint-development public-property auction records](https://data.taipei/dataset/detail?id=9527ea34-7c55-4c23-9f0e-80164f888f06)
+- [Taipei MRT land-development operations](https://data.taipei/dataset/detail?id=0b5048f7-1608-4da4-ac30-4e26f3f452f2)
 
 Source availability and coverage vary by dataset. The dashboard preserves raw source strings where material and documents derived metrics in the corresponding view.
 

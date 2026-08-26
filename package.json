@@ -71,6 +71,8 @@
     ,"data:convert:low-income-household-living-assistance": "tsx scripts/convertLowIncomeHouseholdLivingAssistance.ts"
     ,"data:fetch:mrt-joint-development-auction-properties": "tsx scripts/fetchMrtJointDevelopmentAuctionProperties.ts"
     ,"data:convert:mrt-joint-development-auction-properties": "tsx scripts/convertMrtJointDevelopmentAuctionProperties.ts"
+    ,"data:fetch:mrt-land-development": "tsx scripts/fetchMrtLandDevelopment.ts"
+    ,"data:convert:mrt-land-development": "tsx scripts/convertMrtLandDevelopment.ts"
   },
   "dependencies": {
     "react": "^19.1.0",
