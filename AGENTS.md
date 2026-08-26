@@ -27,6 +27,7 @@ If baseline verification is failing, repair that first before adding new scope.
 - **One feature at a time**: Pick exactly one active or unfinished feature from `feature_list.json`
 - **Verification required**: Don't claim done without running verification commands
 - **Update artifacts**: Before ending session, update `progress.md` and `feature_list.json`
+- **Dataset-addition protocol**: Treat every new dataset as one tracked feature. Before completion, update `feature_list.json` and `progress.md` with its source URL, raw/generated paths, coverage or freshness limits, derived-metric policy, record-count evidence, verification results, and unresolved risks. Keep README language variants, aggregate refresh commands, PWA cache, navigation, and data-status metadata aligned when they apply.
 - **Stay in scope**: Don't modify files unrelated to the current feature
 - **Leave clean state**: Next session must be able to run `./init.sh` immediately
 

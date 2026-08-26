@@ -69,6 +69,17 @@ npm run data:convert
 
 原始資料放在 `data/raw/`；提供給瀏覽器的產出放在 `public/data/`。請勿在瀏覽器程式碼中加入即時呼叫臺北市開放資料的功能。
 
+## 新增資料集
+
+每個資料集新增都是可追蹤的功能，而不只是新增檔案。結束工作前請完成：
+
+- 建立靜態擷取與轉換流程、保留重要原始欄位，並記錄所有衍生指標；
+- 視需要將資料集納入完整 `data:fetch`／`data:convert` 流程、PWA 快取、導覽、資料狀態頁與雙語文件；
+- 加入聚焦的回歸測試，並執行必要的測試與正式建置；
+- 在 `feature_list.json` 與 `progress.md` 同時記錄來源網址、涵蓋／更新限制、產出筆數佐證、風險與驗證結果。
+
+請讓 `README.md`、`README-zh-TW.md`、`feature_list.json` 與 `progress.md` 始終和已發布的資料集一致。
+
 ## 驗證
 
 ```bash

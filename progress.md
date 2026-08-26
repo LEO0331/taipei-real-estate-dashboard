@@ -27,12 +27,14 @@
 - [x] Added a static bilingual MRT joint-development public-property auction module from the official 45-row source. It preserves source fields, calculates reserve price per ping and bid-deposit ratio only from valid inputs, and clearly distinguishes historical reserve prices from transaction prices.
 - [x] Added a static bilingual MRT land-development module from the official Taipei Open Data CSV. It expands source-listed sites only at top-level delimiters, preserves raw status/source rows, supports filters and sorting, and presents status, line, and current-stage pipeline analytics without inferring locations.
 - [x] Completed a whole-project code review and fixed the verified dashboard-refresh and MRT-module correctness issues.
+- [x] Documented the dataset-addition handoff protocol in both README languages and the project harness: every new dataset must be a tracked feature with source, provenance, generated-record, risk, and verification evidence recorded in `feature_list.json` and `progress.md`.
 
 ### What's Next
 
 1. Consider adding automated service-worker and UI interaction tests for the decision safeguards and dashboard navigator.
 2. Consider hash-based deep links if users need to share a specific dashboard view.
 3. Keep `README.md` and `README-zh-TW.md` aligned whenever project-facing documentation changes.
+4. For every new dataset, follow the dataset-addition protocol in `AGENTS.md` and the README before marking the feature complete.
 
 ## Blockers / Risks
 
@@ -74,6 +76,7 @@
 - `src/MrtJointDevelopmentAuctionProperties.tsx`, `scripts/fetchMrtJointDevelopmentAuctionProperties.ts`, `scripts/convertMrtJointDevelopmentAuctionProperties.ts`, and `public/data/mrt-joint-development-auction-properties/` - MRT joint-development public-property auction module and static data pipeline.
 - `src/MrtLandDevelopment.tsx`, `scripts/fetchMrtLandDevelopment.ts`, `scripts/convertMrtLandDevelopment.ts`, and `public/data/mrt-land-development/` - MRT land-development module and static data pipeline.
 - `package.json`, `src/DataFreshness.tsx`, and `src/MrtLandDevelopment.tsx` - full refresh coverage and filter-consistent freshness/insight behavior from the code-review pass.
+- `README.md`, `README-zh-TW.md`, and `AGENTS.md` - dataset-addition and continuity requirements.
 - `docs/dashboard-decision-insights-and-technical-notes.md` - evidence-backed customer decision guidance and operational release risks.
 
 ## Evidence of Completion

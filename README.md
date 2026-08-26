@@ -70,6 +70,17 @@ npm run data:convert
 
 Raw inputs belong under `data/raw/`; generated browser data belongs under `public/data/`. Do not add live Taipei Open Data calls to browser code.
 
+## Adding a dataset
+
+Each dataset addition is a tracked feature, not just a new file. Before closing the work:
+
+- add a static fetcher and converter, preserve material raw fields, and document every derived metric;
+- register the dataset in the full `data:fetch` and `data:convert` workflows, PWA cache, navigation, data-status view, and bilingual documentation where applicable;
+- add focused regression coverage and run the required test and production-build checks;
+- record the source URL, coverage/freshness limits, generated-record evidence, risks, and verification result in both `feature_list.json` and `progress.md`.
+
+Keep `README.md`, `README-zh-TW.md`, `feature_list.json`, and `progress.md` aligned with the published dataset set.
+
 ## Verification
 
 ```bash
