@@ -111,7 +111,7 @@
       "description": "Provide static, bilingual MRT land-development stage and line-distribution analytics while preserving source status text and avoiding inferred locations.",
       "dependencies": ["feat-001", "feat-007"],
       "status": "complete",
-      "evidence": "2026-08-26: downloaded the official CP950 CSV and conservatively expanded its top-level listed site names into 87 sites (65 completed, 6 under construction, 7 design, 9 investment/preparation). Added filters, sortable expandable table, line/status charts, a current-status-only pipeline, source metadata, PWA cache, and regression coverage. npm.cmd test passed (38/38); npm.cmd run build passed."
+      "evidence": "2026-08-26: downloaded the official CP950 CSV and conservatively expanded its top-level listed site names into 87 sites (65 completed, 6 under construction, 7 design, 9 investment/preparation). Added filters, sortable expandable table, line/status charts, a current-status-only pipeline, source metadata, PWA cache, and regression coverage. Whole-project review fixes ensured aggregate refresh commands include all modules, insights follow active filters, and unavailable source freshness is not hard-coded. npm.cmd test passed (38/38); npm.cmd run build passed."
     }
   ]
 }

@@ -74,7 +74,7 @@ export async function convertMrtLandDevelopment() {
   const ingestionTimestamp = new Date().toISOString();
   await writeJson('public/data/mrt-land-development/records.json', records);
   await writeJson('public/data/mrt-land-development/summary.json', summary);
-  await writeJson('public/data/mrt-land-development/metadata.json', { sourceUrl, sourceAgency: '臺北市政府捷運工程局', resourceUpdatedAt: '2026-06-15T14:51:22+08:00', metadataUpdatedAt: '2026-06-15T14:51:47+08:00', coverageStart: '1993-04-15', coverageEnd: '2026-02-23', updateFrequency: 'irregular', ingestionTimestamp, importedRecordCount: records.length, expansionMethod: 'Each comma/newline-delimited site item is a source-listed development base; commas inside full-width parentheses remain part of that site item.', ...summary });
+  await writeJson('public/data/mrt-land-development/metadata.json', { sourceUrl, sourceAgency: '臺北市政府捷運工程局', updateFrequency: 'irregular', ingestionTimestamp, importedRecordCount: records.length, expansionMethod: 'Each comma/newline-delimited site item is a source-listed development base; commas inside full-width parentheses remain part of that site item.', freshnessNote: 'The CSV resource does not provide its own update or coverage metadata. Confirm source freshness on the linked dataset page before publishing.', ...summary });
   await updateConversionReport({ dataset: '臺北捷運土地開發作業', file: file ?? '', sourceUrl, status: file ? 'converted' : 'missing', notes: ['The official CSV aggregates multiple bases in each row. Records expand only top-level Chinese enumeration delimiters; source row text and raw status are preserved.', 'The source contains no coordinates or address field, so no sites are shown on the map.'] });
   return records;
 }

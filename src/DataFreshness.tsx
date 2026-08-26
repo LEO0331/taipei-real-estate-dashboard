@@ -15,7 +15,7 @@ const entries: Entry[] = [
   { key: 'annual-cpi', zh: '年度消費者物價指數', en: 'Annual consumer price index', path: 'consumer-price-basic-annual-index-summary.json', coverage: (s) => string(s.latestYear), sourceUpdate: () => null },
   { key: 'monthly-cpi', zh: '消費者物價月指數', en: 'Consumer price monthly index', path: 'consumer-price-nature-monthly-index/metadata.json', coverage: (s) => string(s.latestPeriod), sourceUpdate: (s) => string(s.ingestedAt ?? s.metadataUpdatedAt) },
   { key: 'auction', zh: '地籍清理公告開標結果', en: 'Cadastral cleanup auction results', path: 'cadastral-cleanup-land-auction-results/metadata.json', coverage: (s) => string(s.resourceUpdatedAt), sourceUpdate: (s) => string(s.metadataUpdatedAt ?? s.ingestionTimestamp) },
-  { key: 'mrt-land-development', zh: '臺北捷運土地開發作業', en: 'Taipei MRT land development', path: 'mrt-land-development/metadata.json', coverage: (s) => string(s.coverageEnd), sourceUpdate: (s) => string(s.resourceUpdatedAt ?? s.ingestionTimestamp) },
+  { key: 'mrt-land-development', zh: '臺北捷運土地開發作業', en: 'Taipei MRT land development', path: 'mrt-land-development/metadata.json', coverage: () => null, sourceUpdate: (s) => string(s.ingestionTimestamp) },
   { key: 'permits', zh: '建築使用執照', en: 'Building use permits', path: 'building-use-permits/summary.json', coverage: (s) => string(s.maxIssueDate), sourceUpdate: () => null },
 ];
 

@@ -26,6 +26,7 @@
 - [x] Added a static bilingual low-income household living-assistance module from the official quarterly Social Affairs source. It preserves each source column and explicitly distinguishes person-times (categories 0/1) from household occurrences (category 2).
 - [x] Added a static bilingual MRT joint-development public-property auction module from the official 45-row source. It preserves source fields, calculates reserve price per ping and bid-deposit ratio only from valid inputs, and clearly distinguishes historical reserve prices from transaction prices.
 - [x] Added a static bilingual MRT land-development module from the official Taipei Open Data CSV. It expands source-listed sites only at top-level delimiters, preserves raw status/source rows, supports filters and sorting, and presents status, line, and current-stage pipeline analytics without inferring locations.
+- [x] Completed a whole-project code review and fixed the verified dashboard-refresh and MRT-module correctness issues.
 
 ### What's Next
 
@@ -72,6 +73,7 @@
 - `src/LowIncomeHouseholdLivingAssistance.tsx`, `scripts/fetchLowIncomeHouseholdLivingAssistance.ts`, `scripts/convertLowIncomeHouseholdLivingAssistance.ts`, and `public/data/low-income-household-living-assistance/` - quarterly low-income household living-assistance module and static data pipeline.
 - `src/MrtJointDevelopmentAuctionProperties.tsx`, `scripts/fetchMrtJointDevelopmentAuctionProperties.ts`, `scripts/convertMrtJointDevelopmentAuctionProperties.ts`, and `public/data/mrt-joint-development-auction-properties/` - MRT joint-development public-property auction module and static data pipeline.
 - `src/MrtLandDevelopment.tsx`, `scripts/fetchMrtLandDevelopment.ts`, `scripts/convertMrtLandDevelopment.ts`, and `public/data/mrt-land-development/` - MRT land-development module and static data pipeline.
+- `package.json`, `src/DataFreshness.tsx`, and `src/MrtLandDevelopment.tsx` - full refresh coverage and filter-consistent freshness/insight behavior from the code-review pass.
 - `docs/dashboard-decision-insights-and-technical-notes.md` - evidence-backed customer decision guidance and operational release risks.
 
 ## Evidence of Completion
@@ -89,6 +91,7 @@
 - [x] Low-income household living assistance: `npm.cmd test` passed (36/36) and `npm.cmd run build` passed on 2026-08-14.
 - [x] MRT joint-development public-property auctions: source sanity check confirmed 45 valid price-and-area rows with no duplicates or missing addresses/location codes; `npm.cmd test` passed (37/37) and `npm.cmd run build` passed on 2026-08-18.
 - [x] MRT land development: official source expanded to 87 site records matching the source-noted stage totals (65 completed, 6 construction, 7 design, 9 investment/preparation); `npm.cmd test` passed (38/38) and `npm.cmd run build` passed on 2026-08-26.
+- [x] Whole-project review fixes: aggregate refresh commands include all dedicated modules; filter-dependent insights use the same result set as charts and tables; MRT freshness metadata no longer freezes unavailable upstream timestamps. `npm.cmd test` passed (38/38) and `npm.cmd run build` passed on 2026-08-26.
 
 ## Notes for Next Session
 
