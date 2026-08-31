@@ -218,7 +218,7 @@ function ChartTooltip({ active, payload, label, language }: {
   </div>;
 }
 
-function Filters({ language, district, setDistrict, recordType, setRecordType, buildingType, setBuildingType, search, setSearch }: {
+function TransactionFilters({ language, district, setDistrict, recordType, setRecordType, buildingType, setBuildingType, search, setSearch }: {
   language: Language;
   district: string;
   setDistrict: (value: string) => void;
@@ -231,7 +231,7 @@ function Filters({ language, district, setDistrict, recordType, setRecordType, b
 }) {
   const t = copy[language];
   return <details className="filters" open>
-    <summary>{t.filters}</summary>
+    <summary>{t.transactionFilters}</summary>
     <div className="filter-grid">
       <label><span>{t.district}</span><select value={district} onChange={(event) => setDistrict(event.target.value)}>
         <option value="">{t.allDistricts}</option>
@@ -272,7 +272,7 @@ function RentIndexFilters({ language, records, category, setCategory, year, setY
   const years = [...new Set(records.map((record) => record.year).filter((value): value is number => !!value))].sort();
   const categories = [...new Set(records.map((record) => record.rentIndexCategory))];
   return <details className="filters" open>
-    <summary>{t.filters}</summary>
+    <summary>{t.tableFilters}</summary>
     <div className="filter-grid rent-filter-grid">
       <label><span>{t.rentIndexCategory}</span><select value={category} onChange={(event) => setCategory(event.target.value)}>
         <option value="">{t.allTypes}</option>
@@ -528,7 +528,7 @@ function CommercialOfficeRentIndex({ data, language }: { data: DataBundle; langu
     </div>
     <section className="analysis-list">
       <h2>{t.officeRentTable}</h2>
-      <details className="filters" open><summary>{t.filters}</summary><div className="filter-grid">
+      <details className="filters" open><summary>{t.tableFilters}</summary><div className="filter-grid">
         <label><span>{t.category}</span><select value={category} onChange={(event) => setCategory(event.target.value)}><option value="">{t.allTypes}</option>{categories.map((item) => <option key={item} value={item}>{commercialRentCategoryLabel(item, language)}</option>)}</select></label>
         <label><span>{t.year}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{language === 'zh' ? '全部年份' : 'All years'}</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
         <label><span>{t.quarter}</span><select value={quarter} onChange={(event) => setQuarter(event.target.value)}><option value="">{language === 'zh' ? '全部季度' : 'All quarters'}</option>{[1, 2, 3, 4].map((item) => <option key={item} value={item}>Q{item}</option>)}</select></label>
@@ -605,7 +605,7 @@ function ResidentialPriceMonthlyIndex({ data, language }: { data: DataBundle; la
     </div>
     <section className="analysis-list">
       <h2>{t.priceIndexTable}</h2>
-      <details className="filters" open><summary>{t.filters}</summary><div className="filter-grid">
+      <details className="filters" open><summary>{t.tableFilters}</summary><div className="filter-grid">
         <label><span>{t.category}</span><select value={category} onChange={(event) => setCategory(event.target.value)}><option value="">{t.allTypes}</option>{categories.map((item) => <option key={item} value={item}>{priceCategoryLabel(item, language)}</option>)}</select></label>
         <label><span>{t.year}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{language === 'zh' ? '全部年份' : 'All years'}</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
         <label><span>{language === 'zh' ? '月份' : 'Month'}</span><select value={month} onChange={(event) => setMonth(event.target.value)}><option value="">{language === 'zh' ? '全部月份' : 'All months'}</option>{Array.from({ length: 12 }, (_, index) => index + 1).map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
@@ -679,7 +679,7 @@ function ResidentialPriceQuarterlyIndex({ data, language }: { data: DataBundle; 
     ]} />
     <section className="analysis-list">
       <h2>{label('住宅季指數資料表', 'Quarterly Price Index Table')}</h2>
-      <details className="filters" open><summary>{copy[language].filters}</summary><div className="filter-grid">
+      <details className="filters" open><summary>{copy[language].tableFilters}</summary><div className="filter-grid">
         <label><span>{label('類別型態', 'Category type')}</span><select value={categoryType} onChange={(event) => setCategoryType(event.target.value)}><option value="">{label('全部', 'All')}</option><option value="citywide">{label('全市', 'Citywide')}</option><option value="housing_type">{label('住宅類型', 'Housing type')}</option><option value="district">{label('行政區', 'District')}</option></select></label>
         <label><span>{label('類別', 'Category')}</span><select value={category} onChange={(event) => setCategory(event.target.value)}><option value="">{label('全部類別', 'All categories')}</option>{categories.map((item) => <option key={item} value={item}>{districtLabel(item, language)}</option>)}</select></label>
         <label><span>{copy[language].year}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{label('全部年份', 'All years')}</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
@@ -803,8 +803,10 @@ function ResidentialRentIndex({ data, language }: { data: DataBundle; language: 
 function DistrictComparison({ rows, language }: { rows: DistrictComparisonSummary[]; language: Language }) {
   const t = copy[language];
   const [sortKey, setSortKey] = useState<keyof DistrictComparisonSummary>('transactionsPer1000Residents');
-  const sorted = sortDistricts(rows, sortKey, 'desc');
-  const chartData = rows.map((row) => ({
+  const [district, setDistrict] = useState('');
+  const selectedRows = rows.filter((row) => !district || row.district === district);
+  const sorted = sortDistricts(selectedRows, sortKey, 'desc');
+  const chartData = selectedRows.map((row) => ({
     district: districtLabel(row.district, language),
     transactions: row.realEstate?.transactionCount,
     price: row.medianUnitPricePerPingNtd,
@@ -812,6 +814,12 @@ function DistrictComparison({ rows, language }: { rows: DistrictComparisonSummar
     senior: row.seniorShare ? row.seniorShare * 100 : undefined,
   }));
   return <>
+    <details className="filters" open><summary>{t.focusDistrict}</summary><div className="filter-grid">
+      <label><span>{t.district}</span><select value={district} onChange={(event) => setDistrict(event.target.value)}>
+        <option value="">{t.allDistricts}</option>
+        {DISTRICTS.map((item) => <option key={item} value={item}>{districtLabel(item, language)}</option>)}
+      </select></label>
+    </div></details>
     <p className="notice">{t.rentIndexDistrictComparisonUnavailableNotice}</p>
     <div className="chart-grid">
       <ChartSection title={t.medianUnitPriceByDistrict}><ResponsiveContainer width="100%" height={320}>
@@ -910,13 +918,19 @@ function DemographicContext({ data, language }: { data: DataBundle; language: La
 
 function DataTable({ records, language }: { records: RealPriceRecord[]; language: Language }) {
   const t = copy[language];
+  const [district, setDistrict] = useState('');
+  const [recordType, setRecordType] = useState('');
+  const [buildingType, setBuildingType] = useState('');
+  const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const pageSize = 20;
-  const pages = Math.max(1, Math.ceil(records.length / pageSize));
-  useEffect(() => setPage(1), [records]);
-  const visible = records.slice((page - 1) * pageSize, page * pageSize);
+  const filteredRecords = useMemo(() => filterRecords(records, { district, recordType, buildingType, search }), [records, district, recordType, buildingType, search]);
+  const pages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
+  useEffect(() => setPage(1), [filteredRecords]);
+  const visible = filteredRecords.slice((page - 1) * pageSize, page * pageSize);
   return <>
-    <p className="table-count">{records.length.toLocaleString()} {language === 'zh' ? '筆紀錄' : 'records'}</p>
+    <TransactionFilters language={language} district={district} setDistrict={setDistrict} recordType={recordType} setRecordType={setRecordType} buildingType={buildingType} setBuildingType={setBuildingType} search={search} setSearch={setSearch} />
+    <p className="table-count">{filteredRecords.length.toLocaleString()} {language === 'zh' ? '筆紀錄' : 'records'}</p>
     <div className="table-wrap"><table><thead><tr>
       {[t.district, t.date, t.recordType, t.target, t.buildingType, t.location, t.totalPrice, t.unitPrice, t.area, t.age, t.remarks].map((label) => <th key={label}>{label}</th>)}
     </tr></thead><tbody>{visible.map((record) => <tr key={record.id}>
@@ -1742,10 +1756,6 @@ export default function App() {
   const [tab, setTab] = useState(0);
   const [data, setData] = useState<DataBundle>();
   const [error, setError] = useState(false);
-  const [district, setDistrict] = useState('');
-  const [recordType, setRecordType] = useState('');
-  const [buildingType, setBuildingType] = useState('');
-  const [search, setSearch] = useState('');
   const t = copy[language];
 
   useEffect(() => {
@@ -1812,9 +1822,6 @@ export default function App() {
     document.title = t.appTitle;
   }, [language, t.appTitle]);
 
-  const filteredRecords = useMemo(() => data ? filterRecords(data.records, { district, recordType, buildingType, search }) : [], [data, district, recordType, buildingType, search]);
-  const comparisonRows = useMemo(() => data?.comparison.filter((row) => !district || row.district === district) ?? [], [data, district]);
-
   return <div className="app-shell">
     <header className="masthead">
       <div><span className="eyebrow">TAIPEI OPEN DATA · PUBLIC RECORDS</span><h1>{t.appTitle}</h1><p>{t.appSubtitle}</p></div>
@@ -1861,7 +1868,6 @@ export default function App() {
     <nav className="tabs" aria-label="Cadastral cleanup land auction results"><button className={tab === 38 ? 'active' : ''} onClick={() => setTab(38)}>{language === 'zh' ? '地籍清理公告開標結果土地清冊' : 'Cadastral Cleanup Land Auction Results'}</button></nav>
     <nav className="tabs" aria-label="Data freshness"><button className={tab === 39 ? 'active' : ''} onClick={() => setTab(39)}>{language === 'zh' ? '資料狀態與更新期間' : 'Data Status & Coverage'}</button></nav>
     <main>
-      <Filters language={language} district={district} setDistrict={setDistrict} recordType={recordType} setRecordType={setRecordType} buildingType={buildingType} setBuildingType={setBuildingType} search={search} setSearch={setSearch} />
       {error && <p className="status">{t.loadError}</p>}
       {!data && !error && <p className="status">{t.loading}</p>}
       {data && <>
@@ -1870,7 +1876,7 @@ export default function App() {
         {tab === 2 && <ResidentialPriceQuarterlyIndex data={data} language={language} />}
         {tab === 3 && <ResidentialRentIndex data={data} language={language} />}
         {tab === 4 && <CommercialOfficeRentIndex data={data} language={language} />}
-        {tab === 5 && <DistrictComparison rows={comparisonRows} language={language} />}
+        {tab === 5 && <DistrictComparison rows={data.comparison} language={language} />}
         {tab === 6 && <QuarterlyAnalysis data={data} language={language} />}
         {tab === 7 && <BuildingUsePermits language={language} />}
         {tab === 8 && <LandValue records={data.landValueRecords} summary={data.landValueSummary} language={language} />}
@@ -1886,7 +1892,7 @@ export default function App() {
         {tab === 18 && <MunicipalIdlePropertyLeaseTenders records={data.municipalIdlePropertyLeaseTenderRecords} summary={data.municipalIdlePropertyLeaseTenderSummary} language={language} />}
         {tab === 19 && <PublicPrivatePartnershipContracts records={data.pppRecords} language={language} />}
         {tab === 20 && <DemographicContext data={data} language={language} />}
-        {tab === 21 && <DataTable records={filteredRecords} language={language} />}
+        {tab === 21 && <DataTable records={data.records} language={language} />}
         {tab === 22 && <DataNotes language={language} />}
         {tab === 23 && <MunicipalPublicLandInventory records={data.publicLandRecords} language={language} />}
         {tab === 24 && <RentalBusinessDirectory language={language} />}

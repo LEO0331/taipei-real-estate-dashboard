@@ -9,6 +9,7 @@ const records = [
 
 test('filters records across district, type, and free-text search', () => {
   assert.equal(filterRecords(records, { district: '中山區', recordType: 'rent', search: '續租' }).length, 1);
+  assert.equal(filterRecords(records, { buildingType: 'apartment' }).length, 1);
   assert.equal(filterRecords(records, { search: '大樓' }).length, 1);
 });
 
