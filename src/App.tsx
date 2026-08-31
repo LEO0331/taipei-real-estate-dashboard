@@ -620,6 +620,18 @@ function ResidentialPriceMonthlyIndex({ data, language }: { data: DataBundle; la
   </>;
 }
 
+const quarterlyCategoryTypeLabel = (type: string, language: Language) => ({
+  citywide: { zh: '全市', en: 'Citywide' },
+  housing_type: { zh: '住宅類型', en: 'Housing type' },
+  district: { zh: '行政區', en: 'District' },
+}[type]?.[language] ?? type);
+
+const quarterLabel = (value: string, language: Language) => {
+  if (language === 'en') return value;
+  const match = value.match(/^(\d{4})-Q([1-4])$/);
+  return match ? `${match[1]} 年第 ${match[2]} 季` : value.replace(/^Q([1-4])$/, '第 $1 季');
+};
+
 function ResidentialPriceQuarterlyIndex({ data, language }: { data: DataBundle; language: Language }) {
   const label = (zh: string, en: string) => language === 'zh' ? zh : en;
   const [categoryType, setCategoryType] = useState('');
@@ -642,7 +654,7 @@ function ResidentialPriceQuarterlyIndex({ data, language }: { data: DataBundle; 
   const visible = filtered.slice((Math.min(page, pages) - 1) * pageSize, Math.min(page, pages) * pageSize);
   const years = [...new Set(records.map((record) => record.year))].sort();
   const categories = [...new Set(records.map((record) => record.category))];
-  const cityTrend = records.filter((record) => record.isCitywide);
+  const cityTrend = records.filter((record) => record.isCitywide).map((record) => ({ ...record, displayQuarter: quarterLabel(record.quarterKey, language) }));
   const latestDistricts = data.quarterlyPriceIndexLatest.filter((record) => record.isDistrict).sort((a, b) => (b.standardHousingUnitPriceTenThousandNtdPerPing ?? 0) - (a.standardHousingUnitPriceTenThousandNtdPerPing ?? 0));
   const topIndex = data.quarterlyPriceIndexLatest.find((record) => record.districtRankByQuarterlyIndex === 1);
   const lowIndex = [...data.quarterlyPriceIndexLatest].filter((record) => record.isDistrict).sort((a, b) => (a.quarterlyIndex ?? Infinity) - (b.quarterlyIndex ?? Infinity))[0];
@@ -656,7 +668,7 @@ function ResidentialPriceQuarterlyIndex({ data, language }: { data: DataBundle; 
       <p className="notice">{label('本資料未提供個別地址或經緯度；本模組僅呈現行政區層級圖表與排名，不建立精確地圖點位。', 'The source has no individual addresses or coordinates; this module shows district-level charts and rankings only, with no exact map points.')}</p>
     </section>
     <MetricStrip items={[
-      { label: label('最新季別', 'Latest quarter'), value: summary.latestQuarterKey ?? '—' },
+      { label: label('最新季別', 'Latest quarter'), value: summary.latestQuarterKey ? quarterLabel(summary.latestQuarterKey, language) : '—' },
       { label: label('類別數', 'Categories'), value: summary.categoryCount },
       { label: label('行政區數', 'Districts'), value: summary.districtCount },
       { label: label('全市季指數', 'Citywide quarterly index'), value: summary.latestCitywide?.quarterlyIndex?.toFixed(2) ?? '—' },
@@ -666,7 +678,7 @@ function ResidentialPriceQuarterlyIndex({ data, language }: { data: DataBundle; 
       { label: label('標準單價最高行政區', 'Highest district unit price'), value: districtLabel(topUnit?.district, language) },
     ]} />
     <div className="chart-grid">
-      <ChartSection title={label('全市季指數趨勢', 'Citywide Quarterly Index Trend')} note={label('此圖僅整理季指數公開資料，不代表個別住宅估價、實際成交價格或價格預測。', 'This chart only organizes quarterly index public data and does not represent individual appraisal, actual transaction price, or price forecast.')}><ResponsiveContainer width="100%" height={320}><LineChart data={cityTrend}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="quarterKey" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Line dataKey="quarterlyIndex" name={label('季指數', 'Quarterly index')} stroke="#b24738" strokeWidth={3} dot={false} /><Line dataKey="standardHousingUnitPriceTenThousandNtdPerPing" name={label('標準單價', 'Standard unit price')} stroke="#356f9d" strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer></ChartSection>
+      <ChartSection title={label('全市季指數趨勢', 'Citywide Quarterly Index Trend')} note={label('此圖僅整理季指數公開資料，不代表個別住宅估價、實際成交價格或價格預測。', 'This chart only organizes quarterly index public data and does not represent individual appraisal, actual transaction price, or price forecast.')}><ResponsiveContainer width="100%" height={320}><LineChart data={cityTrend}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="displayQuarter" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Line dataKey="quarterlyIndex" name={label('季指數', 'Quarterly index')} stroke="#b24738" strokeWidth={3} dot={false} /><Line dataKey="standardHousingUnitPriceTenThousandNtdPerPing" name={label('標準單價', 'Standard unit price')} stroke="#356f9d" strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer></ChartSection>
       <ChartSection title={label('住宅類型季指數趨勢', 'Housing-Type Quarterly Index Trend')}><ResponsiveContainer width="100%" height={320}><LineChart data={summary.byQuarter}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="quarterKey" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Line dataKey="citywideQuarterlyIndex" name={label('全市', 'Citywide')} stroke="#b24738" strokeWidth={3} dot={false} /><Line dataKey="apartmentQuarterlyIndex" name={label('公寓', 'Apartment')} stroke="#737d68" strokeWidth={2} dot={false} /><Line dataKey="buildingQuarterlyIndex" name={label('大樓', 'Building')} stroke="#356f9d" strokeWidth={2} dot={false} /><Line dataKey="smallUnitQuarterlyIndex" name={label('小宅', 'Small unit')} stroke="#c58a43" strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer></ChartSection>
       <ChartSection title={label('最新季各行政區季指數', 'Latest District Quarterly Index')}><ResponsiveContainer width="100%" height={300}><BarChart data={latestDistricts}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} tickFormatter={(value) => districtLabel(value, language)} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="quarterlyIndex" name={label('季指數', 'Quarterly index')} fill="#737d68" /></BarChart></ResponsiveContainer></ChartSection>
       <ChartSection title={label('最新季各行政區標準單價', 'Latest District Standard Unit Price')}><ResponsiveContainer width="100%" height={300}><BarChart data={latestDistricts}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} tickFormatter={(value) => districtLabel(value, language)} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="standardHousingUnitPriceTenThousandNtdPerPing" name={label('標準單價', 'Standard unit price')} fill="#c58a43" /></BarChart></ResponsiveContainer></ChartSection>
@@ -683,11 +695,11 @@ function ResidentialPriceQuarterlyIndex({ data, language }: { data: DataBundle; 
         <label><span>{label('類別型態', 'Category type')}</span><select value={categoryType} onChange={(event) => setCategoryType(event.target.value)}><option value="">{label('全部', 'All')}</option><option value="citywide">{label('全市', 'Citywide')}</option><option value="housing_type">{label('住宅類型', 'Housing type')}</option><option value="district">{label('行政區', 'District')}</option></select></label>
         <label><span>{label('類別', 'Category')}</span><select value={category} onChange={(event) => setCategory(event.target.value)}><option value="">{label('全部類別', 'All categories')}</option>{categories.map((item) => <option key={item} value={item}>{districtLabel(item, language)}</option>)}</select></label>
         <label><span>{copy[language].year}</span><select value={year} onChange={(event) => setYear(event.target.value)}><option value="">{label('全部年份', 'All years')}</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
-        <label><span>{copy[language].quarter}</span><select value={quarter} onChange={(event) => setQuarter(event.target.value)}><option value="">{label('全部季度', 'All quarters')}</option>{[1, 2, 3, 4].map((item) => <option key={item} value={item}>Q{item}</option>)}</select></label>
+        <label><span>{copy[language].quarter}</span><select value={quarter} onChange={(event) => setQuarter(event.target.value)}><option value="">{label('全部季度', 'All quarters')}</option>{[1, 2, 3, 4].map((item) => <option key={item} value={item}>{language === 'zh' ? `第 ${item} 季` : `Q${item}`}</option>)}</select></label>
         <label className="search-field"><span>{label('搜尋', 'Search')}</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={label('搜尋類別、季別、行政區或住宅類型', 'Search category, quarter, district, or housing type')} type="search" /></label>
       </div></details>
       <p className="table-count">{filtered.length.toLocaleString()} {label('筆紀錄', 'records')}</p>
-      <div className="table-wrap"><table><thead><tr>{[label('季別', 'Quarter'), label('類別', 'Category'), label('型態', 'Type'), label('季指數', 'Quarterly index'), label('季變動率', 'Quarterly change'), label('標準總價', 'Standard total price'), label('標準單價', 'Standard unit price'), label('年變動率', 'YoY change')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}><td>{record.quarterKey}</td><th>{districtLabel(record.category, language)}</th><td>{record.categoryType}</td><td>{record.quarterlyIndex?.toFixed(2) ?? '—'}</td><td>{formatSourcePercent(record.quarterlyChangePercent)}</td><td>{formatWan(record.standardHousingTotalPriceTenThousandNtd, language, language === 'zh' ? '萬元' : 'NTD 10k')}</td><td>{formatWan(record.standardHousingUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping')}</td><td>{formatSourcePercent(record.quarterlyIndexYoYChangePercent)}</td></tr>)}</tbody></table></div>
+      <div className="table-wrap"><table><thead><tr>{[label('季別', 'Quarter'), label('類別', 'Category'), label('型態', 'Type'), label('季指數', 'Quarterly index'), label('季變動率', 'Quarterly change'), label('標準總價', 'Standard total price'), label('標準單價', 'Standard unit price'), label('年變動率', 'YoY change')].map((item) => <th key={item}>{item}</th>)}</tr></thead><tbody>{visible.map((record) => <tr key={record.id}><td>{quarterLabel(record.quarterKey, language)}</td><th>{districtLabel(record.category, language)}</th><td>{quarterlyCategoryTypeLabel(record.categoryType, language)}</td><td>{record.quarterlyIndex?.toFixed(2) ?? '—'}</td><td>{formatSourcePercent(record.quarterlyChangePercent)}</td><td>{formatWan(record.standardHousingTotalPriceTenThousandNtd, language, language === 'zh' ? '萬元' : 'NTD 10k')}</td><td>{formatWan(record.standardHousingUnitPriceTenThousandNtdPerPing, language, language === 'zh' ? '萬元/坪' : 'NTD 10k / ping')}</td><td>{formatSourcePercent(record.quarterlyIndexYoYChangePercent)}</td></tr>)}</tbody></table></div>
       <nav className="pagination" aria-label="Pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>{copy[language].previous}</button><span>{copy[language].page} {Math.min(page, pages)} / {pages}</span><button disabled={page === pages} onClick={() => setPage((value) => value + 1)}>{copy[language].next}</button></nav>
     </section>
   </>;

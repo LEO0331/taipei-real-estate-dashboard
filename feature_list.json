@@ -144,6 +144,14 @@
       "dependencies": ["feat-001", "feat-007"],
       "status": "complete",
       "evidence": "2026-08-31: localized the all-district option, table headings, source-details label, and pagination. Local Chinese-mode browser verification confirmed 全部行政區, nine Chinese headers, 查看, 上一頁, and 下一頁. npm.cmd test passed (39/39); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-019",
+      "name": "Quarterly price Chinese category labels",
+      "description": "Translate quarterly-price internal category types and quarter notation before displaying them in Chinese mode.",
+      "dependencies": ["feat-001"],
+      "status": "complete",
+      "evidence": "2026-08-31: mapped citywide, housing_type, and district to Chinese labels and formatted visible quarters as Chinese text. npm.cmd test passed (39/39); npm.cmd run build passed."
     }
   ]
 }

@@ -4,7 +4,7 @@
 
 **Last Updated:** 2026-08-31 Asia/Taipei
 **Session ID:** Codex desktop
-**Active Feature:** feat-018 (complete)
+**Active Feature:** feat-019 (complete)
 
 ## Status
 
@@ -32,6 +32,7 @@
 - [x] Replaced user-visible internal data-quality keys with human-readable Traditional Chinese labels in Chinese mode, including the methodology sections that previously displayed English keys.
 - [x] Removed unnecessary horizontal scrolling from the MRT auction size-distribution and deposit/parking summary tables with card-specific compact spacing.
 - [x] Localized every visible control and table header in the Announced Land Expropriation Registry for Chinese mode.
+- [x] Localized internal category types and quarter notation in the quarterly residential price-index display.
 
 ### What's Next
 
@@ -87,6 +88,7 @@
 - `src/quality.ts`, selected data-quality views, `src/dashboard.test.ts`, `feature_list.json`, and `progress.md` - feat-016 Chinese quality-label rendering and coverage.
 - `src/MrtJointDevelopmentAuctionProperties.tsx`, `src/styles.css`, `feature_list.json`, and `progress.md` - feat-017 compact summary-table layout and verification evidence.
 - `src/AnnouncedLandExpropriationRegistry.tsx`, `feature_list.json`, and `progress.md` - feat-018 registry localization and verification evidence.
+- `src/App.tsx`, `feature_list.json`, and `progress.md` - feat-019 quarterly category and period localization.
 
 ## Evidence of Completion
 
@@ -108,6 +110,7 @@
 - [x] Chinese data-quality labels: manual local verification of the Civil Engineering Price Index showed human-readable Chinese quality labels and no internal English keys. `npm.cmd test` passed (39/39) and `npm.cmd run build` passed on 2026-08-31.
 - [x] MRT auction summary tables: local browser verification confirmed both compact tables have matching client and scroll widths, with no horizontal overflow. `npm.cmd test` passed (39/39) and `npm.cmd run build` passed on 2026-08-31.
 - [x] Announced land registry localization: local browser verification confirmed all filter, header, details, and pagination UI is Chinese in Chinese mode. `npm.cmd test` passed (39/39) and `npm.cmd run build` passed on 2026-08-31.
+- [x] Quarterly price localization: internal category types now render as Chinese labels and quarters use Chinese notation. `npm.cmd test` passed (39/39) and `npm.cmd run build` passed on 2026-08-31.
 
 ## Notes for Next Session
 
