@@ -5,7 +5,7 @@ import type { Language } from './models'; import { qualityLabel } from './qualit
 type Record = { id:string; rocYearRaw:string; gregorianYear:number|null; monthRaw:string; propertyNatureRaw:string; itemRaw:string; amountRaw:string; amountTwd:number|null; hasValidAmount:boolean; sourceRaw:globalThis.Record<string,string> };
 type Summary = { propertyNatures:string[]; items:string[]; dataQuality:globalThis.Record<string,number>; aggregation:{officialTotalRowsDetected:boolean;totalRowLabels:string[]} };
 const base=import.meta.env.BASE_URL;
-const money=(value:number|undefined|null)=>value==null?'—':`NT$${value.toLocaleString('zh-TW',{maximumFractionDigits:2})}`;
+const money=(value:number|undefined|null)=>value==null?'—':`$${value.toLocaleString('zh-TW',{maximumFractionDigits:2})}`;
 const tooltipMoney=(value:unknown)=>money(typeof value==='number'?value:undefined);
 
 export function MunicipalPropertyPortfolio({ language }: { language: Language }) {

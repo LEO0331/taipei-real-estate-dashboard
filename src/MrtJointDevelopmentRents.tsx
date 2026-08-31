@@ -7,7 +7,7 @@ type Summary = { totalRecords: number; areaUnitNote: string; dataQuality: global
 const base = import.meta.env.BASE_URL;
 const load = <T,>(name: string) => fetch(`${base}data/mrt-joint-development-rents/${name}`).then((response) => response.ok ? response.json() as Promise<T> : Promise.reject(response.status));
 const text = (value: string | number | null | undefined) => value === null || value === undefined || value === '' ? '—' : String(value);
-const money = (value: number | null | undefined) => value === null || value === undefined ? '—' : `NT$${Math.round(value).toLocaleString()}`;
+const money = (value: number | null | undefined) => value === null || value === undefined ? '—' : `$${Math.round(value).toLocaleString()}`;
 const csvValue = (value: unknown) => `"${String(value ?? '').replaceAll('"', '""')}"`;
 const download = (records: RentRecord[]) => {
   const fields: Array<[string, keyof RentRecord]> = [['ID', 'id'], ['Project', 'projectName'], ['MRT station', 'stationName'], ['Floor area (source)', 'floorAreaRaw'], ['Monthly rent per ping (source)', 'monthlyRentPerPingRaw'], ['Representative monthly rent per ping', 'monthlyRentPerPing'], ['Managing authority', 'managingAuthority'], ['Building use', 'buildingUse'], ['Building count', 'buildingCount'], ['Household count', 'householdCount'], ['Estimated monthly rent (derived)', 'estimatedMonthlyRent']];

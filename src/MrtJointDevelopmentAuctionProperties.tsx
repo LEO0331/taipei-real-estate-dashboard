@@ -8,8 +8,8 @@ type Summary = { recordCount:number; validPriceAreaCount:number; locationCount:n
 const base=import.meta.env.BASE_URL;
 const numbers=(values:Array<number|null>)=>values.filter((value):value is number=>value!==null).sort((a,b)=>a-b);
 const median=(values:Array<number|null>)=>{const items=numbers(values);return !items.length?null:items.length%2?items[Math.floor(items.length/2)]:(items[items.length/2-1]+items[items.length/2])/2};
-const money=(value:number|null|undefined,language:Language)=>value==null?'—':language==='zh'?`${Math.round(value/10_000).toLocaleString('zh-TW')} 萬元`:`NT$${(value/1_000_000).toLocaleString('en-US',{maximumFractionDigits:1})}M`;
-const exactMoney=(value:number|null|undefined)=>value==null?'—':`NT$${Math.round(value).toLocaleString()}`;
+const money=(value:number|null|undefined,language:Language)=>value==null?'—':language==='zh'?`${Math.round(value/10_000).toLocaleString('zh-TW')} 萬元`:`$${(value/1_000_000).toLocaleString('en-US',{maximumFractionDigits:1})}M`;
+const exactMoney=(value:number|null|undefined)=>value==null?'—':`$${Math.round(value).toLocaleString()}`;
 const ping=(value:number|null|undefined)=>value==null?'—':`${value.toLocaleString(undefined,{maximumFractionDigits:2})} 坪`;
 const percent=(value:number|null|undefined)=>value==null||!Number.isFinite(value)?'—':`${value.toLocaleString(undefined,{maximumFractionDigits:2})}%`;
 const parkingLabel=(type:ParkingType, language:Language)=>type==='with_parking'?(language==='zh'?'有車位':'With parking'):type==='without_parking'?(language==='zh'?'無車位':'Without parking'):(language==='zh'?'未明':'Unknown');

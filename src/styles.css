@@ -80,6 +80,7 @@ main { padding: 1rem clamp(1rem, 4vw, 3.5rem) 4rem; }
 .section-intro p { max-width: 78ch; color: var(--muted); line-height: 1.7; }
 .overview-panel .metric-strip { margin-bottom: 1rem; }
 .link-button { min-height: 40px; border: 1px solid var(--line); border-radius: 4px; padding: .55rem .8rem; background: transparent; color: var(--blue); font-weight: 800; cursor: pointer; }
+.copy-button { margin-left: .45rem; border: 0; padding: .15rem .35rem; background: transparent; color: var(--blue); font-size: .72rem; font-weight: 800; cursor: pointer; }
 .table-wrap { width: 100%; overflow-x: auto; border-top: 2px solid var(--ink); }
 table { width: 100%; min-width: 850px; border-collapse: collapse; font-size: .8rem; }
 th, td { padding: .8rem .7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-variant-numeric: tabular-nums; }

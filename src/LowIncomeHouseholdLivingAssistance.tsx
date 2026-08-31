@@ -5,7 +5,7 @@ import type { Language } from './models';
 type Record = { id: string; periodRaw: string; year: number | null; quarter: number | null; period: string | null; totalAmountNtd: number | null; category0Recipients: number | null; category0StandardNtd: number | null; category0AmountNtd: number | null; category1Recipients: number | null; category1StandardNtd: number | null; category1AmountNtd: number | null; category2HouseholdOccurrences: number | null; category2StandardNtd: number | null; category2AmountNtd: number | null };
 type Summary = { recordCount: number; firstPeriod: string | null; latestPeriod: string | null; latest?: Record; dataQuality: { invalidPeriodCount: number; missingTotalAmountCount: number; duplicatePeriodCount: number } };
 const base = import.meta.env.BASE_URL;
-const money = (value: number | null | undefined, language: Language) => value == null ? '—' : `NT$${value.toLocaleString(language === 'zh' ? 'zh-TW' : 'en-US')}`;
+const money = (value: number | null | undefined, language: Language) => value == null ? '—' : `$${value.toLocaleString(language === 'zh' ? 'zh-TW' : 'en-US')}`;
 
 export function LowIncomeHouseholdLivingAssistance({ language }: { language: Language }) {
   const label = (zh: string, en: string) => language === 'zh' ? zh : en;
