@@ -83,6 +83,8 @@ main { padding: 1rem clamp(1rem, 4vw, 3.5rem) 4rem; }
 .table-wrap { width: 100%; overflow-x: auto; border-top: 2px solid var(--ink); }
 table { width: 100%; min-width: 850px; border-collapse: collapse; font-size: .8rem; }
 th, td { padding: .8rem .7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-variant-numeric: tabular-nums; }
+.compact-summary-table table { min-width: 0; table-layout: fixed; }
+.compact-summary-table th, .compact-summary-table td { padding: .7rem .45rem; white-space: nowrap; }
 thead th { position: sticky; top: 0; z-index: 1; background: var(--paper-2); color: var(--muted); font-size: .7rem; }
 tbody tr { transition: background .16s ease; }
 tbody tr:hover, tbody tr:focus-within { background: rgba(53,111,157,.06); }
