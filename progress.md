@@ -4,7 +4,7 @@
 
 **Last Updated:** 2026-08-31 Asia/Taipei
 **Session ID:** Codex desktop
-**Active Feature:** feat-015 (complete)
+**Active Feature:** feat-016 (complete)
 
 ## Status
 
@@ -29,6 +29,7 @@
 - [x] Completed a whole-project code review and fixed the verified dashboard-refresh and MRT-module correctness issues.
 - [x] Documented the dataset-addition handoff protocol in both README languages and the project harness: every new dataset must be a tracked feature with source, provenance, generated-record, risk, and verification evidence recorded in `feature_list.json` and `progress.md`.
 - [x] Scoped real-price transaction filters to the Data Table, added a local district-focus filter to District Comparison, and labelled index/rent controls as table-only filters so overview and chart pages do not suggest unsupported filtering.
+- [x] Replaced user-visible internal data-quality keys with human-readable Traditional Chinese labels in Chinese mode, including the methodology sections that previously displayed English keys.
 
 ### What's Next
 
@@ -81,6 +82,7 @@
 - `docs/dashboard-decision-insights-and-technical-notes.md` - evidence-backed customer decision guidance and operational release risks.
 - `src/App.tsx`, `src/i18n.ts`, and `src/dashboard.test.ts` - scoped transaction and district filters, clarified bilingual table-filter labels, and building-type filter coverage.
 - `feature_list.json` and `progress.md` - feat-015 status and verification evidence.
+- `src/quality.ts`, selected data-quality views, `src/dashboard.test.ts`, `feature_list.json`, and `progress.md` - feat-016 Chinese quality-label rendering and coverage.
 
 ## Evidence of Completion
 
@@ -99,6 +101,7 @@
 - [x] MRT land development: official source expanded to 87 site records matching the source-noted stage totals (65 completed, 6 construction, 7 design, 9 investment/preparation); `npm.cmd test` passed (38/38) and `npm.cmd run build` passed on 2026-08-26.
 - [x] Whole-project review fixes: aggregate refresh commands include all dedicated modules; filter-dependent insights use the same result set as charts and tables; MRT freshness metadata no longer freezes unavailable upstream timestamps. `npm.cmd test` passed (38/38) and `npm.cmd run build` passed on 2026-08-26.
 - [x] Scoped market filters: manual local verification confirmed that Market Overview has no filter controls and the Data Table count changes from 998 to 69 after selecting 中正區. `npm.cmd test` passed (38/38) and `npm.cmd run build` passed on 2026-08-31.
+- [x] Chinese data-quality labels: manual local verification of the Civil Engineering Price Index showed human-readable Chinese quality labels and no internal English keys. `npm.cmd test` passed (39/39) and `npm.cmd run build` passed on 2026-08-31.
 
 ## Notes for Next Session
 

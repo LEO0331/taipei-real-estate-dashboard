@@ -120,6 +120,14 @@
       "dependencies": ["feat-001", "feat-007"],
       "status": "complete",
       "evidence": "2026-08-31: removed the misleading shared filter bar from overview and market pages; placed transaction filtering in Data Table; added local district focus in District Comparison; renamed index/rent controls to table filters. Manual local verification: overview has no filter controls; Data Table changed from 998 to 69 records after selecting 中正區. npm.cmd test passed (38/38); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-016",
+      "name": "Chinese data-quality labels",
+      "description": "Render dashboard data-quality and methodology statistics as human-readable Traditional Chinese rather than exposing internal English JSON keys in Chinese mode.",
+      "dependencies": ["feat-001", "feat-007"],
+      "status": "complete",
+      "evidence": "2026-08-31: added a shared quality-label translator and applied it to every component that rendered data-quality keys directly, including civil engineering, MRT rents, municipal property, brokerage directory, consumer disputes, and cadastral-clearing custody. Manual local verification confirmed Chinese labels on the Civil Engineering Price Index methodology section. npm.cmd test passed (39/39); npm.cmd run build passed."
     }
   ]
 }

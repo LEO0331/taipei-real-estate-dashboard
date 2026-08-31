@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { filterCommercialRentIndexRecords, filterPriceIndexRecords, filterRecords, filterRentIndexRecords, sortDistricts } from './dashboard';
+import { qualityLabel } from './quality';
 
 const records = [
   { district: '大安區', recordType: 'sale', buildingType: 'apartment', locationText: '和平東路', totalPriceNtd: 2000 },
@@ -24,6 +25,12 @@ test('sorts district comparison rows numerically with missing values last', () =
     '大安區',
     '文山區',
   ]);
+});
+
+test('renders data-quality keys as Chinese labels in Chinese mode', () => {
+  assert.equal(qualityLabel('missingIndex', 'zh'), '缺少指數值');
+  assert.equal(qualityLabel('invalidAreaCount', 'zh'), '無效面積');
+  assert.equal(qualityLabel('missingIndex', 'en'), 'missingIndex');
 });
 
 test('filters residential rent index records by category, period, and search', () => {
