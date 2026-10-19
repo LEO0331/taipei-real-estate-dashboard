@@ -18,6 +18,14 @@ Use the dashboard’s category navigator or dataset search to find a topic. On s
 
 ## Important limits
 
+### Urban renewal evidence review (Policy Issue 6)
+
+Under **Land & development**, open **Aging Buildings & Urban Renewal Decision Support**. This lazy-loaded research POC separates citywide building-stock context from district administrative follow-up questions. It offers deterministic review tiers, capacity 5/10/custom/unlimited, three strategies, scope-aware sensitivity, and reproducible JSON/CSV briefings with formula protection.
+
+The audited snapshot contains 50 citywide building-stock years (1976–2025), 75 designation-approval documents in 11 districts (2023-02–2024-06), and 24 citywide incentive years (2002–2025). Missing Xinyi rows do not mean zero cases. Age breakdowns for 1976–2006 and inconsistent 2012 are unavailable. Eleven equally qualified research questions yield identical strategy results; capacity 5/10 selects 5/10 districts. These are documentary questions, never building-risk or redevelopment-demand scores.
+
+Use `npm run data:audit:urban-renewal-evidence` and `npm run data:convert:urban-renewal-evidence` for offline verification/reproduction. Intentional acquisition is `npm run data:fetch:urban-renewal-evidence`; source changes require re-audit. Raw audited bytes/provenance are in `data/raw/urban-renewal-decision/`, browser aggregates in `public/data/urban-renewal-decision/`. No current-status scraping or property-level joins are performed. See the [source audit](docs/urban-renewal-source-audit.md), [methodology](docs/urban-renewal-decision-methodology.md), and [Traditional Chinese implementation guide](docs/urban-renewal-decision-mvp.zh-TW.md).
+
 This is an informational public-data dashboard, not a property or rent appraisal, title check, zoning certificate, tax calculation, legal opinion, investment recommendation, lending advice, forecast, or safety assessment.
 
 - Static JSON is served from `public/data/`; the browser does not call Taipei Open Data directly.

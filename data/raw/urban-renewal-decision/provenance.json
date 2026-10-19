@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "sources": [
+    {
+      "id": "A",
+      "datasetId": "7889e8a0-a71e-44e0-95c7-2213a7db1474",
+      "resourceId": "53e04f4c-e546-462e-b509-0fc7225a3ebd",
+      "resourceUrl": "https://tsis.dbas.gov.taipei/statis/webMain.aspx?compmode=0&cycle=4&deflst=2&funid=a05019201&kind=21&nzo=1&outkind=1&outmode=12&sys=220&type=0&ymf=6500",
+      "file": "A.csv",
+      "sha256": "8f471e3d2ab5ef6e17d5b7408a74b370458cc12870de57e0dced2fc086c2bde4",
+      "retrievedAt": "2026-10-19T06:32:25.000Z",
+      "processedAt": "2026-10-19T06:32:25.000Z",
+      "catalogueSha256": "ef8c4912c079ccd925ef3807ccee38f57a888f2b25fdfa25ccf6f7dbd2496a5c"
+    },
+    {
+      "id": "B",
+      "datasetId": "4bf19a69-86e7-40cb-93e2-a45dc7037f34",
+      "resourceId": "8b7a3b60-a45a-4d0f-96df-2529dd04d6cc",
+      "resourceUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=8b7a3b60-a45a-4d0f-96df-2529dd04d6cc",
+      "file": "B.csv",
+      "sha256": "a75b1c4cb6bd10e73267683addfaa357c5c94ef32d32e9b6692aa257cfca131b",
+      "retrievedAt": "2026-10-19T06:32:25.000Z",
+      "processedAt": "2026-10-19T06:32:25.000Z",
+      "catalogueSha256": "15fb23dc1774fb924a77fc873cb7ca1aaf25b31ec074b0f898b8f56c347a025c"
+    },
+    {
+      "id": "C",
+      "datasetId": "cda6b568-0035-420b-bd05-6ca9bfd4bda0",
+      "resourceId": "01dc6879-2e74-4e74-a033-43674c7af019",
+      "resourceUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=01dc6879-2e74-4e74-a033-43674c7af019",
+      "file": "C.csv",
+      "sha256": "700ededa40e0e2c073ff53c750593528c2b605d3cc51f71b567fd0840b74fb62",
+      "retrievedAt": "2026-10-19T06:32:25.000Z",
+      "processedAt": "2026-10-19T06:32:25.000Z",
+      "catalogueSha256": "93b81fd3cf85ec663fe5c90d18b4bab9830d81b02620462bc6d1ef764c63afba"
+    },
+    {
+      "id": "E",
+      "datasetId": "dbe02285-8d6e-4b3d-97d7-700047cbe4da",
+      "resourceId": "a2aff1bf-3484-449f-9438-167e6a7bce25",
+      "resourceUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=a2aff1bf-3484-449f-9438-167e6a7bce25",
+      "file": "E.csv",
+      "sha256": "464fbfdcdf39051fe8ca2b6e2212b334b0dc6b1a6d928be1a2916b030eca8cfe",
+      "retrievedAt": "2026-10-19T06:32:25.000Z",
+      "processedAt": "2026-10-19T06:32:25.000Z",
+      "catalogueSha256": "ea88f557f2fec27b54a0df68caaed6a96e766ea285b128af00898d0ce0353909"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Line, LineChart,
   Pie, PieChart, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis,
@@ -18,6 +18,7 @@ import { CadastralClearingSaleProceedsCustody } from './CadastralClearingSalePro
 import { MetroEngineeringMilestones } from './MetroEngineeringMilestones';
 import { CadastralCleanupLandAuctionResults } from './CadastralCleanupLandAuctionResults';
 import { DataFreshness } from './DataFreshness';
+const UrbanRenewalDecisionPanel = lazy(() => import('./UrbanRenewalDecisionPanel'));
 import { UrbanRenewalRegulations } from './UrbanRenewalRegulations';
 import { MunicipalPropertyPortfolio } from './MunicipalPropertyPortfolio';
 import { CivilEngineeringPriceIndex } from './CivilEngineeringPriceIndex';
@@ -1666,6 +1667,7 @@ const navigationCategories: Record<NavigationCategory, LocalizedText & { descrip
 };
 
 const dashboardModules: DashboardModule[] = [
+  { tab: 46, category: 'land', label: { zh: '老舊建築與都市更新決策分析', en: 'Aging Buildings & Urban Renewal Decision Support' }, keywords: ['urban renewal', 'aging', 'evidence', 'review', '老屋', '都更', '查核'] },
   { tab: 0, category: 'market', label: { zh: '\u5e02\u5834\u7e3d\u89bd', en: 'Market Overview' }, keywords: ['overview', 'market'] },
   { tab: 1, category: 'market', label: { zh: '\u623f\u50f9\u6708\u6307\u6578', en: 'Monthly Price' }, keywords: ['price', 'monthly'] },
   { tab: 2, category: 'market', label: { zh: '\u623f\u50f9\u5b63\u6307\u6578', en: 'Quarterly Price' }, keywords: ['price', 'quarterly'] },
@@ -1886,6 +1888,7 @@ export default function App() {
     <nav className="tabs" aria-label="Cadastral cleanup land auction results"><button className={tab === 38 ? 'active' : ''} onClick={() => setTab(38)}>{language === 'zh' ? '地籍清理公告開標結果土地清冊' : 'Cadastral Cleanup Land Auction Results'}</button></nav>
     <nav className="tabs" aria-label="Data freshness"><button className={tab === 39 ? 'active' : ''} onClick={() => setTab(39)}>{language === 'zh' ? '資料狀態與更新期間' : 'Data Status & Coverage'}</button></nav>
     <main>
+      {tab === 46 && <Suspense fallback={<p className="status">{t.loading}</p>}><UrbanRenewalDecisionPanel language={language} /></Suspense>}
       {error && <p className="status">{t.loadError}</p>}
       {!data && !error && <p className="status">{t.loading}</p>}
       {data && <>

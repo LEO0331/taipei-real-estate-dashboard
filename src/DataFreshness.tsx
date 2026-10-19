@@ -6,6 +6,7 @@ type Entry = { key:string; zh:string; en:string; path:string; coverage:(source:S
 const base = import.meta.env.BASE_URL;
 
 const entries: Entry[] = [
+  { key: 'urban-renewal-decision', zh: '都市更新查核快照（各來源期間不同）', en: 'Urban renewal evidence (mixed source periods)', path: 'urban-renewal-decision/snapshot.json', coverage: (s) => { const units = s.renewalUnits as Source | undefined; return units ? string(units.periodEnd) : null; }, sourceUpdate: (s) => string(s.generatedAt) },
   { key: 'real-price', zh: '實價登錄摘要', en: 'Real-price registration summary', path: 'real-price-summary.json', coverage: (s) => string(s.latestDataPeriod), sourceUpdate: () => null },
   { key: 'price-monthly', zh: '住宅價格月指數', en: 'Residential price monthly index', path: 'residential-price-monthly-index-summary.json', coverage: (s) => string(s.latestPeriod), sourceUpdate: () => null },
   { key: 'price-quarterly', zh: '住宅價格季指數', en: 'Residential price quarterly index', path: 'residential-price-quarterly-index-summary.json', coverage: (s) => string(s.latestQuarterKey), sourceUpdate: () => null },

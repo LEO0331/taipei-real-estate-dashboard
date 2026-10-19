@@ -1,0 +1,845 @@
+
+
+<!DOCTYPE html>
+
+<html>
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" /><meta name="description" /><meta name="author" /><title>
+	都市更新審議服務平台｜臺北市都市更新處
+</title>
+    <script src="components/jQuery/jquery-3.6.0.min.js"></script>
+
+    
+    
+    
+
+    <!-- AnythingLLM (https://useanything.com) -->
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" href="css/styles.css" /><link rel="stylesheet" href="fontawesome13/css/all.css" /><link href="components/toastr-master/build/toastr.min.css" rel="stylesheet" /><link href="components/sweetalert2-master/dist/sweetalert2.min.css" rel="stylesheet" />
+    <script src="js/modernizr.min.js"></script>
+    <link href="plugins/iziModal/css/iziModal.min.css" rel="stylesheet" />
+    <style>
+        .modal-backdrop.in {
+            opacity: 0.5;
+        }
+
+        .modal.fade.in {
+            opacity: 1;
+        }
+    </style>
+
+    
+
+    <link href="css_net/jquery-ui.css" rel="stylesheet" />
+    <link href="components/sweetalert2-master/dist/sweetalert2.min.css" rel="stylesheet" />
+    <style>
+        @media (max-width: 767px) {
+            .accordion-xs-collapse .inner {
+                text-align: left;
+            }
+        }
+
+        #labMsg {
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <noscript>
+        <div class="alert alert-danger m-xs-bottom">
+            <p class="text-center strong color-black"><i class="fa fa-info-circle fsinem12 color-red"></i>您的瀏覽器不支援 JavaScript，若網頁功能無法正常使用時，請開啓瀏覽器 JavaScript 功能。</p>
+        </div>
+    </noscript>
+    <header class="masthead new d-none d-lg-block">
+        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+            <div class="container">
+                <div class="navbar-brand">
+                    <ul>
+                        <li><a href="https://www.gov.taipei/" target="_blank" class="taipei">
+                            <img class="figure-img"
+                                src="img/logo.svg" alt="臺北市政府"></a></li>
+                        <li><a href="Main.aspx" class="logo"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+            <div class="container">
+                <div class="navbar-toggler-fas">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse move" id="navbarResponsive">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">都市更新審議</a>
+                            <ul name="uro_link" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li name="about_link"><a class="dropdown-item dropdown-toggle" href="#">相關查詢</a>
+                                    <ul name="about_link_menu" class="dropdown-menu"></ul>
+                                </li>
+                                
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://gis.udd.gov.taipei/" target="_blank">都市設計審議</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">整合性地圖查詢
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" href="https://webgis.udd.gov.taipei/upis_v2/" target="_blank">都市計畫整合地圖</a></li>
+                                <li><a class="dropdown-item" href="https://bim.udd.gov.taipei/UDDPlanMap/" target="_blank">都市開發審議地圖</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">系統資訊
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" href="P_Sitemap.aspx" target="_blank">網站導覽</a></li>
+                                <li><a class="dropdown-item" href="ashx/Downloadoperate.ashx?filename=都市開發審議服務平台線上申請_操作手冊.pdf" target="_blank">操作說明</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item d-none d-md-block">
+                            <a id="Related_link" class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModallink">相關連結</a>
+                        </li>
+
+                        
+                        <li class="nav-item" style="display: none">
+                            <a class="nav-link" href="P_MyProjects.aspx">案件列表</a>
+                        </li>
+
+                        <li class="nav-item dropdown" id="login">
+                            <a class="nav-link text-light" href="#" data-id="Modaluserlogin" data-bs-target="#Modaluserlogin" data-bs-toggle="modal" alt="線上申辦登入" title="線上申辦登入"><i class="fas fa-user-circle fa-lg"></i></a>
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+    <header class="masthead new fixed-to d-lg-none">
+        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+            <div class="container">
+                <div class="navbar-brand">
+                    <ul>
+                        <li><a href="https://www.gov.taipei/" target="_blank" class="taipei">
+                            <img class="figure-img"
+                                src="img/logo.svg" alt="臺北市政府"></a></li>
+                        <li><a href="Main.aspx" class="logo"></a></li>
+                    </ul>
+                </div>
+                <div class="navbar-toggler-fas">
+                    <a href="#" data-bs-toggle="modal" id="login" data-bs-target="#Modaluserlogin" class="d-lg-none"><i class="fas fa-user fa-lg mr-1"></i></a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModallink" class="d-lg-none"><i class="fas fa-link fa-lg mr-2"></i></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">都市更新審議</a>
+                            <ul name="uro_link" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+
+                                <li name="about_link"><a class="dropdown-item dropdown-toggle" href="#">相關查詢</a>
+                                    <ul name="about_link_menu" class="dropdown-menu"></ul>
+                                </li>
+                                
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://gis.udd.gov.taipei/" target="_blank">都市設計審議</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="https://bootstrapthemes.co"
+                                data-bs-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">整合性地圖查詢
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" href="https://webgis.udd.gov.taipei/upis_v2/" target="_blank">都市計畫整合地圖</a></li>
+                                <li><a class="dropdown-item" href="https://bim.udd.gov.taipei/UDDPlanMap/?recode=1" target="_blank">都市開發審議地圖</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">系統資訊
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" href="P_Sitemap.aspx" target="_blank">網站導覽</a></li>
+                                <li><a class="dropdown-item" href="ashx/Downloadoperate.ashx?filename=都市開發審議服務平台線上申請_操作手冊.pdf" target="_blank">操作說明</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a id="Related_link" class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModallink">相關連結</a>
+                        </li>
+                        <li class="nav-item" style="display: none">
+                            <a class="nav-link" href="P_MyProjects.aspx">案件列表</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+
+                <div class="collapse navbar-collapse" id="navbarLogout">
+                </div>
+
+
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">您現在位置</li>
+                    <li class="breadcrumb-item"><a href="Main.aspx">首頁</a></li>
+                </ol>
+
+
+
+                
+
+    <div class="card border-info m-4">
+        <div class="col-md-12 mt-3">
+            <img src="images/審議案件進度查詢.png" />
+            <input type="button" style="color: Teal;" value="168專案查詢" onclick="location.href='P_project168.aspx'" />
+            <fieldset class="form-group">
+                <p>
+                    <span style="color: #ff0066">都市更新查詢進行第一階段建置，對目前所提出申請之都市更新案件基本資料及辦理進度，民眾可依地段地號、門牌號碼或道路路名等3種方式進行查詢，辦理進度仍以實際進度為主。如有案件查詢疑問、查詢內容等相關問題，歡迎利用臺北市都市更新處諮詢專線：02-27815696 分機3093</span>
+                </p>
+                <a href="help/更新案件進度查詢操作說明.pdf" target="_blank">操作說明</a>
+                <div style="text-align: left; color: Red;">因本府公告劃定之更新地區範圍較大，其範圍內之案件數量相對較多，故目前皆全數列出提供參考。俟本處資料庫及圖資建置完整，將會提供更精確之案件資料，尚請見諒。</div>
+
+                <div class="p-2 d-none d-md-block text-center">
+                    
+                    
+                    <input type="radio" name="search_Project" onclick="table_page('地段')" /><label>依地段地號查詢</label>
+                    <input type="radio" name="search_Project" onclick="table_page('門牌')" /><label>依門牌號碼查詢</label>
+                    <input type="radio" name="search_Project" onclick="table_page('道路')" /><label>依道路路名查詢</label>
+
+                </div>
+
+                <div class="row justify-content-end d-md-none">
+                    
+                    <select class="form-control" onchange="table_page(this.value)">
+                        <option selected style="display: none">請選擇查詢方式</option>
+                        <option value="地段" id="" data-bs-toggle="pill" href="#data1" role="tab" aria-selected="true">依地段地號查詢</option>
+                        <option value="門牌" id="" data-bs-toggle="pill" href="#data2" role="tab" aria-selected="false">依門牌號碼查詢</option>
+                        <option value="道路" id="" data-bs-toggle="pill" href="#data3" role="tab" aria-selected="false">依道路路名查詢</option>
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+
+
+
+        <div id="myframe">
+        </div>
+        <div class="card-footer text-right">點閱：<label id="browse_count"></label></div>
+    </div>
+
+    <script>
+        var qitem = "";
+        function table_page(value) {
+            var htmlpage = "";
+            switch (value) {
+                case '地段':
+                    htmlpage = "showland_uro.html";
+                    qitem = "qland";
+                    //$.get("showland_uro.html", function (data) {
+                    //    $("#myframe").ht(data);
+                    //    //$("#myframe").html(data);
+                    //})
+                    break;
+                case '門牌':
+                    htmlpage = "showaddr_uro.html";
+                    qitem = "qaddr";
+                    //$.get("showaddr_uro.html", function (data) {
+                    //    $("#myframe").html(data);
+                    //})
+                    break;
+                case '道路':
+                    htmlpage = "showroad_uro.html";
+                    qitem = "qroad";
+                    //$.get("showroad_uro.html", function (data) {
+                    //    $("#myframe").html(data);
+                    //})
+                    break;
+            }
+            $.get(htmlpage, function (data) {
+                $("#myframe").ht(data);
+
+                if ($(window).width() < 768) {
+                    search_list_down()
+                }
+            })
+
+            GetselDistrict(qitem);
+        }
+
+        function changeFrameHeight() {
+            var ifm = document.getElementById("myframe");
+            ifm.height = document.documentElement.clientHeight;
+        }
+
+    </script>
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="pt-5 pb-3">
+        <div class="container text-white">
+            <div class="small">
+<p>
+    <a href="https://uro.gov.taipei/News_Content.aspx?Create=1&n=9FFBA0A9ECB48B79&state=F5D336F102ACBC68&s=81E55CBD4108DDA9&sms=73366C9BCCD2AC2A"
+       target="_blank"
+       rel="noopener noreferrer">
+        隱私權及網站安全政策
+    </a>
+    |
+    <a href="https://uro.gov.taipei/News_Content.aspx?Create=1&n=9FFBA0A9ECB48B79&state=F5D336F102ACBC68&s=B165EFC04CD35609&sms=73366C9BCCD2AC2A"
+       target="_blank"
+       rel="noopener noreferrer">
+        著作權聲明
+    </a>
+    <br class="d-lg-none">
+    (歡迎利用臺北市都市更新處諮詢專線：02-27815696 分機3093)
+</p>
+                <p>服務時間：週一至週五09:00-17:00（中午休息）</p>
+                <p>
+                    臺北市政府都市發展局地址：<br class="d-lg-none">
+                    11008 台北市信義區市府路1號9樓（南區）
+                </p>
+                <p>
+                    臺北市都市更新處地址：<br class="d-lg-none">
+                    10488 臺北市中山區南京東路3段168號17樓（宏盛國際金融中心）
+                </p>
+                <p>
+                    到訪人次：<label id="total">2746838</label>
+                    <br class="d-lg-none">
+                    線上人數：<label id="online">59</label>
+                    <br class="d-lg-none">
+                    更新日期：<label id="update">2026/9/14</label>
+                    <br class="d-lg-none">
+                    本系統建議以 Chrome、Firefox、Safari、Edge 等瀏覽器最新版本瀏覽為佳。
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal:exampleModallink-->
+    <div class="modal fade" id="Modaluserlogin" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-info" id=""><strong><i class="fas fa-user-alt mr-1"></i>線上申辦登入</strong></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs">
+                        
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#certlogin">工商憑證登入</a>
+                        </li>
+                        <li class="nav-item">
+                            
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="certlogin">
+                            <h1></h1>
+                            <button type="button" class="btn btn-info btn-lg btn-block login-btn" onclick="platformLogin()">
+                                ISSO登入<br>
+                                <span style="font-size: 10pt">(本系統僅提供於台北通網站以組織/公司企業註冊使用工商憑證登入)</span>
+                            </button>
+                        </div>
+			<div class="tab-pane fade" id="urologin">
+                            <h1></h1>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">帳號</label>
+                                <input type="email" class="form-control" id="uroUserID" >
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">密碼</label>
+                                <input type="password" class="form-control" id="uroPwd" >
+                            </div>
+
+                            <p class="mt-1"><a class="btn btn-info js-scroll-trigger mr-3" id="reallogin" href="#">登入</a></p>
+                        </div>
+                    </div>
+                    <p>
+                        
+                        
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    
+    <script src="js_net/bootstrap.bundle.min.js"></script>
+    <script src="js_net/jquery.easing.min.js"></script>
+    <script src="js_net/jquery.magnific-popup.min.js"></script>
+
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+    <script src="js/bootstrap-4-navbar.js"></script>
+    <script src="components/toastr-master/build/toastr.min.js"></script>
+    <script src="components/bss-Waiting-for/index.js"></script>
+    <script src="components/sweetalert2-master/dist/sweetalert2.min.js"></script>
+    <script src="js/safecode.js"></script>
+    <script src="components/master/jquery-ui.min.js"></script>
+    <!-- Modal:exampleModallink-->
+    <div class="modal fade" id="exampleModallink" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-info" id="exampleModalLabel"><strong><i class="fas fa-link mr-1"></i>相關連結</strong></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li><a href="https://www.gov.taipei/" target="_blank">臺北市政府</a></li>
+                        <li><a href="https://udd.gov.taipei/" target="_blank">臺北市政府都市發展局</a></li>
+                        <li><a href="https://uro.gov.taipei/" target="_blank">臺北市都市更新處</a></li>
+                        <li><a href="https://dba.gov.taipei/" target="_blank">臺北市建築管理工程處</a></li>
+                        <li><a href="https://w2.land.gov.taipei/LBN/NOLB_V100.aspx" target="_blank">地政局地號查詢</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+
+    
+
+<!-- Modal:basicinformationuser-->
+<div class="modal fade" id="basicinformation" tabindex="-1" role="dialog" aria-labelledby="basicinformationLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-info" id="basicinformationLabel"><strong><i class="fas fa-user-alt mr-1"></i>個人基本資訊</strong></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="archlogin">
+                        <h1></h1>
+                        <div class="form-group">
+                            <label>申請人帳號</label>
+                            <input type="text" class="form-control" id="userid" disabled="disabled">
+                        </div>
+                        <div class="form-group">
+                            <label>申請人單位/姓名</label>
+                            <input type="text" id="username" class="form-control">
+                        </div>
+                        <p class="mt-1">
+                            <a id="savebtn" class="btn btn-info js-scroll-trigger mr-3" onclick="logsave()" href="#">儲存</a>
+                            <a class="btn btn-info js-scroll-trigger mr-3" href="#" onclick="" data-bs-dismiss="modal" aria-label="Close">關閉</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#basicinformation').on('show.bs.modal', function (e) {
+        $.ajax({
+            url: 'ashx/GetLogin.ashx', type: 'get', async: false, cache: false, success: function (result) {
+                if (result == "sessionempty") {
+                    parent.Swal.fire({
+                        title: "連線逾時",
+                        text: "請重新進入",
+                        icon: "error",
+                        confirmButtonText: '確定'
+                    }).then((value) => {
+                        parent.window.location.href = "Main.aspx";
+                    });
+                    //parent.swal("連線逾時", "請重新進入", "error")
+                    //    .then((value) => {
+                    //        parent.window.location.href = "Main.aspx";
+                    //    });
+                }
+                var obj = $.parseJSON(result);
+                $("#userid").v(obj.userid);
+                if (obj.username != "") {
+                    $("#username").v(obj.username);
+                }
+            }
+        });
+        ////////console.log('')
+        if ('' == "True") {
+            $("#username").attr('disabled', false);
+            $("#savebtn").show();
+        } else {
+            $("#username").attr('disabled', true);
+            $("#savebtn").hide();
+        }
+    });
+
+    function logsave() {
+        //儲存
+        var usermane = $("#username").val();
+        //if (usermane == "") {
+        //    parent.toastr.error("申請人單位/姓名 不可空白");
+        //    return
+        //}
+
+        $.ajax({
+            url: 'ashx/SetLoginInfo.ashx', data: `UserName=${encodeURIComponent(usermane)}`,
+            type: 'post', success: function (result) {
+                if (result == "Session") {
+                    Swal.fire({ title: '錯誤!', text: '請重新登入！', icon: 'warning' }).then((result) => {
+                        if (result) location.reload();
+                    });// location.reload();
+                }
+                if (result == "true") {
+
+                    parent.toastr.success("申請人單位/姓名 已儲存");
+                    parent.setname(usermane);
+                    $("#savebtn").hide();
+                    $('#basicinformation').modal('hide');
+                }
+                else {
+                    parent.toastr.success("儲存失敗，請重新嘗試。");
+                }
+            }
+
+        });
+    }
+
+</script>
+
+
+    
+    <script src="components/sweetalert2-master/dist/sweetalert2.min.js"></script>
+    <script src="js/progress_js.js"></script>
+    <script>
+
+        $(function () {
+            //$.ajax({
+            //    url: "ashx/getzoneList.ashx",
+            //})
+            //$.ajax({
+            //    url: 'ashx/getRoadList.ashx',
+            //    data: 'qitem=RoadList&sec= ',
+            //    type: 'post',
+            //})
+            //$.ajax({
+            //    url: 'ashx/getSectionList.ashx',
+            //    data: 'qitem=SectionList_20&sec= ',
+            //    type: 'post',
+            //})
+
+            $.ajax({
+                url: 'ashx/ucBrowseCountl.ashx',
+                type: 'post',
+                data: 'page_name=' + document.location.href.match(/[^\/]+$/)[0],
+                async: false,
+                success: function (result) {
+                    $("#browse_count").text(result);
+                }
+            })
+        })
+
+       
+        //function roaderr() {
+        //    var search_input = $(".form_search_top")
+        //    var txtroad = search_input[0].value; var txtLane = search_input[1].value; var txtAlley = search_input[2].value;
+        //    if (txtroad == "") {
+        //        parent.swal("錯誤的查詢。", "路名不可空白！");
+        //        return;
+        //    } if (txtLane == "") { //巷
+        //        search_input[1].value = "0"
+        //        txtLane = search_input[1].value
+        //    }
+        //    if (txtAlley == "") {  //弄
+        //        search_input[2].value = "0"
+        //        txtAlley = search_input[2].value
+        //    }
+        //}
+ 
+
+
+    </script>
+
+
+    <script>
+        $(function () {
+            $.ajax({
+                url: "ashx/get_urolink.ashx",
+                type: 'get',
+                success: function (result) {
+                    var obj = $.parseJSON(result);
+                    var flag = false;
+                    $.each(obj, function (item_key, val) {
+                        if (val.URO_NODE_PARENT == "相關查詢") {
+                            if (val.URO_NODE_LINK.indexOf("http") > -1) {
+                                $("ul[name='about_link_menu']").append(`<li><a class="dropdown-item" href="${val.URO_NODE_LINK}" target="_blank">${val.URO_NODE_NAME}</a></li>`)
+                            } else {
+                                $("ul[name='about_link_menu']").append(`<li><a class="dropdown-item" href="${val.URO_NODE_LINK}">${val.URO_NODE_NAME}</a></li>`)
+                            }
+                            flag = true
+                        } else {
+                            if (val.URO_NODE_LINK != "") {
+                                if (flag) {
+                                    $("ul[name='uro_link']").append(`<li><a class="dropdown-item" href="${val.URO_NODE_LINK}" target="_blank">${val.URO_NODE_NAME}</a></li>`)
+                                } else {
+                                    $("li[name='about_link']").before(`<li><a class="dropdown-item" href="${val.URO_NODE_LINK}" target="_blank">${val.URO_NODE_NAME}</a></li>`)
+                                }
+                            }
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+
+    <script>
+        function resize() {
+            var isXS = false,
+                $accordionXSCollapse = $('.accordion-xs-collapse');
+            // Window resize event (debounced)
+            var timer;
+            $(window).resize(function () {
+                if (timer) {
+                    clearTimeout(timer);
+                }
+                timer = setTimeout(function () {
+                    isXS = Modernizr.mq('only screen and (max-width: 767px)');
+
+                    // Add/remove collapse class as needed
+                    if (isXS) {
+                        $accordionXSCollapse.addClass('collapse');
+                    } else {
+                        $accordionXSCollapse.removeClass('collapse');
+                    }
+                }, 100);
+            }).trigger('resize'); //trigger window resize on pageload    
+
+            // Initialise the Bootstrap Collapse
+            $accordionXSCollapse.each(function () {
+                $(this).collapse({
+                    toggle: false
+                });
+            });
+
+            // Accordion toggle click event (live)
+            $(document).on('click', '.accordion-xs-toggle', function (e) {
+                e.preventDefault();
+
+                var $thisToggle = $(this),
+                    $targetRow = $thisToggle.parent('.tr'),
+                    $targetCollapse = $targetRow.find('.accordion-xs-collapse');
+
+                if (isXS && $targetCollapse.length) {
+                    var $siblingRow = $targetRow.siblings('.tr'),
+                        $siblingToggle = $siblingRow.find('.accordion-xs-toggle'),
+                        $siblingCollapse = $siblingRow.find('.accordion-xs-collapse');
+
+                    $targetCollapse.collapse('toggle'); //toggle this collapse
+                    $siblingCollapse.collapse('hide'); //close siblings
+
+                    $thisToggle.toggleClass('collapsed'); //class used for icon marker
+                    $siblingToggle.removeClass('collapsed'); //remove sibling marker class
+                }
+            });
+        }
+    </script>
+
+    <script>
+
+        //$(function () {
+        //    get_Updated_filetime();
+        //    var time = 3000; //在此設定毫秒數
+        //    setTimeout(get_Updated_filetime, time)
+        //})
+
+        //抓取最新程式更新時間
+        //function get_Updated_filetime() {
+        //    $.ajax({
+        //        url: "ashx/get_Updated.ashx",
+        //        type: 'get',
+        //        success: function (result) {
+        //            $("#update").text(result);
+        //            /*console.log(result)*/
+        //        }
+        //    })
+        //}
+        $(function () {
+
+            $('.breadcrumb').empty();
+
+
+            if ('' == '') {
+                $('a[href="P_MyProjects.aspx"]').parent().css('display', 'none');
+                //$('a[href="P_ApplyMain.aspx?type=new"]').parent().css('display', 'none');
+            } else {
+                $('a[href="P_MyProjects.aspx"]').parent().css('display', '');
+                $("li[name='about_link']").before(`<li style=""><a class="dropdown-item" href="P_ApplyMain.aspx?type=new">線上申辦</a></li>`)
+                $('a[href="P_ApplyMain.aspx?type=new"]').parent().css('display', '');
+                $('a[data-id="Modaluserlogin"]').removeAttr('data-bs-target');
+                $('a[data-id="Modaluserlogin"]').attr('data-bs-toggle', 'dropdown');
+                $('a[data-id="Modaluserlogin"]').parent().append('<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">' +
+                    '<li><a class="dropdown-item"   href="#" data-bs-toggle="modal" data-bs-target="#basicinformation">個人基本資訊</a></li>' +
+                    '<li><a class="dropdown-item" href="javascript:logout();">登出</a></li></ul>');
+                ///
+                $('a[data-bs-target="#Modaluserlogin"]').attr('data-bs-toggle', 'collapse');
+                $('a[data-bs-target="#Modaluserlogin"]').attr('data-bs-target', '#navbarLogout');
+                $('#navbarLogout').append('<ul class="navbar-nav ml-auto">' +
+                    '<li class="nav-item"><a class="nav-link"   href="#" data-bs-toggle="modal" data-bs-target="#basicinformation">個人基本資訊</a></li>' +
+                    '<li class="nav-item"><a class="nav-link" href="javascript:logout();">登出</a></li></ul>');
+                getclickfunc();
+                ///
+                $('.breadcrumb').append('<span>嗨！' + '' + '</span>&nbsp;&nbsp;');
+
+                if ('' != "false") {
+                    if ('' == "")
+                        //    swal({ title: '您已成功登入系統!', text: '請填寫個人基本資訊以利線上申辦！', type: 'success' }).then((result) => { if (result) $("#basicinformation").modal('show'); });// location.reload();
+                        Swal.fire({ title: '請填寫個人基本資訊以利線上申辦！' }).then((result) => { if (result) $('a[data-bs-target="#basicinformation"]').click(); });// location.reload();
+
+                    //else
+                    //    swal({ title: '您已成功登入系統!', text: '可開始線上申辦或查詢案件資料！', type: 'success' })
+                }
+                    false
+            }
+
+            var npage = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+            if (npage.indexOf('?') !== -1) {
+                npage = npage.substring(0, npage.indexOf('?'));
+            }
+            var li = '<li class="breadcrumb-item">您現在位置</li><li class="breadcrumb-item"><a href="Main.aspx">首頁</a></li>';
+            switch (npage) {
+                case 'P_project168.aspx': $('.breadcrumb').append(li + '<li class="breadcrumb-item"><a href="R_progress.aspx">更新案件進度查詢</a></li ><li class="breadcrumb-item">168案件列表</li>'); break;
+                case 'P_Sitemap.aspx': $('.breadcrumb').append(li + '<li class="breadcrumb-item">網站導覽</li>'); break;
+                case 'R_progress.aspx': $('.breadcrumb').append(li + '<li class="breadcrumb-item">更新案件進度查詢</li>'); break;
+                case 'P_ApplyMain.aspx': $('.breadcrumb').append(li + '<li class="breadcrumb-item">線上申辦</li>'); break;
+                case 'ua_frmEasyQuery.aspx': $('.breadcrumb').append(li + '<li class="breadcrumb-item">更新單元查詢</li>'); break;
+                case 'P_MyProjects.aspx': $('.breadcrumb').append(li + '<li class="breadcrumb-item">案件列表</li>'); break;
+                //case 'P_QAlist.aspx': $('.breadcrumb').append(li + '<li class="breadcrumb-item">常見問題</li>'); break;
+                //case 'Meet.aspx?type=allmeet': $('.breadcrumb').append(li + '<li class="breadcrumb-item">歷年委員會議</li>'); break;
+                default: $('.breadcrumb').append(li);
+            }
+
+            if (npage.indexOf("?") > -1) {
+                var npage_detail = npage.split("?")[0]
+                switch (npage_detail) {
+                    case 'r_progress_detail.aspx': $('.breadcrumb').append('<li class="breadcrumb-item"><a href="R_progress.aspx">更新案件進度查詢</a></li><li class="breadcrumb-item">詳細資料</li>'); break;
+                    case 'ua_frmEasyCase.aspx': $('.breadcrumb').append('<li class="breadcrumb-item"><a href="ua_frmEasyQuery.aspx">更新單元查詢</a></li><li class="breadcrumb-item">更新單元資料</li>'); break;
+                    default: ;
+                }
+            }
+            if ('' == '')
+                $('.breadcrumb').append('<li class="d-none d-lg-block" style="margin-left:auto;font-size:larger;"><a href="#" data-id="Modaluserlogin" data-bs-target="#Modaluserlogin" data-bs-toggle="modal">登入</a ></li > ')
+            else
+                $('.breadcrumb').append('<li class="d-none d-lg-block" style="margin-left: auto;font-size:larger;"><a href="javascript:logout();">登出</a ></li > ')
+        })
+
+$('#reallogin').click(function () {
+            if ($('#uroUserID').val() == '') {
+                toastr.error('尚未輸入帳號!');
+                return;
+            }
+            if ($('#uroPwd').val() == '') {
+                toastr.error('尚未輸入密碼!');
+                return;
+            }
+            $.ajax({
+                url: 'ashx/Login.ashx', data: 'userid=' + encodeURIComponent($('#uroUserID').val()) +
+                    '&password=' + encodeURIComponent($('#uroPwd').val()), type: 'post', async: false, cache: false, success: function (result) {
+                        if (result != 'True') {
+                            Swal.fire({
+                                title: result,
+                                type: 'warning',
+                                confirmButtonColor: '#DD6B55',
+                                confirmButtonText: '確認'
+                            });
+                        } else {
+                            $('#Modaluserlogin').modal('hide');
+                            Swal.fire({ title: '您已成功登入系統!', text: '可開始線上申辦或查詢案件資料！', type: 'success' }).then((result) => { if (result) location.reload(); });
+                            //location.reload();
+                        }
+                    }
+            })
+        });
+
+        function setlog() {
+            $.ajax({
+                url: 'ashx/setLog.ashx', data: '',
+                type: 'post', async: false, cache: false, success: function (result) {
+                }
+            })
+        }
+
+        function platformLogin() {
+            var authUrl = "TransTPEPass.aspx";
+            //var authUrl = "https://id.taipei/isso/";
+            window.location.href = authUrl;
+        }
+
+        function setname(name) {
+            $('#c_user_name').v(encodeURIComponent(name));
+        }
+        function logout() {
+            //$.ajax({ url: 'ashx/SetSession.ashx', data: 'key=UserId&val=' });
+            //$.ajax({ url: 'ashx/SetSession.ashx', data: 'key=UserName&val=' });
+            //$.ajax({ url: 'ashx/SetSession.ashx', data: 'key=show&val=' });
+            $.ajax({ url: 'ashx/SetSession.ashx', data: 'key=logout' });
+            Swal.fire({ title: '您已成功登出系統!', type: 'success' }).then((result) => { if (result) location.href = "Main.aspx"; });
+        }
+
+        $("#Modaluserlogin input").keydown(function (event) {
+            if (event.which == 13) {
+                event.preventDefault();
+                //return false;
+                switch ($('[data-bs-toggle="tab"].active').attr('href')) {
+                    case '#archlogin': $('#login').trigger('click'); break;
+                    case '#certlogin': $('.login-btn').trigger('click'); break;
+                }
+            }
+        });
+
+
+        function getclickfunc() {
+            $('button[data-bs-target="#navbarNavDropdown"]').click(function () {
+                toggleCollapse($('#navbarLogout'));
+            });
+
+            $('a[data-bs-target="#navbarLogout"]').click(function () {
+                toggleCollapse($('#navbarNavDropdown'));
+            });
+        }
+        function toggleCollapse(counterpart) {
+            if (counterpart.hasClass('show')) {
+                counterpart.collapse('hide');
+            }
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+.renewal-decision { display:grid; grid-template-columns:minmax(0,1fr); gap:1.2rem; min-width:0; }
+.renewal-decision>section,.renewal-decision .table-wrap { min-width:0; max-width:100%; }
+.renewal-decision section[id] { scroll-margin-top:170px; }
+.renewal-decision h2 { line-height:1.3; }
+.renewal-lead { max-width:850px; font-size:clamp(1.2rem,2vw,1.65rem); line-height:1.6; }
+.renewal-decision label { display:grid; gap:.4rem; font-size:.85rem; font-weight:700; }
+.renewal-decision select,.renewal-decision input[type=number] { width:100%; min-height:44px; padding:.55rem; background:#fff9; border:1px solid var(--line); border-radius:4px; color:var(--ink); }
+.renewal-controls { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1rem; }
+.renewal-decision .renewal-checkbox { display:flex; align-items:center; gap:.55rem; margin:1rem 0; }
+.renewal-checkbox input { width:20px; height:20px; }
+.renewal-metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:.75rem; margin:1.4rem 0; }
+.renewal-metrics>div { display:grid; gap:.3rem; padding:1rem; border:1px solid var(--line); background:var(--paper-2); }
+.renewal-metrics strong { font-size:2rem; font-variant-numeric:tabular-nums; }
+.renewal-metrics span { color:var(--muted); font-size:.8rem; }
+.renewal-questions { display:grid; gap:.8rem; }
+.renewal-question { border:1px solid var(--line); padding:1rem; background:#fff5; }
+.renewal-question__heading { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.7rem; }
+.renewal-question h3 { font-size:1rem; line-height:1.6; }
+.renewal-tier { padding:.3rem .6rem; background:var(--paper-2); font-size:.75rem; }
+.renewal-tier--A { background:#b2473819; color:#92392c; }
+.renewal-decision details { padding:.8rem 0; border-bottom:1px solid var(--line); }
+.renewal-decision summary { cursor:pointer; line-height:1.6; font-weight:700; }
+.renewal-decision dl { display:grid; grid-template-columns:minmax(100px,180px) minmax(0,1fr); gap:.6rem; font-size:.85rem; }
+.renewal-decision dd { margin:0; overflow-wrap:anywhere; }
+.renewal-decision code { overflow-wrap:anywhere; font-size:.75rem; }
+.renewal-decision pre { white-space:pre-wrap; overflow-wrap:anywhere; padding:1rem; background:var(--paper-2); font-size:.75rem; max-height:320px; overflow:auto; }
+.renewal-history { max-height:380px; overflow:auto; }
+.renewal-decision table { min-width:550px; }
+.renewal-decision caption { text-align:left; padding:.7rem 0; color:var(--muted); }
+.renewal-actions { display:flex; flex-wrap:wrap; gap:.75rem; }
+.renewal-actions button { min-height:44px; padding:.6rem 1rem; border:1px solid var(--ink); background:var(--ink); color:var(--paper); cursor:pointer; }
+.renewal-actions button:disabled { opacity:.5; cursor:not-allowed; }
+@media(max-width:600px) { .renewal-decision dl { grid-template-columns:1fr; } .renewal-decision dd { margin-bottom:.5rem; } .renewal-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } }

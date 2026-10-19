@@ -152,6 +152,18 @@
       "dependencies": ["feat-001"],
       "status": "complete",
       "evidence": "2026-08-31: mapped citywide, housing_type, and district to Chinese labels and formatted visible quarters as Chinese text. npm.cmd test passed (39/39); npm.cmd run build passed."
+    },
+    {
+      "id": "feat-020",
+      "name": "Aging buildings and urban renewal evidence decision support",
+      "description": "One scoped Policy Issue 6 feature: audited official stock/administrative evidence, deterministic research reviews, bilingual scenarios and reproducible exports.",
+      "dependencies": [
+        "feat-001",
+        "feat-007",
+        "feat-009"
+      ],
+      "status": "complete",
+      "evidence": "2026-10-19: Audited sources A/B/C/E and retained D/F/G. A:50 citywide years1976–2025,18 comparable age years; B:75 designation documents,11 districts,2023-02-01–2024-06-05; C:24 citywide years2002–2025; E:117 meetings context only. Raw data/raw/urban-renewal-decision; generated public/data/urban-renewal-decision; snapshot ure-c81e4ef44e6c9868. No citywide-to-district age allocation or inferred case statuses. Deterministic11 A research questions; capacities5/10 select5/10 districts; strategies agree. Offline hash/schema/source audits and byte-identical reproduction passed. Focused engine11/source12/delivery1 tests plus baseline39 pass; TypeScript/Vite build passed. Browser desktop/mobile zh/en, inputs, unknown/empty, retry, JSON/CSV and existing modules checked. Sources/method/risks documented in docs/urban-renewal-*.md and progress.md. Sources https://data.taipei/dataset/detail?id=7889e8a0-a71e-44e0-95c7-2213a7db1474 ; https://data.taipei/dataset/detail?id=4bf19a69-86e7-40cb-93e2-a45dc7037f34 ; https://data.taipei/dataset/detail?id=cda6b568-0035-420b-bd05-6ca9bfd4bda0 ; https://data.taipei/dataset/detail?id=dbe02285-8d6e-4b3d-97d7-700047cbe4da . Refresh fails closed on changed versions pending re-audit; current case status/district-age stock unavailable."
     }
   ]
 }

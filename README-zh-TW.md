@@ -20,6 +20,14 @@
 
 ## 重要限制
 
+### 都市更新政策資料查核（政策議題6）
+
+在**土地與開發**開啟**老舊建築與都市更新決策分析**。此延遲載入的研究 POC 將全市建物存量脈絡與行政區行政查核問題分開，支援確定性查核層級、5／10／自訂／不限容量、三種策略、標示證據範圍的敏感度比較，以及具公式注入保護的 JSON／CSV 摘要。
+
+已查核快照包含全市建物存量50年（1976–2025）、11區的75筆更新單元核准公文（2023-02–2024-06）與全市容積獎勵24年（2002–2025）。缺少信義區列不代表零案件。1976–2006屋齡欄位與合計不一致的2012年不可用。目前11個同條件研究問題的策略結果相同；容量5／10選入5／10區。這是文件查核問題，不是建物危險或更新需求評分。
+
+執行 `npm run data:audit:urban-renewal-evidence` 與 `npm run data:convert:urban-renewal-evidence` 可離線查核及重現；刻意擷取來源請用 `npm run data:fetch:urban-renewal-evidence`，版本變更須重新稽核。原始檔與來源證據位於 `data/raw/urban-renewal-decision/`，瀏覽器摘要位於 `public/data/urban-renewal-decision/`。不爬取目前案件狀態，也不做物件層級串聯。詳見[來源查核](docs/urban-renewal-source-audit.md)、[方法說明](docs/urban-renewal-decision-methodology.md)與[實作文件](docs/urban-renewal-decision-mvp.zh-TW.md)。
+
 本網站是公開資料的資訊工具，**不是** 房屋或租金估價、產權查核、使用分區證明、稅額計算、法律意見、投資建議、貸款建議、預測或建築安全評估工具。
 
 - 前端僅讀取 `public/data/` 的靜態 JSON，不會直接呼叫臺北市開放資料 API。
