@@ -2,9 +2,9 @@
 
 ## Current State
 
-**Last Updated:** 2026-08-31 Asia/Taipei
+**Last Updated:** 2026-10-19 Asia/Taipei
 **Session ID:** Codex desktop
-**Active Feature:** feat-019 (complete)
+**Active Feature:** feat-020 (complete; see 2026-10-19 entry below)
 
 ## Status
 
@@ -115,3 +115,44 @@
 ## Notes for Next Session
 
 Run `bash ./init.sh` (or its two PowerShell-safe commands) before the next change. In the current desktop sandbox, Bash returned `E_ACCESSDENIED`; use the documented npm test/build commands if that persists. Data freshness delivery, privacy defaults, and small-sample chart gates are implemented; consider automated interaction coverage next. Do not overwrite local source files or generated data without preserving source-field and methodology constraints.
+
+## 2026-10-19 — feat-020: Urban renewal evidence review (complete)
+
+Branch: `codex/urban-renewal-evidence-review`. Scope is one Policy Issue 6 research POC; no Portfolio changes, backend, new dependency, building-risk model, case-level fuzzy join or automatic merge.
+
+### Repository/source baseline
+
+- `npm.cmd ci` completed. Baseline `npm.cmd test`: 39/39; `npm.cmd run build`: passed.
+- Existing permits verified: 8,855 records, 2001–2026, 12 represented districts, 25 without district, latest issue 2026-05-29. These are issuance flows, not current stock.
+- Source feasibility gate completed in `docs/urban-renewal-source-audit.md` before ranking. A is citywide only; district-age ranking rejected.
+- Official A: https://data.taipei/dataset/detail?id=7889e8a0-a71e-44e0-95c7-2213a7db1474 — 50 annual stock rows1976–2025; 18 comparable age years2007–2025 excluding2012. Latest2025:222,459 total;20,235 under30;202,224 age30+. Earlier zeros mask unavailable age fields;2012 categories disagree with total.
+- Official B: https://data.taipei/dataset/detail?id=4bf19a69-86e7-40cb-93e2-a45dc7037f34 — 75 valid unique designation documents,11 districts,2023-02-01–2024-06-05; no duplicate IDs, missing districts or invalid dates. No Xinyi row and no current-stage field. Document identity is not a universal case identity.
+- Official C: https://data.taipei/dataset/detail?id=cda6b568-0035-420b-bd05-6ca9bfd4bda0 —24 annual rows2002–2025, Region台北市/CountyCode63000; city context only, separate case and m² units.
+- Official E: https://data.taipei/dataset/detail?id=dbe02285-8d6e-4b3d-97d7-700047cbe4da —117 meeting rows2024-01-08–2026-07-13, contextual proceedings only.
+- D existing permits and G historical regulation/FAQ evidence retained with hashes. F https://gis.uro.taipei/r_progress.aspx is human lookup only; no supported bulk API or current-status linkage was verified. A/C/D/E/F/G are excluded from district priority inputs because their units, geography or process semantics do not corroborate B follow-up status.
+
+### Implementation and actual scenario
+
+- Raw audited source bytes/catalogues/provenance: `data/raw/urban-renewal-decision/`; generated `public/data/urban-renewal-decision/{snapshot,source-health}.json`. Snapshot `ure-c81e4ef44e6c9868`, methodology `urban-renewal-evidence-review-v1`, configuration/schema1.0.0, fixed analysis2026-10-19.
+- Source publication unknown is null; resource version update, catalogue metadata date, action date, retrieval and processing remain distinct. B resource update2024-06-13 is858 days before analysis.
+- One aggregate question per supported district:11 TierA questions; each has traceability+freshness, one verified source type and one explicit unresolved status question. No case-volume rank multiplier.
+- Capacity5:中正、大同、中山、松山、大安. Capacity10 adds萬華、士林、北投、內湖、南港. 文山 remains11th. Unlimited selects11. All3 strategies agree because there is one equally qualified question per district; quality-toggle results also agree for this verified source. Fixed identifiers break ties, without a substantive district-demand claim.
+- Pure engine supports tiers, source-quality/selection, district/category, threshold, capacity and round-robin/reconciliation. Comparisons label changed evidence scopes. JSON and formula-safe CSV preserve complete briefing metadata even with zero selections.
+- Lazy bilingual UI preserves existing modules, offers city stock/administrative context, source health, definitions, exclusions, scenario/sensitivity and exports. Navigation, Data Status, aggregate commands and PWA cache v41 aligned. New chunk38.30kB (14.02kB gzip), snapshot~28kB. Reuses static delivery and existing design; no new abstraction/dependency infrastructure.
+
+### Final verification
+
+- `npm.cmd test`:63 passed,0 failed (39 baseline+11 engine+12 source+1 service-worker delivery).
+- `npm.cmd run build`: TypeScript and Vite production build passed with GitHub Pages base path.
+- `git diff --check`:passed. No separate lint/static-analysis script is configured; TypeScript is the available static check.
+- Dedicated fetch command verified existing audited files without network refresh; dedicated audit/convert passed. Source tests reproduce byte-identical snapshots and preserve last-known-good output on changed bytes/schema. Invalid-first duplicate order regression fixed and passed.
+- `bash ./init.sh`: host Bash/E_ACCESSDENIED; documented PowerShell-equivalent test/build commands passed.
+- Browser: Chinese default/English, desktop390px mobile, no whole-page horizontal overflow (client/scroll375px); capacity5/10/custom3, invalid0 disables export, balanced strategy, missing-Xinyi empty result, city-only age mode, isolated missing snapshot and Retry recovery; JSON/CSV downloads succeeded and final downloaded JSON has snapshot `ure-c81e4ef44e6c9868` and5 questions.
+- Existing market overview(998 records), permit explorer(8,855), district comparison, Data Status(new entry loaded), regulation directory(37) remain accessible. PWA network-first changed snapshot and offline last-good fallback executed in VM delivery regression.
+- Screenshots: `docs/evidence/urban-renewal-desktop-zh.png`, `urban-renewal-mobile-en.png`, `urban-renewal-mobile-zh.png`. Browser review detail in `docs/urban-renewal-browser-review.md`.
+
+### Remaining evidence limits
+
+No district-age stock, official cross-stage identity/current status, complete district/period census or historical audited source versions. Request these plus a2012 stock correction and clearer case denominators from the authority. Changed upstream bytes/dates fail closed pending explicit re-audit; full refresh may intentionally require review if retained permit/regulation hashes change. npm ci reports5 pre-existing dependency vulnerabilities(1 moderate,4 high); live npm audit was unavailable due sandbox DNS. Dependencies were not changed. Automatic approval rejected0.0.0.0 test-server binding; loopback-only verification succeeded. No blocked feature work remains.
+
+Final packaging check: retained D/G inputs were frozen inside the feature raw directory and Git attributes preserve exact raw source bytes across checkout. This corrected CRLF/LF hash drift without changing the analytical snapshot ID or results. Offline conversion and63 tests passed again; staged raw bytes are checked against originals before committing.

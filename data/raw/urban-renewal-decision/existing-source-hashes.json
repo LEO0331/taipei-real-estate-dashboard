@@ -1,0 +1,32 @@
+[
+  {
+    "file": "data/raw/building-use-permits/Taipei02_90年至114年.xml",
+    "sha256": "a20261e87ca0080842b9cb75868144f0d3e7b73c8338b0ee5b9f56e98f0e41c8",
+    "retrievedAt": null,
+    "note": "Existing pipeline retained; original retrieval timestamp not established by this audit."
+  },
+  {
+    "file": "data/raw/building-use-permits/115/Taipei02.xml",
+    "sha256": "f691e3fae9da9cada40306bb8ca590e70e6e8fc6251ee4868c8b610d581b54e0",
+    "retrievedAt": null,
+    "note": "Existing pipeline retained; original retrieval timestamp not established by this audit."
+  },
+  {
+    "file": "data/raw/urban-renewal-decision/G.csv",
+    "sha256": "e43fcf5531c0130278e8298d1411426de78fc3b02cec8c10f89d2f268ad93f96",
+    "retrievedAt": null,
+    "note": "Existing pipeline retained; original retrieval timestamp not established by this audit."
+  },
+  {
+    "file": "data/raw/urban-renewal-decision/D-district-summary.json",
+    "sha256": "7170b5a5ea76942acd658eaaa3cae0c687f1de619051238635cd908323f2b9ca",
+    "retrievedAt": null,
+    "note": "Retained audited evidence dependency."
+  },
+  {
+    "file": "data/raw/urban-renewal-decision/FAQ.html",
+    "sha256": "2dbfd886a73a213522e8fce0ce18f9b78d4b15ddcd74d5271d4b59aad6504e60",
+    "retrievedAt": null,
+    "note": "Retained audited evidence dependency."
+  }
+]

@@ -1,0 +1,4 @@
+# Audited original bytes must survive checkout unchanged for SHA256 verification.
+data/raw/urban-renewal-decision/*.csv -text -diff
+data/raw/urban-renewal-decision/*.html -text -diff
+data/raw/urban-renewal-decision/D-*.json -text -diff
