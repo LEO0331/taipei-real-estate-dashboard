@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "residential-price-quarterly-index",
+      "title": "臺北市住宅價格季指數",
+      "datasetId": "954911b5-896d-4ae1-9ebe-87c4ba8a191e",
+      "category": "住宅價格季指數類別",
+      "columns": [
+        "宅價格季指數類別",
+        "期別",
+        "季指數",
+        "季指數變動率",
+        "標準住宅總價（新台幣萬元）",
+        "標準住宅單價（新台幣萬元每坪）"
+      ],
+      "categories": [
+        "中山區",
+        "中正區",
+        "信義區",
+        "內湖區",
+        "全市",
+        "全市公寓",
+        "全市大樓",
+        "全市小宅",
+        "北投區",
+        "南港區",
+        "士林區",
+        "大同區",
+        "大安區",
+        "文山區",
+        "松山區",
+        "萬華區"
+      ],
+      "approvals": [
+        {
+          "file": "data/raw/residential-price-quarterly-index/114年第4季住宅價格指數.csv",
+          "sha256": "288c989bc58464aad88666170081ee878e7859eb46c52c297ef858600ea4101a",
+          "period": "2025-Q4",
+          "sourceUrl": "https://data.taipei/dataset/detail?id=954911b5-896d-4ae1-9ebe-87c4ba8a191e"
+        }
+      ]
+    },
+    {
+      "id": "residential-rent-index",
+      "title": "臺北市住宅租金指數",
+      "datasetId": "029c6d0d-c880-4de7-b2fb-9e56669a6f20",
+      "category": "住宅租金指數類別",
+      "columns": [
+        "住宅租金指數類別",
+        "期別",
+        "季指數",
+        "季變動率",
+        "標準租金單價（新台幣元每坪每月）"
+      ],
+      "categories": [
+        "全市",
+        "公寓",
+        "大樓"
+      ],
+      "approvals": [
+        {
+          "file": "data/raw/residential-rent-index/住宅租金指數_107年第3季至114年第4季.csv",
+          "sha256": "1a1da912dbb35281171d2e706525599851f4534c6053612704cc6e6616f25c57",
+          "period": "2025-Q4",
+          "sourceUrl": "https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20"
+        }
+      ]
+    },
+    {
+      "id": "commercial-office-rent-index",
+      "title": "臺北市商辦租金指數",
+      "datasetId": "8a3d1df7-9169-4dd0-ae0a-949d970e9bb3",
+      "category": "商辦租金指數類別",
+      "columns": [
+        "商辦租金指數類別",
+        "期別",
+        "季指數",
+        "季變動率（%）",
+        "標準租金單價（元/坪/月）"
+      ],
+      "categories": [
+        "主要路段",
+        "全市"
+      ],
+      "approvals": [
+        {
+          "file": "data/raw/commercial-office-rent-index/商辦租金指數_103年第2季至114年第4季.csv",
+          "sha256": "d677e4533a4349e881a98d46bb42e3d61cef31647f860a1823c8fa5a57588c24",
+          "period": "2025-Q4",
+          "sourceUrl": "https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3"
+        }
+      ]
+    },
+    {
+      "id": "quarterly-market-analysis",
+      "title": "臺北市實價登錄每季動態分析",
+      "datasetId": "53e5ee8d-9a90-42bc-9874-3a8747ae6afa",
+      "category": "行政區",
+      "columns": [
+        "行政區",
+        "提供查詢之買賣實價案件數_件",
+        "住宅區房地買賣實價案件數_件",
+        "商業區房地買賣實價案件數_件",
+        "工業區房地買賣實價案件數_件",
+        "實價登錄動態分析"
+      ],
+      "categories": [
+        "中山區",
+        "中正區",
+        "信義區",
+        "內湖區",
+        "全市",
+        "北投區",
+        "南港區",
+        "士林區",
+        "大同區",
+        "大安區",
+        "文山區",
+        "松山區",
+        "萬華區"
+      ],
+      "approvals": [
+        {
+          "file": "data/raw/quarterly-market-analysis/臺北市114年第2季實價登錄動態分析.csv",
+          "sha256": "f83f418e0f68171812205988f03e6f5b2fa8224f2e1b9a9baf2505c07104ae05",
+          "period": "2025-Q2",
+          "sourceUrl": "https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa"
+        }
+      ]
+    }
+  ]
+}
