@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "node --import tsx --test scripts/data.test.ts scripts/buildingUsePermits.test.ts scripts/metroEngineeringMilestones.test.ts src/dashboard.test.ts src/explorerModel.test.ts scripts/urbanRenewalDecision.test.ts scripts/urbanRenewalSources.test.ts scripts/urbanRenewalDelivery.test.ts",
+    "test": "node --import tsx --test scripts/data.test.ts scripts/buildingUsePermits.test.ts scripts/metroEngineeringMilestones.test.ts src/dashboard.test.ts src/explorerModel.test.ts scripts/urbanRenewalDecision.test.ts scripts/urbanRenewalSources.test.ts scripts/urbanRenewalDelivery.test.ts scripts/releaseEvidence.test.ts",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "data:fetch": "tsx scripts/fetchRealEstateData.ts && tsx scripts/fetchResidentialPriceMonthlyIndex.ts && tsx scripts/fetchResidentialPriceQuarterlyIndex.ts && tsx scripts/fetchResidentialRentIndex.ts && tsx scripts/fetchCommercialOfficeRentIndex.ts && tsx scripts/fetchBuildingUsePermits.ts && tsx scripts/fetchMovablePropertyPledgeBusinessStatistics.ts && tsx scripts/fetchMovablePropertySecuredTransactionRecords.ts && tsx scripts/fetchIncomePerEarnerByDistrictYear.ts && tsx scripts/fetchConsumerPriceBasicAnnualIndex.ts && tsx scripts/fetchTaipowerTaipeiElectricitySales.ts && tsx scripts/fetchLandValueTaxProgressiveBrackets.ts && tsx scripts/fetchLandUseZoningControlSummary.ts && tsx scripts/fetchRealEstateBrokerPenalties.ts && tsx scripts/fetchMunicipalIdlePropertyLeaseTenders.ts && tsx scripts/fetchRentalHousingServiceBusinesses.ts && tsx scripts/fetchPublicWorksExcellenceAwardProjects.ts && tsx scripts/fetchMrtJointDevelopmentRents.ts && tsx scripts/fetchRealEstateBrokerageBusinessDirectory.ts && tsx scripts/fetchRealEstateConsumerDisputes.ts && tsx scripts/fetchRealEstateAppraiserDirectory.ts && tsx scripts/fetchAnnouncedLandExpropriationRegistry.ts && tsx scripts/fetchLandReadjustmentSaleResults.ts && tsx scripts/fetchCadastralClearingSaleProceedsCustody.ts && tsx scripts/fetchCadastralCleanupLandAuctionResults.ts && tsx scripts/fetchMetroEngineeringMilestones.ts && tsx scripts/fetchUrbanRenewalRegulations.ts && tsx scripts/fetchMunicipalPropertyPortfolio.ts && tsx scripts/fetchCivilEngineeringPriceIndex.ts && tsx scripts/fetchLowIncomeHouseholdLivingAssistance.ts && tsx scripts/fetchMrtJointDevelopmentAuctionProperties.ts && tsx scripts/fetchMrtLandDevelopment.ts && tsx scripts/fetchUrbanRenewalEvidence.ts",
@@ -75,7 +75,9 @@
     "data:convert:mrt-land-development": "tsx scripts/convertMrtLandDevelopment.ts",
     "data:fetch:urban-renewal-evidence": "tsx scripts/fetchUrbanRenewalEvidence.ts",
     "data:convert:urban-renewal-evidence": "tsx scripts/buildUrbanRenewalDecisionSnapshot.ts",
-    "data:audit:urban-renewal-evidence": "tsx scripts/auditUrbanRenewalSources.ts"
+    "data:audit:urban-renewal-evidence": "tsx scripts/auditUrbanRenewalSources.ts",
+    "test:browser": "node scripts/verifyCivicExplorer.mjs",
+    "release:verify": "tsx scripts/verifyReleaseData.ts"
   },
   "dependencies": {
     "react": "^19.1.0",
@@ -87,6 +89,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.1",
+    "playwright": "1.59.1",
     "tsx": "^4.20.3",
     "typescript": "~5.8.3",
     "vite": "^6.4.5"

@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-29",
+  "scope": "Maintenance candidate; published-main live checks separately attributed",
+  "portfolio": {
+    "base": "632b81a4acdfdf344466a447affac3e58855895e",
+    "unit": 43,
+    "browser": 281,
+    "flows": "17/17",
+    "harness": 32,
+    "audit": 0
+  },
+  "dashboard": {
+    "base": "d9c56757e7e01bbf1b6a5790cf7e1524daf15d56",
+    "unit": 72,
+    "browser": 44,
+    "audit": 0,
+    "releaseDataFiles": 747,
+    "warnings": 4,
+    "dataSource": "Actual d9c5675 successful Pages data artifact in isolated staging; validated retained-source helper executed; no tracked business-data edits",
+    "identityChecks": 45,
+    "implementationCommit": "8d71ca6a1dacc00f07deb9ace653d0b1ac101e6b",
+    "tamperedDataRejected": true
+  },
+  "live": {
+    "checks": 43,
+    "pass": true,
+    "publishedMainsOnly": true
+  },
+  "render": {
+    "url": "https://publicsafetydashboard.onrender.com/",
+    "checkedAt": "2026-10-29T06:00:10.264Z",
+    "status": 200,
+    "finalUrl": "https://publicsafetydashboard.onrender.com/",
+    "elapsedMs": 41586,
+    "htmlLength": 19780,
+    "title": "臺北市酒駕／毒駕／拒測累犯教育儀表板",
+    "renderInterstitial": false
+  },
+  "findings": {
+    "focus": "fixed, bilingual browser regression",
+    "touch": "fixed >=44x44",
+    "formatting": "fixed",
+    "postRefreshGate": "implemented",
+    "retainedSourceWarnings": "replaced by validated retention provenance; genuine duplicate warnings retained",
+    "identity": "code SHA + data hashes, postdeployment expected-SHA and three critical data byte checks",
+    "mutableLink": "pinned reviewed d498a2d",
+    "documentation": "current README/API/release/lifecycle updated",
+    "live": "published-main acceptance passed; new candidate hosting pending manual merge"
+  },
+  "delivery": {
+    "dashboardDraft": "https://github.com/LEO0331/taipei-real-estate-dashboard/pull/10",
+    "draft": true,
+    "merged": false,
+    "portfolioCompanion": "https://github.com/LEO0331/portfolio/tree/codex/civic-explorer-maintenance-handoff",
+    "portfolioSecondPRCreated": false,
+    "implementationCommit": "8d71ca6"
+  }
+}

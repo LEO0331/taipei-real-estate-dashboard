@@ -14,7 +14,7 @@ The dashboard makes public datasets easier to browse together. Its five topic gr
 - **Services & public records** — brokerage records, consumer disputes, appraisers, public assets, public works, MRT development, and engineering milestones.
 - **Data tools** — source tables, methodology notes, and data-status coverage.
 
-Use the dashboard’s category navigator or dataset search to find a topic. On smaller screens, **Browse datasets** opens a keyboard-accessible catalogue.
+Use the dashboard’s category navigator or dataset search to find a topic. On smaller screens, **Browse datasets** opens a keyboard-accessible catalogue. **Explore Data** is an optional navigation mode for the same five groups and 46 existing targets. Its ordinary HTML catalogue is available without interacting with the decorative SVG hubs; returning to the dashboard retains its mounted filter state.
 
 ## Important limits
 
@@ -92,8 +92,22 @@ Keep `README.md`, `README-zh-TW.md`, `feature_list.json`, and `progress.md` alig
 ## Verification
 
 ```bash
-npm.cmd test
-npm.cmd run build
+npm ci
+npm audit
+npm test
+npm run build
+npx playwright install chromium
+npm run test:browser
 ```
 
-The project’s standard startup and verification path is also available through `bash ./init.sh` on environments with Bash support.
+For a release, acquire and convert the intended sources, rerun tests and the Urban Renewal source audit, then run `npm run release:verify` before building. This generates the ignored `public/release-manifest.json` with the code SHA and actual data hashes. Missing required data fails validation; a fresh checkout does not replace the data pipeline. Processing time does not establish source freshness.
+
+[Explorer API and ownership](docs/civic-explorer-api.md) documents the local adapter and numeric navigation contract. The [2026-10-29 maintenance report](docs/civic-explorer-maintenance.md) records keyboard/touch fixes, source handling, post-refresh release validation, hosted smoke checks and remaining acceptance limits. Playwright is a development-only verification dependency, not an application runtime dependency.
+
+The project’s standard startup and verification path is also available through `bash ./init.sh` where Bash is supported.
+
+## Release and maintenance
+
+GitHub Pages uses `/taipei-real-estate-dashboard/`. The deployment workflow checks the refreshed data before uploading `dist`, then runs a hosted browser smoke check against the expected code SHA. A successful merge or build alone does not establish a successful deployment or hosted acceptance. Review the deploy and hosted-check jobs separately.
+
+After review, keep this initiative in maintenance-only scope: dependency/security updates, actual defects, factual/source corrections and release evidence. Do not add policy cases, introduce a mandatory 3D engine, publish a shared package or integrate another dashboard without a separate justified decision. Existing dated source audits and browser reports remain historical evidence, not a claim about a newer release.

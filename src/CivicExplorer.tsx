@@ -57,6 +57,7 @@ export default function CivicExplorer({ groups, language, onNavigate, onBack }: 
   const [view, setView] = useState<'scene' | 'list'>('scene');
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const pageHeading = useRef<HTMLHeadingElement>(null);
+  const searchInput = useRef<HTMLInputElement>(null);
   const root = useRef<HTMLElement>(null);
   const headingId = useId();
   const zh = language === 'zh';
@@ -70,10 +71,19 @@ export default function CivicExplorer({ groups, language, onNavigate, onBack }: 
   function clearGroup() {
     const previous = selectedId;
     setSelectedId(null);
-    if (view === 'scene' && previous) requestAnimationFrame(() => {
-      const hubs = root.current?.querySelectorAll<HTMLButtonElement>('[data-explore-group]');
-      Array.from(hubs ?? []).find(hub => hub.dataset.exploreGroup === previous)?.focus();
+    requestAnimationFrame(() => {
+      if (view === 'scene' && previous) {
+        const hubs = root.current?.querySelectorAll<HTMLButtonElement>('[data-explore-group]');
+        const hub = Array.from(hubs ?? []).find(item => item.dataset.exploreGroup === previous);
+        if (hub) { hub.focus(); return; }
+      }
+      detailHeading.current?.focus();
     });
+  }
+  function clearFilters() {
+    setQuery('');
+    setSelectedId(null);
+    requestAnimationFrame(() => searchInput.current?.focus());
   }
   return <main className="data-explorer" ref={root} aria-labelledby={headingId} onKeyDown={event => {
     if (event.key === 'Escape' && selectedId) { event.stopPropagation(); clearGroup(); }
@@ -84,7 +94,7 @@ export default function CivicExplorer({ groups, language, onNavigate, onBack }: 
       <button type="button" className="explore-back" onClick={onBack}>← {zh ? '返回儀表板' : 'Back to Dashboard'}</button>
     </header>
     <div className="explore-controls">
-      <label><span>{zh ? '搜尋資料集' : 'Search datasets'}</span><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={zh ? '搜尋名稱或關鍵字' : 'Search names or keywords'} /></label>
+      <label><span>{zh ? '搜尋資料集' : 'Search datasets'}</span><input ref={searchInput} type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={zh ? '搜尋名稱或關鍵字' : 'Search names or keywords'} /></label>
       <div className="explore-view" role="group" aria-label={zh ? '顯示方式' : 'Display mode'}>
         <button type="button" aria-pressed={view === 'scene'} onClick={() => setView('scene')}>{zh ? '主題圖' : 'Hubs'}</button>
         <button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}>{zh ? '清單' : 'List'}</button>
@@ -99,7 +109,7 @@ export default function CivicExplorer({ groups, language, onNavigate, onBack }: 
     <div className="explore-results">
       <h2 ref={detailHeading} tabIndex={-1}>{selected ? selected.title : (zh ? '資料集目錄' : 'Dataset catalogue')}</h2>
       {selected && <p>{selected.description}</p>}
-      {count === 0 ? <div className="explore-empty"><p>{zh ? '找不到相符的資料集。' : 'No datasets match your search.'}</p><button type="button" onClick={() => { setQuery(''); setSelectedId(null); }}>{zh ? '清除篩選' : 'Clear filters'}</button></div>
+      {count === 0 ? <div className="explore-empty"><p>{zh ? '找不到相符的資料集。' : 'No datasets match your search.'}</p><button type="button" onClick={clearFilters}>{zh ? '清除篩選' : 'Clear filters'}</button></div>
         : visibleGroups.filter(group => group.items.length).map(group => <section className="explore-result-group" key={group.id}>
           {!selected && <><h3>{group.title}</h3><p>{group.description}</p></>}
           <ul>{group.items.map(item => <li key={item.id}><button type="button" onClick={() => onNavigate(item.id)}>{item.label}<span aria-hidden="true"> ↗</span></button></li>)}</ul>
@@ -110,4 +120,3 @@ export default function CivicExplorer({ groups, language, onNavigate, onBack }: 
     </p>
   </main>;
 }
-

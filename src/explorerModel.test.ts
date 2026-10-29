@@ -49,4 +49,3 @@ test('search matches either language and keywords, scopes selection, and preserv
   assert.equal(filterExplorerGroups(groups, null, '').flatMap(group => group.items).length, modules.length);
   assert.equal(JSON.stringify(groups), original);
 });
-

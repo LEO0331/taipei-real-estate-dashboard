@@ -1,0 +1,180 @@
+{
+  "scope": "Actual published mains only: Portfolio632b81a,Dashboardd9c5675; maintenance branches unmerged and not deployed",
+  "checkedAt": "2026-10-29T06:12:59.885Z",
+  "checks": [
+    {
+      "name": "portfolio/en/390/six-domains",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/390/selected-evidence",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/390/Back",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/390/Forward-reload",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/390/HTML-list",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/390/search",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/390/six-domains",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/390/selected-evidence",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/390/Back",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/390/Forward-reload",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/390/HTML-list",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/390/search",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/1440/six-domains",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/1440/selected-evidence",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/1440/Back",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/1440/Forward-reload",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/1440/HTML-list",
+      "pass": true
+    },
+    {
+      "name": "portfolio/en/1440/search",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/1440/six-domains",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/1440/selected-evidence",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/1440/Back",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/1440/Forward-reload",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/1440/HTML-list",
+      "pass": true
+    },
+    {
+      "name": "portfolio/zh/1440/search",
+      "pass": true
+    },
+    {
+      "name": "portfolio/route/home",
+      "pass": true
+    },
+    {
+      "name": "portfolio/route/projects",
+      "pass": true
+    },
+    {
+      "name": "portfolio/route/engineering/gridline",
+      "pass": true
+    },
+    {
+      "name": "dashboard/en/390/groups-catalogue",
+      "pass": true
+    },
+    {
+      "name": "dashboard/en/390/HTML-fallback",
+      "pass": true
+    },
+    {
+      "name": "dashboard/en/390/bilingual-search",
+      "pass": true
+    },
+    {
+      "name": "dashboard/en/390/dataset-navigation",
+      "pass": true
+    },
+    {
+      "name": "dashboard/zh/390/groups-catalogue",
+      "pass": true
+    },
+    {
+      "name": "dashboard/zh/390/HTML-fallback",
+      "pass": true
+    },
+    {
+      "name": "dashboard/zh/390/bilingual-search",
+      "pass": true
+    },
+    {
+      "name": "dashboard/zh/390/dataset-navigation",
+      "pass": true
+    },
+    {
+      "name": "dashboard/en/1440/groups-catalogue",
+      "pass": true
+    },
+    {
+      "name": "dashboard/en/1440/HTML-fallback",
+      "pass": true
+    },
+    {
+      "name": "dashboard/en/1440/bilingual-search",
+      "pass": true
+    },
+    {
+      "name": "dashboard/en/1440/dataset-navigation",
+      "pass": true
+    },
+    {
+      "name": "dashboard/zh/1440/groups-catalogue",
+      "pass": true
+    },
+    {
+      "name": "dashboard/zh/1440/HTML-fallback",
+      "pass": true
+    },
+    {
+      "name": "dashboard/zh/1440/bilingual-search",
+      "pass": true
+    },
+    {
+      "name": "dashboard/zh/1440/dataset-navigation",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "pass": true
+}

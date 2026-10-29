@@ -1,0 +1,263 @@
+{
+  "checkedAt": "2026-10-29T06:18:06.578Z",
+  "url": "http://127.0.0.1:4287/taipei-real-estate-dashboard/",
+  "expectedSha": "8d71ca6a1dacc00f07deb9ace653d0b1ac101e6b",
+  "scope": "Chromium production preview; three widths, both languages, keyboard/reset/target regressions; not full WCAG or live deployment certification.",
+  "checks": [
+    {
+      "name": "published-release-identity",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: Published release identity/data verification failed: AssertionError [ERR_ASSERTION]: real-price-summary.json served bytes must match published manifest\n+ actual - expected\n\n+ '68fd4e3fa15c2d0da297fe6e9f3af43acb1d57b3b4e53ad0dd71c66fe65e0268'\n- 'd839ea9bf3d9bbcbe9a75fdda4aba96862f981bf7b23ba04b267fd2ebf5cf80f'\n"
+    },
+    {
+      "name": "en/320/complete-catalogue",
+      "pass": true
+    },
+    {
+      "name": "en/320/list-reset-focus",
+      "pass": true
+    },
+    {
+      "name": "en/320/empty-clear-focus",
+      "pass": true
+    },
+    {
+      "name": "en/320/escape-hub-focus",
+      "pass": true
+    },
+    {
+      "name": "en/320/touch-targets-and-overflow",
+      "pass": true,
+      "evidence": {
+        "targets": 56,
+        "minimumHeight": 44
+      }
+    },
+    {
+      "name": "en/320/keyboard-focus-and-reduced-motion",
+      "pass": true,
+      "evidence": {
+        "outline": "solid",
+        "outlineWidth": 3,
+        "transition": "0s"
+      }
+    },
+    {
+      "name": "en/320/back-entry-focus",
+      "pass": true
+    },
+    {
+      "name": "seeded-v42-cache-cleanup-on-activation",
+      "pass": true,
+      "evidence": {
+        "keys": [
+          "taipei-dashboard-v43-civic-explorer-maintenance"
+        ],
+        "scope": "Real browser activation deletes a seeded previous-version cache; not proof of live existing-worker upgrade."
+      }
+    },
+    {
+      "name": "warm-cache-offline-explorer",
+      "pass": true,
+      "evidence": {
+        "scope": "Warm-cache local origin only; cold offline first visit is not supported."
+      }
+    },
+    {
+      "name": "en/390/complete-catalogue",
+      "pass": true
+    },
+    {
+      "name": "en/390/list-reset-focus",
+      "pass": true
+    },
+    {
+      "name": "en/390/empty-clear-focus",
+      "pass": true
+    },
+    {
+      "name": "en/390/escape-hub-focus",
+      "pass": true
+    },
+    {
+      "name": "en/390/touch-targets-and-overflow",
+      "pass": true,
+      "evidence": {
+        "targets": 56,
+        "minimumHeight": 44
+      }
+    },
+    {
+      "name": "en/390/keyboard-focus-and-reduced-motion",
+      "pass": true,
+      "evidence": {
+        "outline": "solid",
+        "outlineWidth": 3,
+        "transition": "0s"
+      }
+    },
+    {
+      "name": "en/390/back-entry-focus",
+      "pass": true
+    },
+    {
+      "name": "en/1440/complete-catalogue",
+      "pass": true
+    },
+    {
+      "name": "en/1440/list-reset-focus",
+      "pass": true
+    },
+    {
+      "name": "en/1440/empty-clear-focus",
+      "pass": true
+    },
+    {
+      "name": "en/1440/escape-hub-focus",
+      "pass": true
+    },
+    {
+      "name": "en/1440/touch-targets-and-overflow",
+      "pass": true,
+      "evidence": {
+        "targets": 56,
+        "minimumHeight": 44
+      }
+    },
+    {
+      "name": "en/1440/keyboard-focus-and-reduced-motion",
+      "pass": true,
+      "evidence": {
+        "outline": "solid",
+        "outlineWidth": 3,
+        "transition": "0s"
+      }
+    },
+    {
+      "name": "en/1440/back-entry-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/320/complete-catalogue",
+      "pass": true
+    },
+    {
+      "name": "zh/320/list-reset-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/320/empty-clear-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/320/escape-hub-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/320/touch-targets-and-overflow",
+      "pass": true,
+      "evidence": {
+        "targets": 56,
+        "minimumHeight": 44
+      }
+    },
+    {
+      "name": "zh/320/keyboard-focus-and-reduced-motion",
+      "pass": true,
+      "evidence": {
+        "outline": "solid",
+        "outlineWidth": 3,
+        "transition": "0s"
+      }
+    },
+    {
+      "name": "zh/320/back-entry-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/390/complete-catalogue",
+      "pass": true
+    },
+    {
+      "name": "zh/390/list-reset-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/390/empty-clear-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/390/escape-hub-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/390/touch-targets-and-overflow",
+      "pass": true,
+      "evidence": {
+        "targets": 56,
+        "minimumHeight": 44
+      }
+    },
+    {
+      "name": "zh/390/keyboard-focus-and-reduced-motion",
+      "pass": true,
+      "evidence": {
+        "outline": "solid",
+        "outlineWidth": 3,
+        "transition": "0s"
+      }
+    },
+    {
+      "name": "zh/390/back-entry-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/1440/complete-catalogue",
+      "pass": true
+    },
+    {
+      "name": "zh/1440/list-reset-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/1440/empty-clear-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/1440/escape-hub-focus",
+      "pass": true
+    },
+    {
+      "name": "zh/1440/touch-targets-and-overflow",
+      "pass": true,
+      "evidence": {
+        "targets": 56,
+        "minimumHeight": 44
+      }
+    },
+    {
+      "name": "zh/1440/keyboard-focus-and-reduced-motion",
+      "pass": true,
+      "evidence": {
+        "outline": "solid",
+        "outlineWidth": 3,
+        "transition": "0s"
+      }
+    },
+    {
+      "name": "zh/1440/back-entry-focus",
+      "pass": true
+    }
+  ],
+  "screenshots": [
+    "en-320.png",
+    "en-390.png",
+    "en-1440.png",
+    "zh-320.png",
+    "zh-390.png",
+    "zh-1440.png"
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "pass": false
+}

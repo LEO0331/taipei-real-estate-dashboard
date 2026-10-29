@@ -91,14 +91,28 @@ npm run data:convert
 ## 驗證
 
 ```bash
-npm.cmd test
-npm.cmd run build
+npm ci
+npm audit
+npm test
+npm run build
+npx playwright install chromium
+npm run test:browser
 ```
 
-若環境支援 Bash，也可執行 `bash ./init.sh` 來走完整的啟動與驗證流程。
+發布前，先擷取並轉換本次要使用的來源，再重跑測試與都市更新來源稽核，接著執行 `npm run release:verify`，最後建置。驗證會產生不納入版本控制的 `public/release-manifest.json`，記錄程式提交 SHA 與實際資料雜湊；缺少必要產出時會失敗。剛取得的儲存庫不能取代完整資料流程，處理時間也不代表來源資料已更新。
+
+[Explorer API 與責任邊界](docs/civic-explorer-api.md) 說明本專案獨立的資料介接與數字分頁導覽介面。[2026-10-29 維護報告](docs/civic-explorer-maintenance.md) 記錄鍵盤／觸控修正、保留來源處理、資料更新後的發布檢查及部署後瀏覽器檢查。Playwright 僅供開發與驗證，不會加入應用程式執行時。
+
+若環境支援 Bash，也可執行 `bash ./init.sh` 來走啟動與驗證流程。
 
 ## 部署
 
-Vite 的基礎路徑是 `/taipei-real-estate-dashboard/`。GitHub Actions 會測試、轉換資料、建置並將 `dist` 部署至 GitHub Pages。
+Vite 的基礎路徑是 `/taipei-real-estate-dashboard/`。GitHub Actions 會在擷取／轉換後重新測試並驗證資料，建置及部署 `dist`，再依預期程式 SHA 執行已部署網站的瀏覽器檢查。PR 合併或建置成功，不能單獨證明部署或正式網站驗收成功；請分別查看部署與部署後檢查結果。
 
 請在儲存庫設定中啟用 **Pages → Build and deployment → GitHub Actions**。
+
+## 可選的資料探索與維護範圍
+
+「探索資料」使用既有五個主題與 46 個導覽目標。SVG 六角主題僅供裝飾與導覽；使用一般 HTML 清單即可開啟所有項目，無須操作圖形。返回儀表板時，原本已掛載的篩選狀態會保留。導覽仍使用記憶體中的分頁狀態；重新整理回到預設頁面，瀏覽器上一頁／下一頁不會追蹤資料集分頁。
+
+完成審查後，本計畫維持僅維護狀態：相依套件與安全更新、實際錯誤、事實／來源更正及發布佐證。新增政策案例、大幅重新設計、強制 3D 引擎、共享套件或其他儀表板整合，都需要另外提出有依據的決定。既有附日期的稽核與瀏覽器報告保留為歷史佐證，不代表較新版本已通過同樣驗收。
