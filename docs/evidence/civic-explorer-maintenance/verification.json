@@ -48,7 +48,11 @@
     "live": "published-main acceptance passed; new candidate hosting pending manual merge"
   },
   "delivery": {
-    "dashboardDraft": "pending",
-    "portfolioCompanion": "codex/civic-explorer-maintenance-handoff"
+    "dashboardDraft": "https://github.com/LEO0331/taipei-real-estate-dashboard/pull/10",
+    "draft": true,
+    "merged": false,
+    "portfolioCompanion": "https://github.com/LEO0331/portfolio/tree/codex/civic-explorer-maintenance-handoff",
+    "portfolioSecondPRCreated": false,
+    "implementationCommit": "8d71ca6"
   }
 }

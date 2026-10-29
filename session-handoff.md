@@ -6,11 +6,11 @@ Complete feat-022 final audit maintenance on codex/civic-explorer-maintenance, f
 
 ## Completed / In Progress
 
-Reset focus, 44px targets and EOF fixes implemented; repeated browser regressions, post-refresh tests, retained-source validation, exact code/data release manifest and hosted acceptance are being verified. README variants and dedicated API/maintenance guides updated.
+Reset focus, 44px targets and EOF fixes implemented; repeated browser regressions, post-refresh tests, retained-source validation, exact code/data release manifest and commit-bound local acceptance are verified; hosted candidate acceptance runs after manual merge. README variants and dedicated API/maintenance guides updated.
 
 ## Verification Evidence
 
-Final candidate gate passed:72unit,44browser,build/source/release/audit zero; draft delivery pending. Baseline final audit: 65 tests/build/audit zero and 159 artifact browser checks, two P2 focus findings. New focused browser before/after evidence records both regressions; see progress.md and docs/civic-explorer-maintenance.md for current results.
+Final candidate gate passed:72unit,44browser,build/source/release/audit zero; Draft PR #10 delivered, open and unmerged. Baseline final audit: 65 tests/build/audit zero and 159 artifact browser checks, two P2 focus findings. New focused browser before/after evidence records both regressions; see progress.md and docs/civic-explorer-maintenance.md for current results.
 
 ## Boundaries and Risks
 
@@ -23,3 +23,7 @@ Finish supported gate and publish exactly one Dashboard Draft PR, linking Portfo
 ## Latest production evidence — 2026-10-29
 
 On 2026-10-29 the Playwright fallback successfully rendered both published mains: 43/43 live checks passed across English/Traditional Chinese and 390/1440px. Portfolio covered six domains, thirteen-item HTML navigation, selected evidence, Back/Forward/reload, search and core routes; Dashboard covered five groups, 46 items, HTML fallback, bilingual search and dataset navigation. No page errors were observed. This supersedes the earlier browser-access limitation for these published versions only; the maintenance candidate remains unmerged and its expected-SHA hosted job must run after deployment.
+
+## Maintenance delivery — 2026-10-29
+
+[Dashboard Draft PR #10](https://github.com/LEO0331/taipei-real-estate-dashboard/pull/10) is open and unmerged. [Portfolio companion branch](https://github.com/LEO0331/portfolio/tree/codex/civic-explorer-maintenance-handoff) is pushed; no second PR was created. Implementation commit: `8d71ca6`. All listed maintenance actions have fixes, verified dispositions or explicit deployment acceptance gates. No tracked business snapshots or Urban Renewal analysis changed. Review and merge manually; then inspect expected-SHA hosted acceptance and real existing-user cache replacement.

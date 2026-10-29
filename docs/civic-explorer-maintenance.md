@@ -82,3 +82,7 @@ Hosted identity checks also hash the served conversion report, Urban Renewal sna
 ### Commit-bound identity evidence
 
 Implementation `8d71ca6` passed 45/45 browser checks, including exact code identity and three critical served-data hashes. A controlled generated-preview mutation retained the correct code SHA but changed summary bytes; the identity check rejected it and original bytes were restored. [Positive evidence](./evidence/civic-explorer-maintenance/release-identity-positive.json) and [negative evidence](./evidence/civic-explorer-maintenance/release-identity-negative.json) are retained. This is local candidate acceptance, not deployment of the fixes.
+
+## Delivered review artifacts — 2026-10-29
+
+[Dashboard Draft PR #10](https://github.com/LEO0331/taipei-real-estate-dashboard/pull/10) is open/unmerged. [Portfolio companion branch](https://github.com/LEO0331/portfolio/tree/codex/civic-explorer-maintenance-handoff) is pushed and linked from that PR. This is the agreed single-PR delivery; Portfolio changes require their own manual branch review/application. No automatic merge or candidate deployment occurred.

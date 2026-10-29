@@ -3,10 +3,10 @@
 ## Current State
 
 **Last Updated:** 2026-10-29 Asia/Taipei
-**Active Feature:** feat-022 — Civic Explorer final audit maintenance (in progress)
+**Active Feature:** feat-022 — Civic Explorer final audit maintenance (complete for Draft delivery)
 **Branch:** `codex/civic-explorer-maintenance`, based on merged main `d9c56757e7e01bbf1b6a5790cf7e1524daf15d56`.
 
-Focus/reset/touch repairs, refreshed-data release checks, source-provenance handling and current maintenance documents are being verified. One Draft PR will link Portfolio companion branch `codex/civic-explorer-maintenance-handoff`; no automatic merge. Existing datasets, Urban Renewal analysis and in-memory navigation remain unchanged. Candidate gate passed: 72 unit tests, 44 browser checks, build/audit/source/release validation; final Draft PR delivery pending.
+Focus/reset/touch repairs, refreshed-data release checks, source-provenance handling and current maintenance documents are verified. Draft PR #10 links Portfolio companion branch `codex/civic-explorer-maintenance-handoff`; no automatic merge. Existing datasets, Urban Renewal analysis and in-memory navigation remain unchanged. Candidate gate passed: 72 unit tests, 44 browser checks, build/audit/source/release validation; Draft PR #10 is open and unmerged.
 
 The following checklist preserves earlier session history; current maintenance results are appended below.
 
@@ -186,3 +186,7 @@ Dashboard gate: 72 unit / 44 browser, build/source audit, dependency audit zero 
 On 2026-10-29 the Playwright fallback successfully rendered both published mains: 43/43 live checks passed across English/Traditional Chinese and 390/1440px. Portfolio covered six domains, thirteen-item HTML navigation, selected evidence, Back/Forward/reload, search and core routes; Dashboard covered five groups, 46 items, HTML fallback, bilingual search and dataset navigation. No page errors were observed. This supersedes the earlier browser-access limitation for these published versions only; the maintenance candidate remains unmerged and its expected-SHA hosted job must run after deployment.
 
 Commit-bound release acceptance: 45/45 checks passed for implementation `8d71ca6`; a preview with the correct code SHA but tampered real-price-summary bytes failed exactly the data-hash identity check. Original preview bytes restored. Candidate hosting still requires manual merge and the actual post-deploy job.
+
+## Maintenance delivery — 2026-10-29
+
+[Dashboard Draft PR #10](https://github.com/LEO0331/taipei-real-estate-dashboard/pull/10) is open and unmerged. [Portfolio companion branch](https://github.com/LEO0331/portfolio/tree/codex/civic-explorer-maintenance-handoff) is pushed; no second PR was created. Implementation commit: `8d71ca6`. All listed maintenance actions have fixes, verified dispositions or explicit deployment acceptance gates. No tracked business snapshots or Urban Renewal analysis changed. Review and merge manually; then inspect expected-SHA hosted acceptance and real existing-user cache replacement.

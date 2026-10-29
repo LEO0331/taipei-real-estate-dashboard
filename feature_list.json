@@ -226,8 +226,8 @@
       "dependencies": [
         "feat-021"
       ],
-      "status": "in-progress",
-      "evidence": "2026-10-29: final audit maintenance authorized; verification and Draft PR delivery in progress. No analytical snapshot change."
+      "status": "complete",
+      "evidence": "2026-10-29: delivered one Dashboard Draft PR #10, open/unmerged, and pushed Portfolio companion branch. Dashboard72unit/44browser/45commit-bound identity checks,747JSON release validation,audit0; Portfolio43unit/281browser/17flows/harness32,audit0. Published-main live43/43; candidate hosting awaits manual merge. https://github.com/LEO0331/taipei-real-estate-dashboard/pull/10"
     }
   ]
 }
