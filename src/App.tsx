@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Component, lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Line, LineChart,
   Pie, PieChart, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis,
@@ -19,6 +19,7 @@ import { MetroEngineeringMilestones } from './MetroEngineeringMilestones';
 import { CadastralCleanupLandAuctionResults } from './CadastralCleanupLandAuctionResults';
 import { DataFreshness } from './DataFreshness';
 const UrbanRenewalDecisionPanel = lazy(() => import('./UrbanRenewalDecisionPanel'));
+const CivicExplorer = lazy(() => import('./CivicExplorer'));
 import { UrbanRenewalRegulations } from './UrbanRenewalRegulations';
 import { MunicipalPropertyPortfolio } from './MunicipalPropertyPortfolio';
 import { CivilEngineeringPriceIndex } from './CivilEngineeringPriceIndex';
@@ -1772,12 +1773,42 @@ function DashboardNavigator({ language, tab, setTab }: { language: Language; tab
   </nav>;
 }
 
+class ExplorerErrorBoundary extends Component<{ language: Language; onBack: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    if (!this.state.failed) return this.props.children;
+    const zh = this.props.language === 'zh';
+    return <main><p role="alert">{zh ? '探索介面無法載入。請返回儀表板或重新整理頁面。' : 'The explorer could not load. Return to the dashboard or reload the page.'}</p><button type="button" onClick={this.props.onBack}>{zh ? '返回儀表板' : 'Back to Dashboard'}</button> <button type="button" onClick={() => window.location.reload()}>{zh ? '重新整理' : 'Reload'}</button></main>;
+  }
+}
+
 export default function App() {
   const [language, setLanguage] = useState<Language>('zh');
   const [tab, setTab] = useState(0);
+  const [exploring, setExploring] = useState(false);
+  const exploreButtonRef = useRef<HTMLButtonElement>(null);
+  const dashboardMainRef = useRef<HTMLElement>(null);
   const [data, setData] = useState<DataBundle>();
   const [error, setError] = useState(false);
   const t = copy[language];
+  const explorerGroups = (Object.keys(navigationCategories) as NavigationCategory[]).map((category) => ({
+    id: category,
+    title: navigationCategories[category][language],
+    description: navigationCategories[category].description[language],
+    items: dashboardModules.filter((module) => module.category === category).map((module) => ({
+      id: module.tab, label: module.label[language], keywords: [module.label.zh, module.label.en, ...module.keywords].join(' '),
+    })),
+  }));
+  const returnToDashboard = () => {
+    setExploring(false);
+    requestAnimationFrame(() => exploreButtonRef.current?.focus());
+  };
+  const navigateFromExplorer = (nextTab: number) => {
+    setTab(nextTab);
+    setExploring(false);
+    requestAnimationFrame(() => dashboardMainRef.current?.focus());
+  };
 
   useEffect(() => {
     Promise.all([
@@ -1851,6 +1882,9 @@ export default function App() {
         <button className={language === 'en' ? 'active' : ''} onClick={() => setLanguage('en')}>EN</button>
       </div>
     </header>
+    {!exploring && <div style={{ padding: '.75rem clamp(1rem, 4vw, 3.5rem)' }}><button ref={exploreButtonRef} type="button" onClick={() => setExploring(true)}>{language === 'zh' ? '探索資料' : 'Explore Data'}</button></div>}
+    {exploring ? <ExplorerErrorBoundary language={language} onBack={returnToDashboard}><Suspense fallback={<main><p className="status" role="status">{t.loading}</p><button type="button" onClick={returnToDashboard}>{language === 'zh' ? '返回儀表板' : 'Back to Dashboard'}</button></main>}><CivicExplorer groups={explorerGroups} language={language} onNavigate={navigateFromExplorer} onBack={returnToDashboard} /></Suspense></ExplorerErrorBoundary> : null}
+    <div hidden={exploring}>
     <DashboardNavigator language={language} tab={tab} setTab={setTab} />
     <nav className="tabs" aria-label="Main sections">{dashboardModules.slice(0, 0).map((_, index) =>
       <button key={index} className={tab === index ? 'active' : ''} onClick={() => setTab(index)}>{index}</button>)}
@@ -1887,7 +1921,7 @@ export default function App() {
     <nav className="tabs" aria-label="Metro engineering milestones"><button className={tab === 37 ? 'active' : ''} onClick={() => setTab(37)}>{language === 'zh' ? '臺北捷運工程大事紀要' : 'Taipei Metro Engineering Milestones'}</button></nav>
     <nav className="tabs" aria-label="Cadastral cleanup land auction results"><button className={tab === 38 ? 'active' : ''} onClick={() => setTab(38)}>{language === 'zh' ? '地籍清理公告開標結果土地清冊' : 'Cadastral Cleanup Land Auction Results'}</button></nav>
     <nav className="tabs" aria-label="Data freshness"><button className={tab === 39 ? 'active' : ''} onClick={() => setTab(39)}>{language === 'zh' ? '資料狀態與更新期間' : 'Data Status & Coverage'}</button></nav>
-    <main>
+    <main ref={dashboardMainRef} tabIndex={-1}>
       {tab === 46 && <Suspense fallback={<p className="status">{t.loading}</p>}><UrbanRenewalDecisionPanel language={language} /></Suspense>}
       {error && <p className="status">{t.loadError}</p>}
       {!data && !error && <p className="status">{t.loading}</p>}
@@ -1939,6 +1973,7 @@ export default function App() {
         {tab === 45 && <MrtLandDevelopment language={language} />}
       </>}
     </main>
+    </div>
     <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>
   </div>;
 }
