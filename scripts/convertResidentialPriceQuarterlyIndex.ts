@@ -1,15 +1,15 @@
+import { approvedRows } from './quarterlySources.ts';
 import {
   buildResidentialPriceQuarterlyIndexSummary,
   convertResidentialPriceQuarterlyIndexRows,
-  listCsvFiles,
-  readCsv,
   updateConversionReport,
   writeJson,
 } from './data.ts';
 
-const files = await listCsvFiles('data/raw/residential-price-quarterly-index');
+const approved = await approvedRows('residential-price-quarterly-index');
+const files = approved.source.approvals.map(a => a.file);
 const warnings: string[] = [];
-const records = files.length ? convertResidentialPriceQuarterlyIndexRows(await readCsv(files.at(-1)!), warnings) : [];
+const records = convertResidentialPriceQuarterlyIndexRows(approved.rows, warnings);
 const summary = buildResidentialPriceQuarterlyIndexSummary(records);
 const latest = records.filter((record) => record.quarterKey === summary.latestQuarterKey);
 

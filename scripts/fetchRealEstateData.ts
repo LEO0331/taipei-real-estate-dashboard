@@ -10,12 +10,6 @@ const datasets = [
     sourceUrl: 'https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=2979c431-7a32-4067-9af2-e716cd825c4b',
   },
   {
-    dataset: '臺北市實價登錄每季動態分析',
-    directory: 'data/raw/quarterly-market-analysis',
-    filename: '臺北市114年第2季實價登錄動態分析-latest.csv',
-    sourceUrl: 'https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=7465b5ab-58c7-45b9-b7e6-ed87e75892a9',
-  },
-  {
     dataset: '臺北市各里人口數按年齡分',
     directory: 'data/raw/population-by-age',
     filename: '112迄今各里人口數按年齡分-latest.csv',

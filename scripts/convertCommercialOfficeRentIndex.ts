@@ -1,15 +1,15 @@
+import { approvedRows } from './quarterlySources.ts';
 import {
   buildCommercialOfficeRentIndexSummary,
   convertCommercialOfficeRentIndexRows,
-  listCsvFiles,
-  readCsv,
   updateConversionReport,
   writeJson,
 } from './data.ts';
 
-const files = await listCsvFiles('data/raw/commercial-office-rent-index');
+const approved = await approvedRows('commercial-office-rent-index');
+const files = approved.source.approvals.map(a => a.file);
 const warnings: string[] = [];
-const records = files.length ? convertCommercialOfficeRentIndexRows(await readCsv(files.at(-1)!), warnings) : [];
+const records = convertCommercialOfficeRentIndexRows(approved.rows, warnings);
 const summary = buildCommercialOfficeRentIndexSummary(records);
 const categorySeries = summary.byCategory.map((category) => ({
   category: category.category,
