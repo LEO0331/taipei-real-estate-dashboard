@@ -190,3 +190,11 @@ Commit-bound release acceptance: 45/45 checks passed for implementation `8d71ca6
 ## Maintenance delivery — 2026-10-29
 
 [Dashboard Draft PR #10](https://github.com/LEO0331/taipei-real-estate-dashboard/pull/10) is open and unmerged. [Portfolio companion branch](https://github.com/LEO0331/portfolio/tree/codex/civic-explorer-maintenance-handoff) is pushed; no second PR was created. Implementation commit: `8d71ca6`. All listed maintenance actions have fixes, verified dispositions or explicit deployment acceptance gates. No tracked business snapshots or Urban Renewal analysis changed. Review and merge manually; then inspect expected-SHA hosted acceptance and real existing-user cache replacement.
+
+## 2026-10-29 — Deployment search touch-target fix (feat-023)
+
+- Inspected job 123305080641 in Actions run 40830872570. Release 154f902 deployed, but hosted acceptance failed six touch-target checks: the search input measured 42.375px high in en/zh at 320/390/1440px. Other 37 checks passed, with no page or console errors.
+- Added `min-height: 44px` to `.explore-controls input`. Padding/font-based sizing alone varied with browser font metrics; the explicit minimum guarantees the existing acceptance threshold. No acceptance checks, datasets, dependencies or release workflow were changed.
+- Baseline on the failed release: 72 unit tests and production build passed; local Windows Chromium passed all 44 checks, demonstrating the environment difference. The sandbox initially blocked a temporary-file rename in a release test; rerunning outside the sandbox passed all 72.
+- After the fix: `npm.cmd test` 72/72, `npm.cmd run build`, `npm.cmd run test:browser` 44/44, and `git diff --check` passed. Browser checks cover en/zh at 320/390/1440px, target sizes, overflow, keyboard focus, reduced motion and local cache/offline behavior. Local report: `.cache/civic-explorer/verification.json` (ignored).
+- Remaining acceptance: merge the fix and inspect the new deployment's expected-SHA hosted smoke job. This local verification does not certify the published fix.

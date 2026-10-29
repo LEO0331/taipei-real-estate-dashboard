@@ -228,6 +228,14 @@
       ],
       "status": "complete",
       "evidence": "2026-10-29: delivered one Dashboard Draft PR #10, open/unmerged, and pushed Portfolio companion branch. Dashboard72unit/44browser/45commit-bound identity checks,747JSON release validation,audit0; Portfolio43unit/281browser/17flows/harness32,audit0. Published-main live43/43; candidate hosting awaits manual merge. https://github.com/LEO0331/taipei-real-estate-dashboard/pull/10"
+    },
+    {
+      "id": "feat-023",
+      "name": "Civic Explorer deployed search touch target",
+      "description": "Guarantee a 44px minimum search-input height across browser font metrics to fix post-deploy acceptance failures.",
+      "dependencies": ["feat-022"],
+      "status": "complete",
+      "evidence": "2026-10-29: Actions run 40830872570 on 154f902 failed six hosted checks because the search input rendered at 42.375px. Added scoped min-height:44px without weakening acceptance checks. npm.cmd test 72/72, npm.cmd run build, npm.cmd run test:browser 44/44 and git diff --check passed. Browser coverage: en/zh at 320/390/1440px, keyboard, overflow and offline/cache checks. Hosted acceptance awaits merge and redeployment."
     }
   ]
 }
