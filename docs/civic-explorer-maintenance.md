@@ -78,3 +78,7 @@ LEO0331 owns release decisions, source corrections, catalogue identifiers and PW
 Review and merge the single Dashboard Draft PR manually. After successful deployment and hosted acceptance, continue only dependency/security work, real production bug fixes and factual/source corrections. New policy cases, a major redesign, mandatory 3D rendering, another integration or package publication need a separate evidence-based decision. Existing source audits and the [Urban Renewal browser review](urban-renewal-browser-review.md) retain their original dates and scope.
 
 Hosted identity checks also hash the served conversion report, Urban Renewal snapshot and real-price summary against the manifest. Other dataset hashes remain recorded without claiming a complete CDN byte sweep. Invalid retained uploads must match the dataset-specific expected column headers before replacing last-good bytes.
+
+### Commit-bound identity evidence
+
+Implementation `8d71ca6` passed 45/45 browser checks, including exact code identity and three critical served-data hashes. A controlled generated-preview mutation retained the correct code SHA but changed summary bytes; the identity check rejected it and original bytes were restored. [Positive evidence](./evidence/civic-explorer-maintenance/release-identity-positive.json) and [negative evidence](./evidence/civic-explorer-maintenance/release-identity-negative.json) are retained. This is local candidate acceptance, not deployment of the fixes.

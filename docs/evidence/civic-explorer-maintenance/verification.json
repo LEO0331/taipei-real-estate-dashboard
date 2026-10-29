@@ -16,7 +16,10 @@
     "audit": 0,
     "releaseDataFiles": 747,
     "warnings": 4,
-    "dataSource": "Actual d9c5675 successful Pages data artifact in isolated staging; validated retained-source helper executed; no tracked business-data edits"
+    "dataSource": "Actual d9c5675 successful Pages data artifact in isolated staging; validated retained-source helper executed; no tracked business-data edits",
+    "identityChecks": 45,
+    "implementationCommit": "8d71ca6a1dacc00f07deb9ace653d0b1ac101e6b",
+    "tamperedDataRejected": true
   },
   "live": {
     "checks": 43,
