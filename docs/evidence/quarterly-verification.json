@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-29",
+  "tests": {
+    "passed": 84,
+    "total": 84
+  },
+  "build": "TypeScript and Vite passed",
+  "browser": {
+    "passed": 44,
+    "total": 44,
+    "pageErrors": 0,
+    "consoleErrors": 0
+  },
+  "urbanRenewalOfflineAudit": "passed",
+  "releaseVerify": {
+    "passed": false,
+    "error": "Missing application data: rental-housing-service-businesses/records.json",
+    "scope": "Existing committed snapshot prerequisite; release gate retained, no unrelated acquisition"
+  },
+  "productionDataChanged": false,
+  "liveCandidatesApplied": false
+}

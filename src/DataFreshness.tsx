@@ -10,6 +10,7 @@ const entries: Entry[] = [
   { key: 'real-price', zh: '實價登錄摘要', en: 'Real-price registration summary', path: 'real-price-summary.json', coverage: (s) => string(s.latestDataPeriod), sourceUpdate: () => null },
   { key: 'price-monthly', zh: '住宅價格月指數', en: 'Residential price monthly index', path: 'residential-price-monthly-index-summary.json', coverage: (s) => string(s.latestPeriod), sourceUpdate: () => null },
   { key: 'price-quarterly', zh: '住宅價格季指數', en: 'Residential price quarterly index', path: 'residential-price-quarterly-index-summary.json', coverage: (s) => string(s.latestQuarterKey), sourceUpdate: () => null },
+  { key: 'quarterly-market', zh: '每季實價登錄動態分析', en: 'Quarterly market analysis', path: 'quarterly-market-summary.json', coverage: (s) => string(s.latestQuarter), sourceUpdate: () => null },
   { key: 'rent', zh: '住宅租金指數', en: 'Residential rent index', path: 'residential-rent-index-summary.json', coverage: (s) => string(s.latestQuarterKey), sourceUpdate: () => null },
   { key: 'office-rent', zh: '商辦租金指數', en: 'Commercial office rent index', path: 'commercial-office-rent-index-summary.json', coverage: (s) => string(s.latestPeriod), sourceUpdate: () => null },
   { key: 'income', zh: '所得收入者每人所得', en: 'Income per earner', path: 'income-per-earner-by-district-year-summary.json', coverage: (s) => string(s.latestYear), sourceUpdate: () => null },

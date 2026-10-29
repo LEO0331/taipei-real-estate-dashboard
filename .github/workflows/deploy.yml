@@ -25,11 +25,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - run: npm run data:fetch
-      - run: npm run data:convert
-      - name: Audit retained Urban Renewal evidence after refresh
+      - name: Audit retained Urban Renewal evidence from committed snapshot
         run: npm run data:audit:urban-renewal-evidence
-      - name: Test refreshed data before publication
+      - name: Test approved data before publication
         run: npm test
       - name: Validate runtime data and bind its edition to this commit
         run: npm run release:verify

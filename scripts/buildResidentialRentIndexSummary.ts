@@ -16,7 +16,7 @@ try {
     .then((text) => JSON.parse(text) as RealEstateSummary)
     .catch(() => undefined);
   const realEstateSummary = {
-    ...buildRealEstateSummary(realPriceRecords),
+    ...(previous ?? buildRealEstateSummary(realPriceRecords)),
     residentialPriceMonthlyIndex: previous?.residentialPriceMonthlyIndex,
     residentialPriceQuarterlyIndex: previous?.residentialPriceQuarterlyIndex,
     commercialOfficeRentIndex: previous?.commercialOfficeRentIndex,

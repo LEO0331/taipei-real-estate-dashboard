@@ -1,8 +1,10 @@
-import { convertResidentialRentIndexRows, listCsvFiles, readCsv, updateConversionReport, writeJson } from './data.ts';
+import { approvedRows } from './quarterlySources.ts';
+import { convertResidentialRentIndexRows, updateConversionReport, writeJson } from './data.ts';
 
-const files = await listCsvFiles('data/raw/residential-rent-index');
+const approved = await approvedRows('residential-rent-index');
+const files = approved.source.approvals.map(a => a.file);
 const warnings: string[] = [];
-const records = files.length ? convertResidentialRentIndexRows(await readCsv(files.at(-1)!), warnings) : [];
+const records = convertResidentialRentIndexRows(approved.rows, warnings);
 
 await writeJson('public/data/residential-rent-index-records.json', records);
 await updateConversionReport({

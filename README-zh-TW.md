@@ -45,7 +45,7 @@
 - [實價登錄交易資料](https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc)
 - [住宅價格月指數](https://data.taipei/dataset/detail?id=ce4ea2c6-6334-44f8-945a-5705492b187d)
 - [住宅價格季指數](https://data.taipei/dataset/detail?id=954911b5-896d-4ae1-9ebe-87c4ba8a191e)
-- [住宅租金指數](https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa)
+- [住宅租金指數](https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20)
 - [商辦租金指數](https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3)
 - [建築物使用執照](https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733)
 - [土地使用管制彙整](https://data.taipei/dataset/detail?id=cb964837-c602-4238-b6c0-f63ad1094d5e)
@@ -99,7 +99,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-發布前，先擷取並轉換本次要使用的來源，再重跑測試與都市更新來源稽核，接著執行 `npm run release:verify`，最後建置。驗證會產生不納入版本控制的 `public/release-manifest.json`，記錄程式提交 SHA 與實際資料雜湊；缺少必要產出時會失敗。剛取得的儲存庫不能取代完整資料流程，處理時間也不代表來源資料已更新。
+發布前，先對已提交且已核准的快照重跑測試與都市更新來源稽核，接著執行 `npm run release:verify`，最後建置。驗證會產生不納入版本控制的 `public/release-manifest.json`，記錄程式提交 SHA 與實際資料雜湊；缺少必要產出時會失敗。下載及匯入須在審查分支另外執行；處理時間不代表來源資料已更新。
 
 [Explorer API 與責任邊界](docs/civic-explorer-api.md) 說明本專案獨立的資料介接與數字分頁導覽介面。[2026-10-29 維護報告](docs/civic-explorer-maintenance.md) 記錄鍵盤／觸控修正、保留來源處理、資料更新後的發布檢查及部署後瀏覽器檢查。Playwright 僅供開發與驗證，不會加入應用程式執行時。
 
@@ -107,7 +107,7 @@ npm run test:browser
 
 ## 部署
 
-Vite 的基礎路徑是 `/taipei-real-estate-dashboard/`。GitHub Actions 會在擷取／轉換後重新測試並驗證資料，建置及部署 `dist`，再依預期程式 SHA 執行已部署網站的瀏覽器檢查。PR 合併或建置成功，不能單獨證明部署或正式網站驗收成功；請分別查看部署與部署後檢查結果。
+Vite 的基礎路徑是 `/taipei-real-estate-dashboard/`。GitHub Actions 只會測試並驗證已提交且已核准的資料，建置及部署 `dist`，再依預期程式 SHA 執行已部署網站的瀏覽器檢查。PR 合併或建置成功，不能單獨證明部署或正式網站驗收成功；請分別查看部署與部署後檢查結果。
 
 請在儲存庫設定中啟用 **Pages → Build and deployment → GitHub Actions**。
 
@@ -116,3 +116,5 @@ Vite 的基礎路徑是 `/taipei-real-estate-dashboard/`。GitHub Actions 會在
 「探索資料」使用既有五個主題與 46 個導覽目標。SVG 六角主題僅供裝飾與導覽；使用一般 HTML 清單即可開啟所有項目，無須操作圖形。返回儀表板時，原本已掛載的篩選狀態會保留。導覽仍使用記憶體中的分頁狀態；重新整理回到預設頁面，瀏覽器上一頁／下一頁不會追蹤資料集分頁。
 
 完成審查後，本計畫維持僅維護狀態：相依套件與安全更新、實際錯誤、事實／來源更正及發布佐證。新增政策案例、大幅重新設計、強制 3D 引擎、共享套件或其他儀表板整合，都需要另外提出有依據的決定。既有附日期的稽核與瀏覽器報告保留為歷史佐證，不代表較新版本已通過同樣驗收。
+
+住宅價格季指數、住宅租金、商辦租金及每季動態分析採唯讀監測與人工審查匯入。下載候選檔僅存於 `.cache/`；轉檔依 `data/quarterly-approved.json` 選擇已核准資料，一般部署只使用已提交的 JSON。請參閱[季度更新操作指南](docs/quarterly-data-updates.md)，包括來源期間、通知、驗證與目前既有租賃業者快照缺漏的部署前置限制。

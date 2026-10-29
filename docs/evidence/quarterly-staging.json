@@ -1,0 +1,61 @@
+[
+  {
+    "dataset": "residential-price-quarterly-index",
+    "latestQuarter": "2026-Q1",
+    "candidateRecords": 880,
+    "revisions": 0,
+    "validation": "schema, numeric values, unique identities, periods and complete coverage passed",
+    "rawFile": "data/raw/residential-price-quarterly-index/2026-Q1-5156f45baef441aef45c2e357da6e7aaf3514c26ade6241282ac1fb28084d298.csv",
+    "sha256": "5156f45baef441aef45c2e357da6e7aaf3514c26ade6241282ac1fb28084d298",
+    "sourceUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=3210976b-f578-483c-8853-3ceec3796877",
+    "files": {
+      "public/data/residential-price-quarterly-index-records.json": "a7d8ae528ad0a786364bcff937d00121f73fab9137cdf24ce281814e4bf4abc4",
+      "public/data/residential-price-quarterly-index-summary.json": "253a8c014e50512e726a7794a52b33bdf5a30b09217dd4d81bbd9011ee780fbb",
+      "public/data/residential-price-quarterly-index-latest.json": "95ad72279f70214ebdb2403ffe48e5871b539cf498856d42e844d910fcf9c934",
+      "public/data/real-price-summary.json": "61bd81bd0734b1effc930686e4a30c952143cbf6f05b4ffeeae2f08d8400731a",
+      "public/data/conversion-report.json": "099efc42fd5c387c3859d2f24246cd0d99c7f977d0911b8e43415fc36cb7703a",
+      "data/raw/residential-price-quarterly-index/2026-Q1-5156f45baef441aef45c2e357da6e7aaf3514c26ade6241282ac1fb28084d298.csv": "5156f45baef441aef45c2e357da6e7aaf3514c26ade6241282ac1fb28084d298",
+      "data/quarterly-approved.json": "0a6eeef1fb3885ef80dcab7e354ab12f00a68e03a400ee6663e97a74bd4a9bc6"
+    },
+    "applied": false
+  },
+  {
+    "dataset": "residential-rent-index",
+    "latestQuarter": "2026-Q1",
+    "candidateRecords": 93,
+    "revisions": 0,
+    "validation": "schema, numeric values, unique identities, periods and complete coverage passed",
+    "rawFile": "data/raw/residential-rent-index/2026-Q1-86683b5d8c14949d7d9f90e820bac6b914c4b3388197a4d9adbffe9f7774f1ea.csv",
+    "sha256": "86683b5d8c14949d7d9f90e820bac6b914c4b3388197a4d9adbffe9f7774f1ea",
+    "sourceUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=d7ace928-288e-4a47-9411-1ebf86d3dafb",
+    "files": {
+      "public/data/residential-rent-index-records.json": "4c7698cf84f1d7db5a168cea07d46a7ec301488a04b71e8fc6fd285272090dcd",
+      "public/data/residential-rent-index-summary.json": "4204df6cb5232481ae7a3f1a8e89290cca2695a054760540dc4a501537689124",
+      "public/data/real-price-summary.json": "e01bf93df15011200712cfbf4d4ee568325f103b0d19270103781581dbbdf638",
+      "public/data/conversion-report.json": "4e6076deeda247d439d9e140a98cd4524d4e8da10393189e883e0aea8e605181",
+      "data/raw/residential-rent-index/2026-Q1-86683b5d8c14949d7d9f90e820bac6b914c4b3388197a4d9adbffe9f7774f1ea.csv": "86683b5d8c14949d7d9f90e820bac6b914c4b3388197a4d9adbffe9f7774f1ea",
+      "data/quarterly-approved.json": "f9a5ba1b35f58eaf1d4d57f09884b2948e3fc7800e6c2927015673465ff114da"
+    },
+    "applied": false
+  },
+  {
+    "dataset": "commercial-office-rent-index",
+    "latestQuarter": "2026-Q1",
+    "candidateRecords": 96,
+    "revisions": 0,
+    "validation": "schema, numeric values, unique identities, periods and complete coverage passed",
+    "rawFile": "data/raw/commercial-office-rent-index/2026-Q1-8980fbf477c3e09898e920d9bfa2abd14684fa9a2b98a4e376b17c833cc52695.csv",
+    "sha256": "8980fbf477c3e09898e920d9bfa2abd14684fa9a2b98a4e376b17c833cc52695",
+    "sourceUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=09a26c4b-9b6b-49e1-9a5d-9d39b1d5e3d1",
+    "files": {
+      "public/data/commercial-office-rent-index-records.json": "b1a453e258d1e66cce256570dbfb42ce12f9e276075fda638e578909e54b5bb4",
+      "public/data/commercial-office-rent-index-summary.json": "4e6e101b32de880acb52157d9bc1100d2abcebfa5a82803f227d733e962fd544",
+      "public/data/commercial-office-rent-index-category-series.json": "315f7105f139ba5adfabbcfa66da69475cb9e511a85f631fa3d98bfc41854b00",
+      "public/data/real-price-summary.json": "b57cec6265a060f7b1614384b8d2c4e0f7b5f732932bf489ed5c3a279c4704d2",
+      "public/data/conversion-report.json": "33b5fcf41ce2af183bf2e63bde83328e69045d4241acbbdc791cec2179c092ac",
+      "data/raw/commercial-office-rent-index/2026-Q1-8980fbf477c3e09898e920d9bfa2abd14684fa9a2b98a4e376b17c833cc52695.csv": "8980fbf477c3e09898e920d9bfa2abd14684fa9a2b98a4e376b17c833cc52695",
+      "data/quarterly-approved.json": "408f9ec00d01ab283b784fb59d3725fb432300ecaa414feddafceaecd546184b"
+    },
+    "applied": false
+  }
+]
