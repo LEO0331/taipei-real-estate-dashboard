@@ -173,7 +173,7 @@
         "feat-007"
       ],
       "status": "complete",
-      "evidence": "2026-10-29: Portfolio v3.0.1 merged PR #43; adapted MIT HexIsland geometry with attribution. Five existing groups and 46 targets, search, list, responsive and reduced-motion controls; source coverage links to existing Data Status. Tests, production build and browser verification documented in progress.md. No dataset or analytical changes."
+      "evidence": "2026-10-29: Portfolio v3.0.1 merged PR #43; adapted MIT HexIsland geometry with attribution. Five existing groups and 46 targets, search, list, responsive and reduced-motion controls; source coverage links to existing Data Status. Tests, production build and browser verification documented in progress.md. No dataset or analytical changes. 2026-10-29 UI follow-up: integrated Explore Data into the responsive navigation toolbar; 65 tests, build and browser desktop/mobile checks passed."
     }
   ]
 }

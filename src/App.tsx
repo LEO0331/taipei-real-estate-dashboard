@@ -1716,7 +1716,7 @@ const dashboardModules: DashboardModule[] = [
   { tab: 39, category: 'tools', label: { zh: '\u8cc7\u6599\u72c0\u614b\u8207\u66f4\u65b0', en: 'Data Status & Coverage' }, keywords: ['freshness', 'coverage', 'update'] },
 ];
 
-function DashboardNavigator({ language, tab, setTab }: { language: Language; tab: number; setTab: (tab: number) => void }) {
+function DashboardNavigator({ language, tab, setTab, explorerAction }: { language: Language; tab: number; setTab: (tab: number) => void; explorerAction: ReactNode }) {
   const [expandedCategory, setExpandedCategory] = useState<NavigationCategory | null>(null);
   const [catalogSearch, setCatalogSearch] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -1759,6 +1759,7 @@ function DashboardNavigator({ language, tab, setTab }: { language: Language; tab
         })}
       </div>
       <label className="catalog-search"><span className="sr-only">{language === 'zh' ? '\u641c\u5c0b\u8cc7\u6599\u96c6' : 'Search datasets'}</span><input value={catalogSearch} onFocus={() => setExpandedCategory(currentModule.category)} onChange={(event) => setCatalogSearch(event.target.value)} type="search" placeholder={language === 'zh' ? '\u641c\u5c0b\u8cc7\u6599\u96c6' : 'Search datasets'} /></label>
+      {explorerAction}
     </div>
     <p className="dashboard-breadcrumb"><span>{text(navigationCategories[currentModule.category])}</span><span aria-hidden="true">/</span><strong>{text(currentModule.label)}</strong></p>
     {expandedCategory && <section id="dataset-catalog" className="dataset-catalog" aria-label={language === 'zh' ? '\u8cc7\u6599\u96c6\u76ee\u9304' : 'Dataset catalogue'}>
@@ -1882,10 +1883,9 @@ export default function App() {
         <button className={language === 'en' ? 'active' : ''} onClick={() => setLanguage('en')}>EN</button>
       </div>
     </header>
-    {!exploring && <div style={{ padding: '.75rem clamp(1rem, 4vw, 3.5rem)' }}><button ref={exploreButtonRef} type="button" onClick={() => setExploring(true)}>{language === 'zh' ? '探索資料' : 'Explore Data'}</button></div>}
     {exploring ? <ExplorerErrorBoundary language={language} onBack={returnToDashboard}><Suspense fallback={<main><p className="status" role="status">{t.loading}</p><button type="button" onClick={returnToDashboard}>{language === 'zh' ? '返回儀表板' : 'Back to Dashboard'}</button></main>}><CivicExplorer groups={explorerGroups} language={language} onNavigate={navigateFromExplorer} onBack={returnToDashboard} /></Suspense></ExplorerErrorBoundary> : null}
     <div hidden={exploring}>
-    <DashboardNavigator language={language} tab={tab} setTab={setTab} />
+    <DashboardNavigator language={language} tab={tab} setTab={setTab} explorerAction={<button ref={exploreButtonRef} className="explorer-entry" type="button" onClick={() => setExploring(true)}><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" focusable="false"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" /><path d="m8.5 14.5 2-5 5-2-2 5-5 2Z" /></svg><span>{language === 'zh' ? '探索資料' : 'Explore Data'}</span></button>} />
     <nav className="tabs" aria-label="Main sections">{dashboardModules.slice(0, 0).map((_, index) =>
       <button key={index} className={tab === index ? 'active' : ''} onClick={() => setTab(index)}>{index}</button>)}
     </nav>
