@@ -18,7 +18,7 @@ Five existing groups/46 targets; in-memory navigation remains intentional. No ne
 
 ## Next Action
 
-Finish supported gate and publish exactly one Dashboard Draft PR, linking Portfolio companion branch. No second PR and no automatic merge. After deployment inspect manifest code/data identity and hosted check evidence.
+Review Dashboard Draft PR #10, already open/unmerged, and its linked Portfolio companion branch. After manual merge inspect manifest code/data identity, hosted check evidence and existing-user worker replacement. No additional PR or automatic merge.
 
 ## Latest production evidence — 2026-10-29
 
