@@ -2,38 +2,24 @@
 
 ## Current Objective
 
-Policy Issue6 / feat-020 completed on2026-10-19. Branch `codex/urban-renewal-evidence-review`; reviewable implementation PR prepared, no auto-merge. Final PR URL is returned in the chat.
+Complete feat-022 final audit maintenance on codex/civic-explorer-maintenance, from merged main d9c56757e7e01bbf1b6a5790cf7e1524daf15d56. Date: 2026-10-29 Asia/Taipei.
 
-## Completed This Session
+## Completed / In Progress
 
-- Audited official A–G; integrated district designation evidence and separate citywide stock/incentive context.
-- Shipped deterministic research-question engine, bilingual lazy module, scenario/sensitivity, safe complete JSON/CSV briefings.
-- Added source/decision/delivery regressions, source audit, methodology, zh guide, browser evidence, README/feature/progress updates.
-- Preserved all existing modules and historical progress. No Portfolio work or new dependencies.
+Reset focus, 44px targets and EOF fixes implemented; repeated browser regressions, post-refresh tests, retained-source validation, exact code/data release manifest and hosted acceptance are being verified. README variants and dedicated API/maintenance guides updated.
 
 ## Verification Evidence
 
-| Check | Result |
-|---|---|
-| npm ci | Completed;5 pre-existing dependency vulnerabilities reported |
-| npm test |63 passed /0 failed |
-| npm run build |TypeScript/Vite passed; Pages base path |
-| Dedicated source audit + conversion |Passed; reproducible snapshot ure-c81e4ef44e6c9868 |
-| Browser |Desktop/mobile Chinese/English, scenarios, empty/error/retry, exports, existing modules passed |
-| PWA delivery |Changed-version network revalidation + offline fallback regression passed |
-| git diff --check |Passed |
-| bash init.sh |Bash/E_ACCESSDENIED; documented PowerShell equivalents passed |
+Final candidate gate passed:72unit,44browser,build/source/release/audit zero; draft delivery pending. Baseline final audit: 65 tests/build/audit zero and 159 artifact browser checks, two P2 focus findings. New focused browser before/after evidence records both regressions; see progress.md and docs/civic-explorer-maintenance.md for current results.
 
-## Evidence and Boundaries
+## Boundaries and Risks
 
-See `docs/urban-renewal-source-audit.md`, `docs/urban-renewal-decision-methodology.md`, `docs/urban-renewal-decision-mvp.zh-TW.md`, `docs/urban-renewal-browser-review.md` and `progress.md` for exact sources, hashes, dates, counts, scenarios and screenshots.
+Five existing groups/46 targets; in-memory navigation remains intentional. No new policy/data or Urban Renewal method. Retained inputs and duplicate-row warnings remain disclosed. Local old-cache/offline checks do not certify live existing-user upgrade. Candidate is not deployed until manual review/merge.
 
-The75 designation documents create11 district questions; allTierA because subsequent-stage linkage and source version need review. Capacities5/10 select5/10 districts. Strategies agree; do not imply a district needs more redevelopment. A is citywide only, and no source establishes individual safety, eligibility, feasibility or current completion.
+## Next Action
 
-## Risks / Next Session
+Finish supported gate and publish exactly one Dashboard Draft PR, linking Portfolio companion branch. No second PR and no automatic merge. After deployment inspect manifest code/data identity and hosted check evidence.
 
-- Official district age stock and stable cross-stage/current-status links remain unavailable; request authoritative evidence before widening the method.
-- Upstream version/hash/schema changes fail closed and require a new explicit source audit; preserve last-good public snapshot.
-- Existing raw regulation reference dates differ from the older shipped regulation-directory snapshot; source-audit notes distinguish them. Neither establishes legal validity.
-- No separate lint script; no dependency upgrades attempted. Follow up on existing npm vulnerabilities in a separate scoped task.
-- Read AGENTS, feature tracker and this handoff; run npm.cmd test and npm.cmd run build (or bash init.sh where supported). Do not merge without review.
+## Latest production evidence — 2026-10-29
+
+On 2026-10-29 the Playwright fallback successfully rendered both published mains: 43/43 live checks passed across English/Traditional Chinese and 390/1440px. Portfolio covered six domains, thirteen-item HTML navigation, selected evidence, Back/Forward/reload, search and core routes; Dashboard covered five groups, 46 items, HTML fallback, bilingual search and dataset navigation. No page errors were observed. This supersedes the earlier browser-access limitation for these published versions only; the maintenance candidate remains unmerged and its expected-SHA hosted job must run after deployment.

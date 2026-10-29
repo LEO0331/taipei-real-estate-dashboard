@@ -27,7 +27,20 @@ jobs:
       - run: npm test
       - run: npm run data:fetch
       - run: npm run data:convert
+      - name: Audit retained Urban Renewal evidence after refresh
+        run: npm run data:audit:urban-renewal-evidence
+      - name: Test refreshed data before publication
+        run: npm test
+      - name: Validate runtime data and bind its edition to this commit
+        run: npm run release:verify
       - run: npm run build
+      - name: Preserve exact release evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-evidence-${{ github.sha }}
+          path: |
+            public/release-manifest.json
+            public/data/conversion-report.json
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
@@ -35,9 +48,34 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+  hosted-smoke:
+    name: Verify the deployed release
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify hosted identity, keyboard controls and responsive navigation
+        run: npm run test:browser -- --url "${{ needs.deploy.outputs.page_url }}" --expected-sha "${{ github.sha }}"
+      - name: Preserve hosted acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-smoke-${{ github.sha }}
+          path: .cache/civic-explorer
+          if-no-files-found: warn

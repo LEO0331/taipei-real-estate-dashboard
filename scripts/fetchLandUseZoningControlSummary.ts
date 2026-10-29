@@ -1,27 +1,12 @@
-import { copyFile, mkdir, stat } from 'node:fs/promises';
-import { basename, join } from 'node:path';
-import { updateConversionReport } from './data.ts';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { retainedSources, stageRetainedSource } from './retainedSource.ts';
 
-const sourcePath = '/Users/Leo/Downloads/1150409-土地使用容積建蔽彙整表.csv';
-const outputDirectory = 'data/raw/land-use-zoning-control-summary';
-const sourceUrl = 'https://data.taipei/dataset/detail?id=d61ca24b-7b2b-4e75-8004-c568902e6300';
-
-export async function fetchLandUseZoningControlSummary() {
-  const warnings: string[] = [];
-  const outputPath = join(outputDirectory, basename(sourcePath));
-  let status: 'available' | 'missing' = 'missing';
-  try {
-    await mkdir(outputDirectory, { recursive: true });
-    await copyFile(sourcePath, outputPath);
-    status = 'available';
-  } catch (error) {
-    warnings.push(`Unable to copy land-use zoning CSV from ${sourcePath}: ${error instanceof Error ? error.message : String(error)}`);
-  }
-  await updateConversionReport({ dataset: '臺北市土地使用內容與使用管制彙整表', file: status === 'available' ? outputPath : sourcePath, sourceUrl, downloadedAt: new Date().toISOString(), status, notes: ['Source sample copied from the uploaded UTF-8-SIG CSV for local conversion.'] }, warnings);
-  return { outputPath, bytes: await stat(outputPath).then((value) => value.size).catch(() => undefined), status };
+export async function fetchLandUseZoningControlSummary(options: { root?: string } = {}) {
+  return stageRetainedSource(retainedSources[3], { root: options.root, importPath: process.env.LAND_USE_ZONING_SOURCE_FILE });
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const result = await fetchLandUseZoningControlSummary();
-  console.log(`Land-use zoning source ${result.status}: ${result.outputPath}`);
+  console.log(`Land-use zoning source ${result.mode}: ${result.outputPath}`);
 }

@@ -1,4 +1,4 @@
-const CACHE = 'taipei-dashboard-v42-civic-explorer';
+const CACHE = 'taipei-dashboard-v43-civic-explorer-maintenance';
 const ASSETS = [
   './data/urban-renewal-decision/snapshot.json',
   './',

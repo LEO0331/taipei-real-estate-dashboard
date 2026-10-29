@@ -12,7 +12,9 @@
       "id": "feat-002",
       "name": "Cadastral cleanup land auction results",
       "description": "Static, bilingual administrative auction-results analytics with preserved source fields and conservative derived metrics.",
-      "dependencies": ["feat-001"],
+      "dependencies": [
+        "feat-001"
+      ],
       "status": "complete",
       "evidence": "2026-08-11: implemented local records/metadata, filters, export, charts, source-detail table, methodology, PWA cache, and README notes."
     },
@@ -20,7 +22,9 @@
       "id": "feat-003",
       "name": "Auction-results verification coverage",
       "description": "Maintain converter and UI checks for the cadastral-cleanup auction-results module.",
-      "dependencies": ["feat-002"],
+      "dependencies": [
+        "feat-002"
+      ],
       "status": "complete",
       "evidence": "2026-08-11: source sanity check confirmed 35 rows, 3 valid awards, 23 unsuccessful-bid strings, and zero fabricated award values; project test and build passed."
     },
@@ -28,7 +32,9 @@
       "id": "feat-004",
       "name": "Dataset documentation",
       "description": "Keep source attribution, privacy handling, reserve-price semantics, and methodology notes current.",
-      "dependencies": ["feat-003"],
+      "dependencies": [
+        "feat-003"
+      ],
       "status": "complete",
       "evidence": "2026-08-11: README documents the module boundaries and total-reserve comparison policy."
     },
@@ -36,16 +42,19 @@
       "id": "feat-005",
       "name": "Decision-insights and technical-notes review",
       "description": "Audit dashboard decision usefulness, data freshness, methodology, and static-delivery risks; record evidence-backed customer guidance.",
-      "dependencies": ["feat-004"],
+      "dependencies": [
+        "feat-004"
+      ],
       "status": "complete",
       "evidence": "2026-08-11: reviewed data periods, metadata, static-delivery behavior, source-field privacy posture, and auction sample coverage; updated the decision and technical notes with prioritized customer guidance. npm.cmd test (32/32) and npm.cmd run build passed."
-    }
-    ,
+    },
     {
       "id": "feat-006",
       "name": "Decision-safety safeguards",
       "description": "Address cache freshness, visible coverage windows, auction personal-name defaults, and small-sample derived analytics.",
-      "dependencies": ["feat-005"],
+      "dependencies": [
+        "feat-005"
+      ],
       "status": "complete",
       "evidence": "2026-08-11: implemented network-first static-data revalidation, a Data Status & Coverage view, opt-in official-name search/display/export, and a five-valid-award threshold for comparative auction analytics."
     },
@@ -53,7 +62,9 @@
       "id": "feat-007",
       "name": "Categorized responsive dashboard navigation",
       "description": "Replace the oversized flat dashboard-tab presentation with a searchable, categorized navigation pattern that preserves every module.",
-      "dependencies": ["feat-001"],
+      "dependencies": [
+        "feat-001"
+      ],
       "status": "complete",
       "evidence": "2026-08-11: implemented a five-category desktop navigator, current-page breadcrumb, searchable dataset catalogue, and native mobile dialog. npm.cmd test passed (32/32); npm.cmd run build passed."
     },
@@ -61,7 +72,9 @@
       "id": "feat-008",
       "name": "Bilingual README localization",
       "description": "Provide separate, synchronized English and Traditional Chinese repository landing documentation.",
-      "dependencies": ["feat-004"],
+      "dependencies": [
+        "feat-004"
+      ],
       "status": "complete",
       "evidence": "2026-08-11: rewrote the English README as the canonical concise landing page; added README-zh-TW.md with matching Traditional Chinese sections and reciprocal language links. npm.cmd test passed (32/32); npm.cmd run build passed."
     },
@@ -69,7 +82,10 @@
       "id": "feat-009",
       "name": "Urban renewal regulations reference module",
       "description": "Provide a static, bilingual searchable reference directory for Taipei urban-renewal regulation source records without legal-status inference.",
-      "dependencies": ["feat-001", "feat-007"],
+      "dependencies": [
+        "feat-001",
+        "feat-007"
+      ],
       "status": "complete",
       "evidence": "2026-08-13: inspected the official 37-row CSV; added conservative ROC-date conversion, filters, charts, source details, CSV export, data-quality notes, PWA cache paths, and converter tests. npm.cmd test passed (33/33); npm.cmd run build passed."
     },
@@ -77,7 +93,10 @@
       "id": "feat-010",
       "name": "Municipal property portfolio",
       "description": "Provide static, bilingual municipal-property composition and trend analytics without market-value or investment inference.",
-      "dependencies": ["feat-001", "feat-007"],
+      "dependencies": [
+        "feat-001",
+        "feat-007"
+      ],
       "status": "complete",
       "evidence": "2026-08-13: inspected the official Big5 CSV (120 additive detail rows across 2021–2025); added safe parsing, total-row detection, filtering, charts, source details, export, data-quality notes, PWA cache paths, and converter tests. npm.cmd test passed (34/34); npm.cmd run build passed."
     },
@@ -85,7 +104,10 @@
       "id": "feat-011",
       "name": "Civil engineering price index",
       "description": "Provide static, bilingual construction-input price analytics without cost forecasting, project estimates, or housing-price causality claims.",
-      "dependencies": ["feat-001", "feat-007"],
+      "dependencies": [
+        "feat-001",
+        "feat-007"
+      ],
       "status": "complete",
       "evidence": "2026-08-13: inspected and converted the official 4,245-row, 15-category monthly source through 2026-07; added local data, category mapping, filters, charts, source details, CSV export, PWA cache, and converter tests. npm.cmd test passed (35/35); npm.cmd run build passed."
     },
@@ -93,7 +115,10 @@
       "id": "feat-012",
       "name": "Low-income household living assistance",
       "description": "Provide static, bilingual quarterly low-income household living-assistance statistics with preserved source fields and no eligibility or payment inference.",
-      "dependencies": ["feat-001", "feat-007"],
+      "dependencies": [
+        "feat-001",
+        "feat-007"
+      ],
       "status": "complete",
       "evidence": "2026-08-14: downloaded the official Taipei City Department of Social Welfare quarterly CSV (43 rows, 2015-Q1 through 2025-Q3); added a static bilingual module, conservative converter, navigation, PWA cache paths, and regression coverage. npm.cmd test passed (36/36); npm.cmd run build passed."
     },
@@ -101,7 +126,10 @@
       "id": "feat-013",
       "name": "MRT joint-development public-property auctions",
       "description": "Provide static, bilingual reserve-price analytics for Taipei MRT joint-development public-property auction records, preserving official source fields and clearly separating reserve prices from transaction prices.",
-      "dependencies": ["feat-001", "feat-007"],
+      "dependencies": [
+        "feat-001",
+        "feat-007"
+      ],
       "status": "complete",
       "evidence": "2026-08-18: downloaded and inspected the official 45-row CSV (2016-04-26 through 2023-06-16); added normalization, data-quality checks, derived reserve price per ping and deposit ratio, filters, charts, location comparisons, accessible property details, PWA cache paths, and regression coverage. npm.cmd test passed (37/37); npm.cmd run build passed."
     },
@@ -109,7 +137,10 @@
       "id": "feat-014",
       "name": "MRT land development",
       "description": "Provide static, bilingual MRT land-development stage and line-distribution analytics while preserving source status text and avoiding inferred locations.",
-      "dependencies": ["feat-001", "feat-007"],
+      "dependencies": [
+        "feat-001",
+        "feat-007"
+      ],
       "status": "complete",
       "evidence": "2026-08-26: downloaded the official CP950 CSV and conservatively expanded its top-level listed site names into 87 sites (65 completed, 6 under construction, 7 design, 9 investment/preparation). Added filters, sortable expandable table, line/status charts, a current-status-only pipeline, source metadata, PWA cache, and regression coverage. Whole-project review fixes ensured aggregate refresh commands include all modules, insights follow active filters, and unavailable source freshness is not hard-coded. npm.cmd test passed (38/38); npm.cmd run build passed."
     },
@@ -117,7 +148,10 @@
       "id": "feat-015",
       "name": "Scoped market filters",
       "description": "Make filter scope explicit by limiting transaction-record filters to the data table, retaining a local district focus control for district comparison, and labelling index and rent controls as table filters.",
-      "dependencies": ["feat-001", "feat-007"],
+      "dependencies": [
+        "feat-001",
+        "feat-007"
+      ],
       "status": "complete",
       "evidence": "2026-08-31: removed the misleading shared filter bar from overview and market pages; placed transaction filtering in Data Table; added local district focus in District Comparison; renamed index/rent controls to table filters. Manual local verification: overview has no filter controls; Data Table changed from 998 to 69 records after selecting 中正區. npm.cmd test passed (38/38); npm.cmd run build passed."
     },
@@ -125,7 +159,10 @@
       "id": "feat-016",
       "name": "Chinese data-quality labels",
       "description": "Render dashboard data-quality and methodology statistics as human-readable Traditional Chinese rather than exposing internal English JSON keys in Chinese mode.",
-      "dependencies": ["feat-001", "feat-007"],
+      "dependencies": [
+        "feat-001",
+        "feat-007"
+      ],
       "status": "complete",
       "evidence": "2026-08-31: added a shared quality-label translator and applied it to every component that rendered data-quality keys directly, including civil engineering, MRT rents, municipal property, brokerage directory, consumer disputes, and cadastral-clearing custody. Manual local verification confirmed Chinese labels on the Civil Engineering Price Index methodology section. npm.cmd test passed (39/39); npm.cmd run build passed."
     },
@@ -133,7 +170,9 @@
       "id": "feat-017",
       "name": "Compact MRT auction summary tables",
       "description": "Keep the MRT joint-development auction size-distribution and deposit/parking summary tables within their cards without unnecessary horizontal scrolling.",
-      "dependencies": ["feat-013"],
+      "dependencies": [
+        "feat-013"
+      ],
       "status": "complete",
       "evidence": "2026-08-31: added a narrowly scoped compact-table style with no global table changes. Local browser verification confirmed both summary tables have matching 573px client and scroll widths (no overflow). npm.cmd test passed (39/39); npm.cmd run build passed."
     },
@@ -141,7 +180,10 @@
       "id": "feat-018",
       "name": "Announced-land registry Chinese labels",
       "description": "Ensure every registry control and table heading in the announced-land-expropriation module follows the selected display language.",
-      "dependencies": ["feat-001", "feat-007"],
+      "dependencies": [
+        "feat-001",
+        "feat-007"
+      ],
       "status": "complete",
       "evidence": "2026-08-31: localized the all-district option, table headings, source-details label, and pagination. Local Chinese-mode browser verification confirmed 全部行政區, nine Chinese headers, 查看, 上一頁, and 下一頁. npm.cmd test passed (39/39); npm.cmd run build passed."
     },
@@ -149,7 +191,9 @@
       "id": "feat-019",
       "name": "Quarterly price Chinese category labels",
       "description": "Translate quarterly-price internal category types and quarter notation before displaying them in Chinese mode.",
-      "dependencies": ["feat-001"],
+      "dependencies": [
+        "feat-001"
+      ],
       "status": "complete",
       "evidence": "2026-08-31: mapped citywide, housing_type, and district to Chinese labels and formatted visible quarters as Chinese text. npm.cmd test passed (39/39); npm.cmd run build passed."
     },
@@ -174,6 +218,16 @@
       ],
       "status": "complete",
       "evidence": "2026-10-29: Portfolio v3.0.1 merged PR #43; adapted MIT HexIsland geometry with attribution. Five existing groups and 46 targets, search, list, responsive and reduced-motion controls; source coverage links to existing Data Status. Tests, production build and browser verification documented in progress.md. No dataset or analytical changes. 2026-10-29 UI follow-up: integrated Explore Data into the responsive navigation toolbar; 65 tests, build and browser desktop/mobile checks passed."
+    },
+    {
+      "id": "feat-022",
+      "name": "Civic Explorer final audit maintenance",
+      "description": "Keyboard reset focus, touch ergonomics, post-refresh validation and release evidence; no new dataset or navigation feature.",
+      "dependencies": [
+        "feat-021"
+      ],
+      "status": "in-progress",
+      "evidence": "2026-10-29: final audit maintenance authorized; verification and Draft PR delivery in progress. No analytical snapshot change."
     }
   ]
 }

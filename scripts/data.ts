@@ -1161,8 +1161,9 @@ export async function writeJson(path: string, value: unknown): Promise<void> {
 export async function updateConversionReport(
   source: ConversionReport['sources'][number],
   warnings: string[] = [],
+  options: { reportPath?: string; resolvedWarningPrefixes?: readonly string[] } = {},
 ): Promise<void> {
-  const path = 'public/data/conversion-report.json';
+  const path = options.reportPath ?? 'public/data/conversion-report.json';
   let report: ConversionReport = { generatedAt: new Date().toISOString(), sources: [], warnings: [] };
   try {
     report = JSON.parse(await readFile(path, 'utf8')) as ConversionReport;
@@ -1176,6 +1177,7 @@ export async function updateConversionReport(
     ...report.sources.filter((item) => item.dataset !== source.dataset),
     { ...previous, ...source, file: basename(source.file), bytes },
   ];
-  report.warnings = [...new Set([...report.warnings, ...warnings])].slice(0, 200);
+  const retainedWarnings = report.warnings.filter((warning) => !options.resolvedWarningPrefixes?.some((prefix) => warning.startsWith(prefix)));
+  report.warnings = [...new Set([...retainedWarnings, ...warnings])].slice(0, 200);
   await writeJson(path, report);
 }

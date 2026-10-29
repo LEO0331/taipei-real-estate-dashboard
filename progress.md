@@ -2,9 +2,13 @@
 
 ## Current State
 
-**Last Updated:** 2026-10-19 Asia/Taipei
-**Session ID:** Codex desktop
-**Active Feature:** feat-020 (complete; see 2026-10-19 entry below)
+**Last Updated:** 2026-10-29 Asia/Taipei
+**Active Feature:** feat-022 — Civic Explorer final audit maintenance (in progress)
+**Branch:** `codex/civic-explorer-maintenance`, based on merged main `d9c56757e7e01bbf1b6a5790cf7e1524daf15d56`.
+
+Focus/reset/touch repairs, refreshed-data release checks, source-provenance handling and current maintenance documents are being verified. One Draft PR will link Portfolio companion branch `codex/civic-explorer-maintenance-handoff`; no automatic merge. Existing datasets, Urban Renewal analysis and in-memory navigation remain unchanged. Candidate gate passed: 72 unit tests, 44 browser checks, build/audit/source/release validation; final Draft PR delivery pending.
+
+The following checklist preserves earlier session history; current maintenance results are appended below.
 
 ## Status
 
@@ -170,3 +174,13 @@ Final packaging check: retained D/G inputs were frozen inside the feature raw di
 ### Civic Explorer entry layout follow-up
 
 Moved Explore Data into the navigation toolbar beside search on wide screens and Browse datasets on mobile. Added an ink-colored button, decorative compass icon, 44px target and intermediate-width wrapping. Existing focus return uses the same button ref. Browser checked 1510px desktop and 390px mobile; relocated entry opens explorer. npm.cmd test: 65 passed; npm.cmd run build and git diff --check passed.
+
+## 2026-10-29 — Final audit maintenance (feat-022)
+
+Authorized the final severity-table repairs. Focus/touch/release/provenance fixes and dedicated API/maintenance guides; candidate tests and single Draft PR delivery pending. Retain exact code/data identity and actual hosted access limits.
+
+### 2026-10-29 — Executed maintenance verification
+
+Dashboard gate: 72 unit / 44 browser, build/source audit, dependency audit zero and release validation of747 actual staged JSON files passed. All business source/data/Urban Renewal snapshots remain unchanged; four duplicate warnings retained. New browser tool is development-only.
+
+On 2026-10-29 the Playwright fallback successfully rendered both published mains: 43/43 live checks passed across English/Traditional Chinese and 390/1440px. Portfolio covered six domains, thirteen-item HTML navigation, selected evidence, Back/Forward/reload, search and core routes; Dashboard covered five groups, 46 items, HTML fallback, bilingual search and dataset navigation. No page errors were observed. This supersedes the earlier browser-access limitation for these published versions only; the maintenance candidate remains unmerged and its expected-SHA hosted job must run after deployment.
