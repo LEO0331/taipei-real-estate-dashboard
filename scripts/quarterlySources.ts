@@ -129,4 +129,3 @@ export async function approvedMarketRecords(root = '.') {
   }
   return [...records.values()].sort((a, b) => (a.quarterLabel ?? '').localeCompare(b.quarterLabel ?? '') || a.district.localeCompare(b.district));
 }
-

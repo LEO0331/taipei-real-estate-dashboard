@@ -15,4 +15,3 @@ export function marketSummary(records: QuarterlyMarketRecord[]) {
     topDistrict: [...latest].sort((a,b) => (b.totalSaleCaseCount ?? 0) - (a.totalSaleCaseCount ?? 0))[0]?.district,
   };
 }
-
