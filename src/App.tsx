@@ -1,3 +1,4 @@
+import { latestMarketRows } from './utils/quarterlyMarket';
 import { Component, lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Line, LineChart,
@@ -873,7 +874,8 @@ function DistrictComparison({ rows, language }: { rows: DistrictComparisonSummar
 function QuarterlyAnalysis({ data, language }: { data: DataBundle; language: Language }) {
   const t = copy[language];
   const q = data.quarterlySummary;
-  const chartData = data.quarterly.map((row) => ({ ...row, district: districtLabel(row.district, language) }));
+  const latestQuarterly = latestMarketRows(data.quarterly);
+  const chartData = latestQuarterly.map((row) => ({ ...row, district: districtLabel(row.district, language) }));
   return <>
     <MetricStrip items={[
       { label: t.latestQuarter, value: q.latestQuarter ?? '—' },
@@ -891,7 +893,7 @@ function QuarterlyAnalysis({ data, language }: { data: DataBundle; language: Lan
         <BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="district" angle={-35} textAnchor="end" height={72} /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Legend /><Bar dataKey="residentialZoneCaseCount" stackId="zone" name={t.residentialCases} fill="#356f9d" /><Bar dataKey="commercialZoneCaseCount" stackId="zone" name={t.commercialCases} fill="#b24738" /><Bar dataKey="industrialZoneCaseCount" stackId="zone" name={t.industrialCases} fill="#737d68" /></BarChart>
       </ResponsiveContainer></ChartSection>
     </div>
-    <section className="analysis-list"><h2>{t.officialText}</h2>{data.quarterly.map((row) =>
+    <section className="analysis-list"><h2>{t.officialText}</h2>{latestQuarterly.map((row) =>
       <details key={row.id}><summary>{districtLabel(row.district, language)} · {row.quarterLabel}</summary>
         <p lang="zh-Hant">{row.analysisText}</p>{language === 'en' && <small>Official Chinese text; no unofficial translation is presented.</small>}
       </details>)}</section>
