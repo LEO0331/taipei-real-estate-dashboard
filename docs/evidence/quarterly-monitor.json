@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-10-29T11:23:28.464Z",
+  "findings": [
+    {
+      "id": "residential-price-quarterly-index",
+      "title": "臺北市住宅價格季指數",
+      "sourceUrl": "https://data.taipei/dataset/detail?id=954911b5-896d-4ae1-9ebe-87c4ba8a191e",
+      "previousQuarter": "2025-Q4",
+      "previousHash": "288c989bc58464aad88666170081ee878e7859eb46c52c297ef858600ea4101a",
+      "latestQuarter": "2026-Q1",
+      "hash": "f0c7e7fe51e68dd152cb24a850151da1ccfe909d90be131e3667339ab99cfdf7",
+      "status": "updated",
+      "newPeriods": [
+        "2026-Q1"
+      ],
+      "revisedRecords": 0,
+      "validation": "1 official resource(s): schema, periods, counts, coverage, numeric values and SHA256 validated. Resource SHA256: 2026-Q1=5156f45baef441aef45c2e357da6e7aaf3514c26ade6241282ac1fb28084d298 (880 source rows)"
+    },
+    {
+      "id": "residential-rent-index",
+      "title": "臺北市住宅租金指數",
+      "sourceUrl": "https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20",
+      "previousQuarter": "2025-Q4",
+      "previousHash": "1a1da912dbb35281171d2e706525599851f4534c6053612704cc6e6616f25c57",
+      "latestQuarter": "2026-Q1",
+      "hash": "e1a99d9750d06e6ffed84f0d8c1a1ae46fc74c84879f3e464eab9a412ecafbad",
+      "status": "updated",
+      "newPeriods": [
+        "2026-Q1"
+      ],
+      "revisedRecords": 0,
+      "validation": "1 official resource(s): schema, periods, counts, coverage, numeric values and SHA256 validated. Resource SHA256: 2026-Q1=86683b5d8c14949d7d9f90e820bac6b914c4b3388197a4d9adbffe9f7774f1ea (93 source rows)"
+    },
+    {
+      "id": "commercial-office-rent-index",
+      "title": "臺北市商辦租金指數",
+      "sourceUrl": "https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3",
+      "previousQuarter": "2025-Q4",
+      "previousHash": "d677e4533a4349e881a98d46bb42e3d61cef31647f860a1823c8fa5a57588c24",
+      "latestQuarter": "2026-Q1",
+      "hash": "3bc833197c4ffdc61f0d3851c5883c68f4da0c165821f9c4e414f55c8ed36f72",
+      "status": "updated",
+      "newPeriods": [
+        "2026-Q1"
+      ],
+      "revisedRecords": 0,
+      "validation": "1 official resource(s): schema, periods, counts, coverage, numeric values and SHA256 validated. Resource SHA256: 2026-Q1=8980fbf477c3e09898e920d9bfa2abd14684fa9a2b98a4e376b17c833cc52695 (96 source rows)"
+    },
+    {
+      "id": "quarterly-market-analysis",
+      "title": "臺北市實價登錄每季動態分析",
+      "sourceUrl": "https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa",
+      "previousQuarter": "2025-Q2",
+      "previousHash": "f83f418e0f68171812205988f03e6f5b2fa8224f2e1b9a9baf2505c07104ae05",
+      "latestQuarter": "2025-Q2",
+      "hash": "94af071a81906a9e57c73c44ab2e9f7c4f3f096a509512f22253c962b6f34e74",
+      "status": "unchanged",
+      "newPeriods": [],
+      "revisedRecords": 0,
+      "validation": "1 official resource(s): schema, periods, counts, coverage, numeric values and SHA256 validated. Resource SHA256: 2025-Q2=f83f418e0f68171812205988f03e6f5b2fa8224f2e1b9a9baf2505c07104ae05 (13 source rows)"
+    }
+  ]
+}

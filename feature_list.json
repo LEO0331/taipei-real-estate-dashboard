@@ -233,9 +233,21 @@
       "id": "feat-023",
       "name": "Civic Explorer deployed search touch target",
       "description": "Guarantee a 44px minimum search-input height across browser font metrics to fix post-deploy acceptance failures.",
-      "dependencies": ["feat-022"],
+      "dependencies": [
+        "feat-022"
+      ],
       "status": "complete",
       "evidence": "2026-10-29: Actions run 40830872570 on 154f902 failed six hosted checks because the search input rendered at 42.375px. Added scoped min-height:44px without weakening acceptance checks. npm.cmd test 72/72, npm.cmd run build, npm.cmd run test:browser 44/44 and git diff --check passed. Browser coverage: en/zh at 320/390/1440px, keyboard, overflow and offline/cache checks. Hosted acceptance awaits merge and redeployment."
+    },
+    {
+      "id": "feat-024",
+      "name": "Quarterly monitoring and reviewed data import",
+      "description": "Issue 9: read-only official-source monitoring, deduplicated alerts, validated reviewed refresh and committed-data deployment.",
+      "dependencies": [
+        "feat-001"
+      ],
+      "status": "complete",
+      "evidence": "2026-10-29: Issue 9 read-only monthly/manual monitor, one fingerprinted issue per source including closed-issue dedup; hash-pinned approved manifest and isolated reviewed staging with explicit revisions/provenance/rollback. Retained coverage: price2012Q3–2025Q4/864, rent2018Q3–2025Q4/90, office2014Q2–2025Q4/94; market2025Q2/13raw/12districts. Live official check found2026Q1 candidates880/93/96, all staged successfully with0revisions and applied=false; market unchanged. npm test84/84, TypeScript/Vite build and browser44/44 passed. Offline Urban Renewal audit passed. No approved raw/generated data changed. Release gate correctly blocks a pre-existing missing rental-housing-service-businesses/records.json snapshot; separately reviewed data required before deployment. docs/quarterly-data-updates.md and evidence JSON record sources, hashes, procedure and limits. Draft PR delivery only; no merge or publication."
     }
   ]
 }

@@ -43,7 +43,7 @@ The project combines Taipei City Open Data and official public records, includin
 - [Real-price transaction records](https://data.taipei/dataset/detail?id=a9a97996-3a55-46c8-9076-e5ebdefad6dc)
 - [Residential price monthly index](https://data.taipei/dataset/detail?id=ce4ea2c6-6334-44f8-945a-5705492b187d)
 - [Residential price quarterly index](https://data.taipei/dataset/detail?id=954911b5-896d-4ae1-9ebe-87c4ba8a191e)
-- [Residential rent index](https://data.taipei/dataset/detail?id=53e5ee8d-9a90-42bc-9874-3a8747ae6afa)
+- [Residential rent index](https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20)
 - [Commercial office rent index](https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3)
 - [Building use permits](https://data.taipei/dataset/detail?id=c876ff02-af2e-4eb8-bd33-d444f5052733)
 - [Land-use control summary](https://data.taipei/dataset/detail?id=cb964837-c602-4238-b6c0-f63ad1094d5e)
@@ -69,7 +69,7 @@ npm run build
 npm run dev
 ```
 
-To refresh data, run the appropriate fetcher and converter:
+For intentionally reviewed refreshes of other datasets, run the appropriate fetcher and converter. The four quarterly sources use the staged procedure linked below:
 
 ```bash
 npm run data:fetch
@@ -100,7 +100,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-For a release, acquire and convert the intended sources, rerun tests and the Urban Renewal source audit, then run `npm run release:verify` before building. This generates the ignored `public/release-manifest.json` with the code SHA and actual data hashes. Missing required data fails validation; a fresh checkout does not replace the data pipeline. Processing time does not establish source freshness.
+For a release, test and audit the committed approved snapshot, then run `npm run release:verify` before building. This generates the ignored `public/release-manifest.json` with the code SHA and actual data hashes. Missing required data fails validation. Data acquisition and import happen separately on a review branch; processing time does not establish source freshness.
 
 [Explorer API and ownership](docs/civic-explorer-api.md) documents the local adapter and numeric navigation contract. The [2026-10-29 maintenance report](docs/civic-explorer-maintenance.md) records keyboard/touch fixes, source handling, post-refresh release validation, hosted smoke checks and remaining acceptance limits. Playwright is a development-only verification dependency, not an application runtime dependency.
 
@@ -108,6 +108,8 @@ The project’s standard startup and verification path is also available through
 
 ## Release and maintenance
 
-GitHub Pages uses `/taipei-real-estate-dashboard/`. The deployment workflow checks the refreshed data before uploading `dist`, then runs a hosted browser smoke check against the expected code SHA. A successful merge or build alone does not establish a successful deployment or hosted acceptance. Review the deploy and hosted-check jobs separately.
+GitHub Pages uses `/taipei-real-estate-dashboard/`. The deployment workflow checks committed approved data before uploading `dist`, then runs a hosted browser smoke check against the expected code SHA. A successful merge or build alone does not establish a successful deployment or hosted acceptance. Review the deploy and hosted-check jobs separately.
 
 After review, keep this initiative in maintenance-only scope: dependency/security updates, actual defects, factual/source corrections and release evidence. Do not add policy cases, introduce a mandatory 3D engine, publish a shared package or integrate another dashboard without a separate justified decision. Existing dated source audits and browser reports remain historical evidence, not a claim about a newer release.
+
+Quarterly price/rent/office/market updates use read-only monitoring and explicit reviewed staging. Targeted fetchers download candidates to `.cache/`; approved conversion reads `data/quarterly-approved.json`. Routine deployments use committed JSON. See [quarterly update guide](docs/quarterly-data-updates.md) for commands, current coverage, notifications, and the existing missing rental-business snapshot deployment prerequisite.
