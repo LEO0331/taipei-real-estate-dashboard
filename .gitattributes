@@ -2,3 +2,8 @@
 data/raw/urban-renewal-decision/*.csv -text -diff
 data/raw/urban-renewal-decision/*.html -text -diff
 data/raw/urban-renewal-decision/D-*.json -text -diff
+# Reviewed quarterly downloads are hashed as original bytes, including line endings.
+data/raw/residential-price-quarterly-index/*.csv -text
+data/raw/residential-rent-index/*.csv -text
+data/raw/commercial-office-rent-index/*.csv -text
+data/raw/quarterly-market-analysis/*.csv -text
