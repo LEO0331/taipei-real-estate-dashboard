@@ -42,6 +42,7 @@ const ASSETS = [
   './data/public-private-partnership-contracts/summary.json',
   './data/rental-housing-service-businesses/records.json',
   './data/rental-housing-service-businesses/summary.json',
+  './data/rental-housing-service-businesses/metadata.json',
   './data/public-works-excellence-award-projects/records.json',
   './data/mrt-joint-development-rents/records.json',
   './data/mrt-joint-development-rents/summary.json',

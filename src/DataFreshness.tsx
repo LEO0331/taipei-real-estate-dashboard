@@ -6,6 +6,7 @@ type Entry = { key:string; zh:string; en:string; path:string; coverage:(source:S
 const base = import.meta.env.BASE_URL;
 
 const entries: Entry[] = [
+  { key: 'rental-businesses', zh: '租賃住宅服務業業者名冊', en: 'Rental housing service businesses', path: 'rental-housing-service-businesses/metadata.json', coverage: (s) => string(s.coverageThrough), sourceUpdate: (s) => string(s.resourceUpdatedAt) },
   { key: 'urban-renewal-decision', zh: '都市更新查核快照（各來源期間不同）', en: 'Urban renewal evidence (mixed source periods)', path: 'urban-renewal-decision/snapshot.json', coverage: (s) => { const units = s.renewalUnits as Source | undefined; return units ? string(units.periodEnd) : null; }, sourceUpdate: (s) => string(s.generatedAt) },
   { key: 'real-price', zh: '實價登錄摘要', en: 'Real-price registration summary', path: 'real-price-summary.json', coverage: (s) => string(s.latestDataPeriod), sourceUpdate: () => null },
   { key: 'price-monthly', zh: '住宅價格月指數', en: 'Residential price monthly index', path: 'residential-price-monthly-index-summary.json', coverage: (s) => string(s.latestPeriod), sourceUpdate: () => null },

@@ -117,4 +117,4 @@ Vite 的基礎路徑是 `/taipei-real-estate-dashboard/`。GitHub Actions 只會
 
 完成審查後，本計畫維持僅維護狀態：相依套件與安全更新、實際錯誤、事實／來源更正及發布佐證。新增政策案例、大幅重新設計、強制 3D 引擎、共享套件或其他儀表板整合，都需要另外提出有依據的決定。既有附日期的稽核與瀏覽器報告保留為歷史佐證，不代表較新版本已通過同樣驗收。
 
-住宅價格季指數、住宅租金、商辦租金及每季動態分析採唯讀監測與人工審查匯入。下載候選檔僅存於 `.cache/`；轉檔依 `data/quarterly-approved.json` 選擇已核准資料，一般部署只使用已提交的 JSON。請參閱[季度更新操作指南](docs/quarterly-data-updates.md)，包括來源期間、通知、驗證與目前既有租賃業者快照缺漏的部署前置限制。
+住宅價格季指數、住宅租金、商辦租金及每季動態分析採唯讀監測與人工審查匯入。下載候選檔僅存於 `.cache/`；轉檔依 `data/quarterly-approved.json` 選擇已核准資料，一般部署只使用已提交的 JSON。請參閱[季度更新操作指南](docs/quarterly-data-updates.md)，包括來源期間、通知與驗證。本次已依原官方來源補回415筆租賃業者登錄快照；歷史涵蓋期間、原始檔雜湊與重製方式請參閱[來源補回紀錄](docs/rental-business-source-restoration.md)。

@@ -258,6 +258,16 @@
       ],
       "status": "complete",
       "evidence": "2026-11-02: reproduced missing rental snapshot displaying zero businesses and public-works empty search displaying Infinity – -Infinity. Added bilingual loading/unavailable directory state and finite year-range fallback. npm test84/84, TypeScript/Vite production build, existing browser44/44, targeted directory browser12/12 (en/zh390/1440), npm audit0 and offline Urban Renewal source audit passed. No source/generated data changed. P1 release gate remains blocked by missing approved rental-housing-service-businesses records/summary; no substitute dataset or weakened validation."
+    },
+    {
+      "id": "feat-026",
+      "name": "Restore reviewed official rental-business snapshot",
+      "description": "Resolve missing runtime release input using the original official resource with retained bytes, provenance and fail-closed offline conversion.",
+      "dependencies": [
+        "feat-025"
+      ],
+      "status": "complete",
+      "evidence": "2026-11-02: PR13 verified merged at main f3bfbbcd84eeecc79d3216841b8ae488dedda04e. Original official dataset6c1f5836/resource75e116b7 independently verified; authentic Big5 23221bytes SHA256de2173322c613dd70ce9a3e7d3d08915189d699846adc0bda33b7dcf97d64fe9 retained with catalogue/provenance.415 unique registration rows/no missing names or IDs, coverage2025-06-17/resource2025-12-30/retrieval2026-11-02 kept separate. Restored records/summary/metadata, Data Status/PWA aligned; converter rejects missing/hash/schema/identifier failures before writes.86 tests/build/release748JSON4existing warnings/Urban Renewal audit/npm audit0/browser44+12+16 passed. Existing source/generated data otherwise unchanged; branch codex/restore-reviewed-rental-snapshot for separate Draft PR, no merge/deploy claim."
     }
   ]
 }

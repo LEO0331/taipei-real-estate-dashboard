@@ -1,0 +1,20 @@
+{
+  "datasetId": "6c1f5836-30fe-43fe-82b0-3f54f0c6c78e",
+  "resourceId": "75e116b7-b024-4437-8100-1fa1fcbdbd31",
+  "title": "臺北市租賃住宅服務業業者名冊",
+  "publisher": "臺北市政府地政局",
+  "sourceUrl": "https://data.taipei/dataset/detail?id=6c1f5836-30fe-43fe-82b0-3f54f0c6c78e",
+  "downloadUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=75e116b7-b024-4437-8100-1fa1fcbdbd31",
+  "sha256": "de2173322c613dd70ce9a3e7d3d08915189d699846adc0bda33b7dcf97d64fe9",
+  "bytes": 23221,
+  "encoding": "Big5",
+  "sourceRecordCount": 415,
+  "coverageThrough": "2025-06-17",
+  "resourceUpdatedAt": "2025-12-30 17:04:22",
+  "metadataUpdatedAt": "2025-12-30 17:04:37",
+  "sourceTimestampTimezone": "Not specified in catalogue display",
+  "retrievedAt": "2026-11-02T05:54:10.8219747Z",
+  "publicationDate": null,
+  "scope": "Source-listed registration and practice status only; source update and retrieval do not establish current registration, service quality or safety. No join or substitution with the separate active-rental-housing-service-providers dataset.",
+  "headers": ["縣市", "機關代碼", "登錄號碼", "租賃業名稱", "執業狀態"]
+}
