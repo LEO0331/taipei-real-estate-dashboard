@@ -8,5 +8,5 @@ data/raw/residential-rent-index/*.csv -text
 data/raw/commercial-office-rent-index/*.csv -text
 data/raw/quarterly-market-analysis/*.csv -text
 # Retained official rental source bytes are pinned by provenance SHA256.
-data/raw/rental-housing-service-businesses/*.csv -text
-data/raw/rental-housing-service-businesses/*.html -text
+data/raw/rental-housing-service-businesses/*.csv -text -diff
+data/raw/rental-housing-service-businesses/*.html -text -diff
