@@ -75,7 +75,12 @@ try {
     if (testCache) {
       await context.route(url, route => route.fulfill({ status: 200, contentType: 'text/html', body: '<title>Prior cache fixture</title>' }));
       await page.goto(url);
-      await page.evaluate(async () => { const cache = await caches.open('taipei-dashboard-v42-civic-explorer'); await cache.put('./prior-cache-marker', new Response('retained old cache fixture')); });
+      await page.evaluate(async () => {
+        for (const name of ['taipei-dashboard-v42-civic-explorer', 'taipei-dashboard-v43-civic-explorer-maintenance', 'portfolio-v3', 'taipei-safety-map-v22']) {
+          const cache = await caches.open(name);
+          await cache.put('./prior-cache-marker', new Response(`retained:${name}`));
+        }
+      });
       await context.unroute(url);
     }
     await page.goto(url, { waitUntil: 'networkidle' });
@@ -144,10 +149,15 @@ try {
     if (testCache) {
       await check('seeded-v42-cache-cleanup-on-activation', async () => {
         await page.evaluate(async () => { await Promise.race([navigator.serviceWorker.ready, new Promise((_, reject) => setTimeout(() => reject(new Error('Worker activation timeout')), 10000))]); });
-        await page.waitForFunction(async () => (await caches.keys()).includes('taipei-dashboard-v43-civic-explorer-maintenance'), undefined, { timeout: 5000 });
+        await page.waitForFunction(async () => (await caches.keys()).includes('taipei-dashboard-v44-closure'), undefined, { timeout: 5000 });
         const keys = await page.evaluate(() => caches.keys());
         assert.ok(!keys.includes('taipei-dashboard-v42-civic-explorer'));
-        return { keys, scope: 'Real browser activation deletes a seeded previous-version cache; not proof of live existing-worker upgrade.' };
+        assert.ok(!keys.includes('taipei-dashboard-v43-civic-explorer-maintenance'));
+        for (const name of ['portfolio-v3', 'taipei-safety-map-v22']) {
+          assert.ok(keys.includes(name));
+          assert.equal(await page.evaluate(async name => (await (await caches.open(name)).match('./prior-cache-marker')).text(), name), `retained:${name}`);
+        }
+        return { keys, scope: 'Real browser activation deletes owned legacy caches and preserves seeded sibling caches/bytes; not proof of live existing-worker upgrade.' };
       });
       await check('warm-cache-offline-explorer', async () => {
         await page.reload({ waitUntil: 'networkidle' });
@@ -161,6 +171,10 @@ try {
           await page.locator('.data-explorer').waitFor();
           assert.equal(await page.locator('.explore-hub').count(), 5);
           assert.equal(await page.locator('.explore-result-group li').count(), 46);
+          const notices = await page.evaluate(async () => { const response = await fetch('./THIRD_PARTY_NOTICES.txt'); return { ok: response.ok, text: await response.text() }; });
+          assert.ok(notices.ok);
+          assert.ok(notices.text.includes('Permission is hereby granted'));
+          assert.ok(notices.text.includes('victory-vendor@37.3.6'));
           return { scope: 'Warm-cache local origin only; cold offline first visit is not supported.' };
         } finally { await context.setOffline(false); }
       });
