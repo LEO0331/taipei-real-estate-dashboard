@@ -1388,7 +1388,7 @@ function LandValueTaxProgressiveBrackets({ records, summary, language }: { recor
       <ChartSection title={label('累進起點年度變化', 'Progressive Starting Point YoY Change')}><ResponsiveContainer width="100%" height={300}><BarChart data={summary.annualSeries}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="gregorianYear" /><YAxis tickFormatter={(value) => `${Math.round(Number(value) / 1_000_000)}M`} /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="yearOverYearProgressiveStartingPointChange" name={label('年度變化', 'YoY change')} fill="#408579" /></BarChart></ResponsiveContainer></ChartSection>
       {latest && <ChartSection title={label('最新一般土地級距圖', 'Latest General Land Brackets')}><ResponsiveContainer width="100%" height={300}><BarChart data={latest.generalLandTaxBrackets}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="bracketNumber" /><YAxis /><Tooltip content={<ChartTooltip language={language} />} /><Bar dataKey="ratePermille" name={label('稅率‰', 'Tax rate ‰')} fill="#c58a43" /></BarChart></ResponsiveContainer></ChartSection>}
     </div>
-    {selected && <section className="analysis-list">
+    {selected && <section className="analysis-list land-tax-formulas">
       <h2>{label('一般土地級距與不同用地公式', 'General Land Brackets and Land-Use Formula Comparison')}</h2>
       <p className="notice">{label('公式解析僅供資料視覺化與來源欄位整理，實際應納稅額需依課稅地價、土地使用情形、適用稅率、減免資格與主管機關核定資料計算。', 'Formula parsing is only for data visualization and source-field organization. Actual payable tax must be calculated based on taxable land value, land-use status, applicable rate, exemption or reduction eligibility, and authority-confirmed records.')}</p>
       <details open><summary>{label('一般土地來源公式', 'General land source formula')}</summary><pre>{selected.generalLandTaxFormulaRaw}</pre></details>
@@ -1978,6 +1978,6 @@ export default function App() {
       </>}
     </main>
     </div>
-    <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}</footer>
+    <footer>{t.footer}<br />{language === 'zh' ? '最新官方資訊請以臺北市資料大平臺及主管機關公告為準。' : 'Refer to Taipei Open Data and official authorities for authoritative information.'}<br /><a href={`${base}THIRD_PARTY_NOTICES.txt`}>{language === 'zh' ? '軟體授權與出處' : 'Software licenses and attribution'}</a></footer>
   </div>;
 }

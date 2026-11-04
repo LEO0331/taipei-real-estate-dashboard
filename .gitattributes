@@ -10,3 +10,5 @@ data/raw/quarterly-market-analysis/*.csv -text
 # Retained official rental source bytes are pinned by provenance SHA256.
 data/raw/rental-housing-service-businesses/*.csv -text -diff
 data/raw/rental-housing-service-businesses/*.html -text -diff
+public/THIRD_PARTY_NOTICES.txt -text whitespace=cr-at-eol
+licenses/victory-vendor-37.3.6-LICENSE.txt -text

@@ -1,5 +1,6 @@
-const CACHE = 'taipei-dashboard-v43-civic-explorer-maintenance';
+const CACHE = 'taipei-dashboard-v44-closure';
 const ASSETS = [
+  './THIRD_PARTY_NOTICES.txt',
   './data/urban-renewal-decision/snapshot.json',
   './',
   './manifest.webmanifest',
@@ -111,8 +112,7 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))));
-  self.clients.claim();
+  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith('taipei-dashboard-') && key !== CACHE).map((key) => caches.delete(key)))).then(() => self.clients.claim()));
 });
 
 self.addEventListener('fetch', (event) => {

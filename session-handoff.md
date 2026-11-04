@@ -1,19 +1,13 @@
-# Current handoff — 2026-11-02
+# Current handoff — 2026-11-03
 
-## Current objective and review state
+Current branch `codex/closure-cache-layout-notices` starts from refreshed main `ec99c92885f4f9b5ac88c10151f74f8676789ffc`. Prior PR13/14 are merged; deployment run41398120884 succeeded for that main. Original checkout/feature branch preserved. This new correction branch is for commit/push review only; no new PR, merge or deployment requested.
 
-Prior audit UI fix [PR13](https://github.com/LEO0331/taipei-real-estate-dashboard/pull/13) is merged at main `f3bfbbcd84eeecc79d3216841b8ae488dedda04e`; earlier maintenance/quarterly PR10/12 are also merged. Older dated progress entries describe their historical delivery state.
+Completed corrections:
 
-New branch `codex/restore-reviewed-rental-snapshot`, based on that main, restores the missing original-source rental-business snapshot as a separate review candidate. Original user checkout remains preserved. One new Draft PR targets main; this candidate is not merged or deployed.
+- P1: actual service-worker activation deletes only owned `taipei-dashboard-*` legacy caches, preserving sibling applications and awaiting cleanup before claiming clients. Browser fixture preserves Portfolio/Safety sentinel bytes.
+- P2: raw land-tax formula block scrolls inside its own container on mobile. All raw formula text and seven charts retained; EN/ZH390/1440 no page overflow.
+- P2: production prebuild generates complete `THIRD_PARTY_NOTICES.txt`, linked bilingually in the footer and included in offline shell. Factual inventory covers45locked production-graph packages,58full installed/supplemental license texts plus project/copied MIT attribution. Installed victory wrapper lacks root MIT text; exact version-pinned publisher supplement/provenance is in `licenses/README.md`. No legal certification or dependency change.
 
-## Completed and verified
+Verification: baseline86tests/build; final89tests, TypeScript/Vite build, release748JSON/four existing warnings, offline Urban Renewal source audit, npm audit0, existing44browser checks with sibling-cache/offline-notice assertions, focused8layout/formula/keyboard-notice checks in both languages/mobile+desktop, diff check passed. Data/raw/public-data trees and analytical modules unchanged. Actual evidence under `D:/Practice/audit-results/closure-fixes/taipei-real-estate-dashboard/`.
 
-- Original official rental-business dataset/resource independently verified; retained Big5 CSV23221bytes/SHA256 `de2173322c613dd70ce9a3e7d3d08915189d699846adc0bda33b7dcf97d64fe9`, catalogue and provenance,415 unique source-listed registration rows. No substitution of separate active-provider dataset.
-- Coverage through2025-06-17 and resource update2025-12-30 remain distinct from2026-11-02 retrieval. No current legal/practice-quality/safety inference.
-- Converter rejects absent/empty/changed/incompatible raw inputs before replacing last-good outputs. Data Status/PWA/README/source notes aligned; full source audit [here](docs/rental-business-source-restoration.md).
--86tests, TypeScript/Vite build, release validation748JSON/4existing disclosed duplicate warnings, offline Urban Renewal source audit, npm audit0, existing44browser checks, directory12error/empty checks, real-snapshot16browser checks, diff check passed.
-- Prior P1 missing approved snapshot is resolved in this candidate. No unrelated source/data or Urban Renewal methodology changed. Actual logs/screenshots: `D:/Practice/audit-results/publish-followup/taipei-real-estate-dashboard/`.
-
-## Next action and limits
-
-Review the new restoration Draft PR. After manual merge inspect the actual deployment and expected-SHA hosted smoke jobs; local build/release verification does not establish deployment. Retained historical source statuses do not establish present registration/qualifications. Existing four duplicate-row warnings are preserved and disclosed. No further data refresh or automated merge is authorized by this handoff.
+Next: review pushed branch changes. No automatic merge/deployment. Actual published site remains the prior main until a separately authorized deployment. Historical source coverage and four existing duplicate warnings remain disclosed. Root orchestrator handles consolidated audit documentation separately.

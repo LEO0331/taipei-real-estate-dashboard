@@ -268,6 +268,16 @@
       ],
       "status": "complete",
       "evidence": "2026-11-02: PR13 verified merged at main f3bfbbcd84eeecc79d3216841b8ae488dedda04e. Original official dataset6c1f5836/resource75e116b7 independently verified; authentic Big5 23221bytes SHA256de2173322c613dd70ce9a3e7d3d08915189d699846adc0bda33b7dcf97d64fe9 retained with catalogue/provenance.415 unique registration rows/no missing names or IDs, coverage2025-06-17/resource2025-12-30/retrieval2026-11-02 kept separate. Restored records/summary/metadata, Data Status/PWA aligned; converter rejects missing/hash/schema/identifier failures before writes.86 tests/build/release748JSON4existing warnings/Urban Renewal audit/npm audit0/browser44+12+16 passed. Existing source/generated data otherwise unchanged; branch codex/restore-reviewed-rental-snapshot for separate Draft PR, no merge/deploy claim."
+    },
+    {
+      "id": "feat-027",
+      "name": "Closure cache ownership, formula layout and distributed notices",
+      "description": "Preserve sibling application caches, contain raw land-tax formula overflow and ship complete factual runtime license/attribution inventory.",
+      "dependencies": [
+        "feat-026"
+      ],
+      "status": "complete",
+      "evidence": "2026-11-03: owned taipei-dashboard-* legacy cleanup with sibling-byte preservation; EN/ZH390/1440 raw-formula layout; footer/offline full notices45locked production-graph packages/58complete texts plus project/copied MIT and pinned publisher victory supplement.89tests/build/release748JSON4existingwarnings/sourceaudit/npm audit0/browser44+8 passed. No data, dependency lock or analytics changed. Branch codex/closure-cache-layout-notices from ec99c92885f4f9b5ac88c10151f74f8676789ffc; commit/push only, no new PRmerge/deploy."
     }
   ]
 }
