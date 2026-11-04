@@ -278,6 +278,14 @@
       ],
       "status": "complete",
       "evidence": "2026-11-03: owned taipei-dashboard-* legacy cleanup with sibling-byte preservation; EN/ZH390/1440 raw-formula layout; footer/offline full notices45locked production-graph packages/58complete texts plus project/copied MIT and pinned publisher victory supplement.89tests/build/release748JSON4existingwarnings/sourceaudit/npm audit0/browser44+8 passed. No data, dependency lock or analytics changed. Branch codex/closure-cache-layout-notices from ec99c92885f4f9b5ac88c10151f74f8676789ffc; commit/push only, no new PRmerge/deploy."
+    },
+    {
+      "id": "feat-028",
+      "name": "Hosted deployment verification runner compatibility",
+      "description": "Pin hosted smoke verification to Ubuntu 24.04 supported by the locked Playwright version.",
+      "dependencies": ["feat-027"],
+      "status": "complete",
+      "evidence": "2026-11-04: Actions run41746980907 job126304903792 deployed c99253c successfully but hosted verification stopped during Chromium installation: Playwright1.59.1 does not support ubuntu26.04-x64. Pinned only hosted-smoke to supported ubuntu-24.04; preserved identity/browser gates. Baseline and final89tests/TypeScript/Vite build passed; feature JSON and git diff --check passed. Windows sandbox EPERM temporary rename resolved by elevated test run; Bash unavailable so documented PowerShell commands used. Ubuntu installation and hosted acceptance await merge/new workflow run; rerunning old SHA cannot load the fix."
     }
   ]
 }
