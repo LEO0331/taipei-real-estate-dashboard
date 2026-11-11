@@ -19,6 +19,32 @@ flowchart TD
 
 ## Sources and current coverage
 
+### Reviewed refresh on 2026-11-11
+
+The review branch advances the three indices from 2025-Q4 to 2026-Q1 using the cumulative CSVs advertised by the Taipei City Land Administration Department (地政局). The source pages and CSV rows both end in 2026-Q1. The portal lists the resource update times below. It does not give a separate original publication time. The monitor checked the resources at 09:14 Taipei time on November 11, and the targeted downloads and branch approval followed that day. Production approval and publication are pending review.
+
+| Dataset and issue | Verified coverage | Cumulative rows (new) | Categories | Encoding | Portal resource update |
+|---|---|---:|---:|---|---|
+| [Residential price](https://data.taipei/dataset/detail?id=954911b5-896d-4ae1-9ebe-87c4ba8a191e) · [#17](https://github.com/LEO0331/taipei-real-estate-dashboard/issues/17) | 2012-Q3 through 2026-Q1 | 880 (+16) | 16 | Big5/CP950 | 2026-08-04 11:38:45 |
+| [Residential rent](https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20) · [#18](https://github.com/LEO0331/taipei-real-estate-dashboard/issues/18) | 2018-Q3 through 2026-Q1 | 93 (+3) | 3 | UTF-8 with BOM | 2026-08-04 13:32:27 |
+| [Commercial office rent](https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3) · [#19](https://github.com/LEO0331/taipei-real-estate-dashboard/issues/19) | 2014-Q2 through 2026-Q1 | 96 (+2) | 2 | Big5/CP950 | 2026-08-04 13:40:42 |
+
+| Advertised CSV | Raw SHA256 |
+|---|---|
+| [Residential price](https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=3210976b-f578-483c-8853-3ceec3796877) | `5156f45baef441aef45c2e357da6e7aaf3514c26ade6241282ac1fb28084d298` |
+| [Residential rent](https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=d7ace928-288e-4a47-9411-1ebf86d3dafb) | `86683b5d8c14949d7d9f90e820bac6b914c4b3388197a4d9adbffe9f7774f1ea` |
+| [Commercial office rent](https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=09a26c4b-9b6b-49e1-9a5d-9d39b1d5e3d1) | `8980fbf477c3e09898e920d9bfa2abd14684fa9a2b98a4e376b17c833cc52695` |
+
+Fresh downloads match the issue resource hashes. The existing validator accepted the required columns, numeric values, unique quarter/category keys, and contiguous coverage with every expected category. All previously approved observations were present with zero revisions. The price CSV uses the supported legacy category header typo. The portal's coverage-start dates differ from the first CSV quarter, so the table uses the CSV periods. No quarter after 2026-Q1 was advertised in these datasets at review time.
+
+Each source passed `npm run data:stage:quarterly` in isolation before sequential `--apply` in price, residential-rent, office-rent order. The manifest pins three new original CSVs under `data/raw/<dataset>/` and retains the prior snapshots. Under `public/data/`, the three records and summary pairs, the price latest snapshot, office category series, shared Market Overview and conversion report were regenerated. Historical measurement and derived values matched. The price converter regenerated 864 historical `sourceRecordHash` values from the normalized row representation, and the two office Q4 rows lost their latest-period flags. Unrelated Market Overview and conversion report entries matched the base. The new citywide indices are 127.16, 109.48 and 120.09 respectively.
+
+`npm ci`, `npm test` (89/89), `npm run build`, `npm run data:audit:urban-renewal-evidence` and `npm run release:verify` passed. The existing release gate verified 748 JSON files with four pre-existing duplicate warnings. The default staged Git whitespace check flags original CSV line endings and a blank final line in the residential-rent CSV. With CRLF accepted, that blank line is the sole finding. The original bytes are required by the manifest SHA256.
+
+Playwright with Chrome passed 20 checks across the three index views, Market Overview, and Data Status & Coverage, in English and Traditional Chinese at 390 px and 1440 px. The checks used the built files, confirmed the latest values, coverage, chart rendering and quarter-filter counts, and found no page errors or horizontal overflow. The browser served the build through intercepted requests after the sandbox denied loopback and disabled service workers for these display checks.
+
+### October 2026 implementation baseline
+
 The source identities below were checked on 2026-10-29 against official Taipei pages and advertised downloads. The residential-rent dataset is **029c6d0d**, not **53e5ee8d** (the latter is quarterly market analysis). The README link is corrected in both languages.
 
 | Source | Approved coverage / records | Live finding on 2026-10-29 |
