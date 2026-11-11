@@ -38,6 +38,12 @@
           "sha256": "288c989bc58464aad88666170081ee878e7859eb46c52c297ef858600ea4101a",
           "period": "2025-Q4",
           "sourceUrl": "https://data.taipei/dataset/detail?id=954911b5-896d-4ae1-9ebe-87c4ba8a191e"
+        },
+        {
+          "file": "data/raw/residential-price-quarterly-index/2026-Q1-5156f45baef441aef45c2e357da6e7aaf3514c26ade6241282ac1fb28084d298.csv",
+          "sha256": "5156f45baef441aef45c2e357da6e7aaf3514c26ade6241282ac1fb28084d298",
+          "period": "2026-Q1",
+          "sourceUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=3210976b-f578-483c-8853-3ceec3796877"
         }
       ]
     },
@@ -64,6 +70,12 @@
           "sha256": "1a1da912dbb35281171d2e706525599851f4534c6053612704cc6e6616f25c57",
           "period": "2025-Q4",
           "sourceUrl": "https://data.taipei/dataset/detail?id=029c6d0d-c880-4de7-b2fb-9e56669a6f20"
+        },
+        {
+          "file": "data/raw/residential-rent-index/2026-Q1-86683b5d8c14949d7d9f90e820bac6b914c4b3388197a4d9adbffe9f7774f1ea.csv",
+          "sha256": "86683b5d8c14949d7d9f90e820bac6b914c4b3388197a4d9adbffe9f7774f1ea",
+          "period": "2026-Q1",
+          "sourceUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=d7ace928-288e-4a47-9411-1ebf86d3dafb"
         }
       ]
     },
@@ -89,6 +101,12 @@
           "sha256": "d677e4533a4349e881a98d46bb42e3d61cef31647f860a1823c8fa5a57588c24",
           "period": "2025-Q4",
           "sourceUrl": "https://data.taipei/dataset/detail?id=8a3d1df7-9169-4dd0-ae0a-949d970e9bb3"
+        },
+        {
+          "file": "data/raw/commercial-office-rent-index/2026-Q1-8980fbf477c3e09898e920d9bfa2abd14684fa9a2b98a4e376b17c833cc52695.csv",
+          "sha256": "8980fbf477c3e09898e920d9bfa2abd14684fa9a2b98a4e376b17c833cc52695",
+          "period": "2026-Q1",
+          "sourceUrl": "https://data.taipei/api/frontstage/tpeod/dataset/resource.download?rid=09a26c4b-9b6b-49e1-9a5d-9d39b1d5e3d1"
         }
       ]
     },
