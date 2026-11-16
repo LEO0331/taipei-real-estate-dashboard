@@ -33,7 +33,7 @@ test('all five bilingual groups cover each existing dashboard target exactly onc
   assert.ok(modules.every(module => module.label.zh && module.label.en && categories[module.category]));
   const ids = Array.from(modules, module => module.tab);
   assert.equal(new Set(ids).size, ids.length);
-  // The render branches are the existing navigation contract; tab 23 is intentionally absent.
+  // The render branches are the navigation contract.
   const main = source.slice(source.indexOf('<main ref={dashboardMainRef}'), source.indexOf('</main>', source.indexOf('<main ref={dashboardMainRef}')));
   const rendered = [...main.matchAll(/tab\s*===\s*(\d+)\s*&&/g)].map(match => Number(match[1]));
   assert.deepEqual(ids.sort((a, b) => a - b), rendered.sort((a, b) => a - b));

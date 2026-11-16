@@ -14,7 +14,7 @@ The dashboard makes public datasets easier to browse together. Its five topic gr
 - **Services & public records** — brokerage records, consumer disputes, appraisers, public assets, public works, MRT development, and engineering milestones.
 - **Data tools** — source tables, methodology notes, and data-status coverage.
 
-Use the dashboard’s category navigator or dataset search to find a topic. On smaller screens, **Browse datasets** opens a keyboard-accessible catalogue. **Explore Data** is an optional navigation mode for the same five groups and 46 existing targets. Its ordinary HTML catalogue is available without interacting with the decorative SVG hubs; returning to the dashboard retains its mounted filter state.
+Use the dashboard’s category navigator or dataset search to find a topic. On smaller screens, **Browse datasets** opens a keyboard-accessible catalogue. **Explore Data** is an optional navigation mode for the same five groups and 47 targets. Its ordinary HTML catalogue is available without interacting with the decorative SVG hubs; returning to the dashboard retains its mounted filter state.
 
 ## Important limits
 

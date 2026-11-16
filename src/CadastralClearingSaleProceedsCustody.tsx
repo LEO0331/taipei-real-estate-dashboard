@@ -1,3 +1,4 @@
+import { csvRow } from './utils/csv';
 import { useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Language } from './models';
@@ -31,7 +32,6 @@ const base = import.meta.env.BASE_URL;
 const money = (value: number | null) => value === null ? '—' : `$${value.toLocaleString('zh-TW', { maximumFractionDigits: 2 })}`;
 const total = (rows: RecordItem[], key: keyof RecordItem) => rows.reduce((sum, row) => sum + (typeof row[key] === 'number' ? row[key] as number : 0), 0);
 const median = (values: number[]) => { const sorted = [...values].sort((a, b) => a - b); const i = Math.floor(sorted.length / 2); return sorted.length ? (sorted.length % 2 ? sorted[i] : (sorted[i - 1] + sorted[i]) / 2) : null; };
-const csvCell = (value: unknown) => `"${String(value ?? '').replaceAll('"', '""')}"`;
 
 export function CadastralClearingSaleProceedsCustody({ language }: { language: Language }) {
   const t = (zh: string, en: string) => language === 'zh' ? zh : en;
@@ -85,7 +85,7 @@ export function CadastralClearingSaleProceedsCustody({ language }: { language: L
   const exportCsv = () => {
     const header = ['ID', 'Transaction date', 'Transaction reference', 'Sale amount', 'Taxes', 'Administrative fee', 'Cadastral-clearing reward', 'Deposited amount', 'Source-recorded claimable amount', 'Recipient (masked)', 'Reconciliation status'];
     const body = filtered.map((record) => [record.sourceSequenceNumber, record.transactionDateRaw, record.transactionReference, record.saleAmountRaw, record.taxAmountRaw, record.administrativeFeeRaw, record.cadastralClearingRewardRaw, record.depositedAmountRaw, record.claimableAmountRaw, record.recipientDisplayName, record.reconciliationStatus]);
-    const url = URL.createObjectURL(new Blob([[header, ...body].map((row) => row.map(csvCell).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' }));
+    const url = URL.createObjectURL(new Blob([[header, ...body].map(csvRow).join('\n')], { type: 'text/csv;charset=utf-8' }));
     const link = document.createElement('a'); link.href = url; link.download = 'cadastral-clearing-custody-public-records.csv'; link.click(); URL.revokeObjectURL(url);
   };
   const qualityRows = Object.entries(metadata.qualityCounts ?? {});

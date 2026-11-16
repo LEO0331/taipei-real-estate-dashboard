@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path';
 import { readCsv, convertResidentialPriceQuarterlyIndexRows, buildResidentialPriceQuarterlyIndexSummary,
   convertResidentialRentIndexRows, buildResidentialRentIndexSummary, convertCommercialOfficeRentIndexRows, buildCommercialOfficeRentIndexSummary } from './data.ts';
 import { approvedRows, manifestPath, readManifest, sha256, sourcePage, validateContinuity, validateRows, type Source } from './quarterlySources.ts';
-import { compare, discover, inspectSource, issueAction, notificationBody, notify, officialUrl, type Finding } from './monitorQuarterlyData.ts';
+import { compare, discover, inspectSource, issueAction, notificationBody, notify, officialFetch, officialUrl, type Finding } from './monitorQuarterlyData.ts';
 import { applyStagedFiles, stageImport } from './stageQuarterlyData.ts';
 import { latestMarketRows } from '../src/utils/quarterlyMarket.ts';
 
@@ -62,6 +62,45 @@ test('unavailable and incompatible findings retain snapshot, official identity f
   assert.equal(offline.status,'unavailable');
   const bad=await inspectSource(s,'.',async()=>Buffer.from('Not official CSV'));
   assert.equal(bad.status,'incompatible');
+});
+test('official downloads preserve bytes up to the size limit', async t => {
+  const body = new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(Uint8Array.of(42));
+      controller.enqueue(new Uint8Array(9_999_998));
+      controller.enqueue(Uint8Array.of(99));
+      controller.close();
+    },
+  });
+  t.mock.method(globalThis, 'fetch', async () => new Response(body));
+  const bytes = await officialFetch('https://data.taipei/');
+  assert.equal(bytes.byteLength, 10_000_000);
+  assert.equal(bytes[0], 42);
+  assert.equal(bytes.at(-1), 99);
+});
+test('official downloads cancel an oversized stream before the body ends', async t => {
+  let cancelled = false;
+  const body = new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(new Uint8Array(10_000_000));
+      controller.enqueue(Uint8Array.of(1));
+    },
+    cancel() { cancelled = true; },
+  });
+  t.mock.method(globalThis, 'fetch', async () => new Response(body));
+  await assert.rejects(officialFetch('https://data.taipei/'), /exceeds expected size/);
+  assert.equal(cancelled, true);
+});
+test('official downloads discard redirect bodies and reject redirects outside the source origin', async t => {
+  let cancelled = false;
+  const body = new ReadableStream<Uint8Array>({ cancel() { cancelled = true; } });
+  const fetch = t.mock.method(globalThis, 'fetch', async () => new Response(body, {
+    status: 302,
+    headers: { location: 'https://example.com/data.csv' },
+  }));
+  await assert.rejects(officialFetch('https://data.taipei/'), /Unapproved official source origin/);
+  assert.equal(cancelled, true);
+  assert.equal(fetch.mock.callCount(), 1);
 });
 test('one issue per source is updated, identical open and closed findings never notify again', () => {
   const f: Finding={id:'price',title:'Price',sourceUrl:'https://data.taipei/',status:'updated',previousQuarter:'2025-Q4',latestQuarter:'2026-Q1',hash:'a',previousHash:'b',validation:'passed'};

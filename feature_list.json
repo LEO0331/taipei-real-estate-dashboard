@@ -286,6 +286,14 @@
       "dependencies": ["feat-027"],
       "status": "complete",
       "evidence": "2026-11-04: Actions run41746980907 job126304903792 deployed c99253c successfully but hosted verification stopped during Chromium installation: Playwright1.59.1 does not support ubuntu26.04-x64. Pinned only hosted-smoke to supported ubuntu-24.04; preserved identity/browser gates. Baseline and final89tests/TypeScript/Vite build passed; feature JSON and git diff --check passed. Windows sandbox EPERM temporary rename resolved by elevated test run; Bash unavailable so documented PowerShell commands used. Ubuntu installation and hosted acceptance await merge/new workflow run; rerunning old SHA cannot load the fix."
+    },
+    {
+      "id": "feat-029",
+      "name": "Security audit fixes and on-demand municipal land inventory",
+      "description": "Limit Pages deployment credentials, protect dashboard CSV exports, bound quarterly downloads and defer municipal public-use land records until the inventory opens.",
+      "dependencies": ["feat-024", "feat-028"],
+      "status": "complete",
+      "evidence": "2026-11-16: based on main 234544b. Only deploy receives Pages/OIDC write permissions. Shared CSV encoding protects formula-like source strings and preserves typed numbers. Quarterly downloads enforce the existing 10,000,000-byte decoded limit while reading. Restored the bilingual inventory destination and deferred its 7,734,406-byte JSON through both startup and service-worker install. Tests 92/92, production build, release validation (748 JSON files, four existing warnings), npm audit (0 advisories), and Chromium 47/47 passed. Hosted deployment and elapsed-time gains on production remain unverified."
     }
   ]
 }

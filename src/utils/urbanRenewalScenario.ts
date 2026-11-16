@@ -1,5 +1,8 @@
 import type { ReviewCandidate, ReviewScenario, ScenarioComparison, ScenarioOptions, UrbanRenewalSnapshot } from '../types/urbanRenewalDecision';
 import { buildReviewCandidates, compareCandidates, TIER_ORDER } from './urbanRenewalDecision';
+import { csvRow } from './csv';
+
+export { csvCell } from './csv';
 
 export const DEFAULT_SCENARIO_OPTIONS: ScenarioOptions = { capacity: 5, strategy: 'gaps', district: 'all', category: 'all', sourceQuality: 'strict', priorityThreshold: 'C', includePermitContext: true, sourceIds: ['B'] };
 export function runReviewScenario(snapshot: UrbanRenewalSnapshot, input: Partial<ScenarioOptions> = {}): ReviewScenario {
@@ -80,16 +83,11 @@ export function buildReviewBriefing(snapshot: UrbanRenewalSnapshot, scenario: Re
   };
 }
 export type ReviewBriefing = ReturnType<typeof buildReviewBriefing>;
-export function csvCell(value: unknown): string {
-  let text = value === null || value === undefined ? '' : String(value);
-  if (/^[\s\u0000-\u001f]*[=+@-]/.test(text)) text = `'${text}`;
-  return `"${text.replace(/"/g, '""')}"`;
-}
 export function briefingToCsv(briefing: ReviewBriefing): string {
   const header = ['record_type', 'snapshot_id', 'methodology_version', 'configuration_version', 'analysis_as_of', 'capacity', 'strategy', 'district', 'question_id', 'tier', 'dimensions', 'source_ids', 'source_record_count', 'unique_documents_not_cases', 'question', 'selection_reasons', 'limitations', 'briefing_metadata_json'];
   const common = [briefing.snapshotId, briefing.methodologyVersion, briefing.configurationVersion, briefing.analysisAsOf, briefing.scenario.options.capacity ?? 'unlimited', briefing.scenario.options.strategy];
   const rows = briefing.scenario.selected.map(item => ['selected_question', ...common, item.district, item.id, item.tier, item.dimensions.join(';'), item.sourceIds.join(';'), item.recordCount, item.uniqueDocuments, `${item.question.zh} / ${item.question.en}`, item.reasons.map(reason => `${reason.zh} / ${reason.en}`).join(';'), briefing.limitations.join(';'), '']);
   // A metadata row preserves the complete reproducible briefing even when no question is selected.
   const metadata = ['briefing_metadata', ...common, '', '', '', '', '', '', '', '', '', briefing.limitations.join(';'), JSON.stringify(briefing)];
-  return '\uFEFF' + [header, metadata, ...rows].map(row => row.map(csvCell).join(',')).join('\r\n') + '\r\n';
+  return '\uFEFF' + [header, metadata, ...rows].map(csvRow).join('\r\n') + '\r\n';
 }

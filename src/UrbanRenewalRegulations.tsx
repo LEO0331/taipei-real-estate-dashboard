@@ -1,3 +1,4 @@
+import { csvRow } from './utils/csv';
 import { useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Language } from './models';
@@ -5,7 +6,6 @@ import type { Language } from './models';
 type Record = { id:string; sourceSequenceNumber:string; title:string; rocDateRaw:string; gregorianDate:string|null; gregorianYear:number|null; articleTypeRaw:string; articleType:string; countyCodeRaw:string; countyCode:string; hasValidDate:boolean; sourceRaw:globalThis.Record<string,string> };
 type Summary = { totalRecords:number; uniqueTitles:number; validDateCount:number; invalidDateCount:number; earliestGregorianDate:string|null; latestGregorianDate:string|null; byArticleType:Array<{value:string;count:number}>; byGregorianYear:Array<{value:string;count:number}>; dataQuality:{missingTitleCount:number;missingSequenceNumberCount:number;duplicateSequenceNumberCount:number;exactDuplicateRowCount:number;duplicateTitleCount:number;missingArticleTypeCount:number;missingCountyCodeCount:number;countyCodeValues:string[];additionalFields:string[]} };
 const base = import.meta.env.BASE_URL;
-const csv = (v:string) => `"${v.replace(/"/g, '""')}"`;
 
 export function UrbanRenewalRegulations({ language }: { language: Language }) {
   const l=(zh:string,en:string)=>language==='zh'?zh:en; const [records,setRecords]=useState<Record[]>([]); const [summary,setSummary]=useState<Summary|null>(null);
@@ -15,7 +15,7 @@ export function UrbanRenewalRegulations({ language }: { language: Language }) {
   const filtered=useMemo(()=>records.filter(r=>{const q=query.trim().toLowerCase(); return (!type||r.articleType===type)&&(!yearFrom||(r.gregorianYear??0)>=Number(yearFrom))&&(!yearTo||(r.gregorianYear??Infinity)<=Number(yearTo))&&(!dated||(dated==='valid'?r.hasValidDate:!r.hasValidDate))&&(!q||`${r.title} ${r.articleTypeRaw} ${r.rocDateRaw} ${r.gregorianDate??''} ${r.countyCodeRaw} ${r.sourceSequenceNumber}`.toLowerCase().includes(q));}),[records,query,type,yearFrom,yearTo,dated]);
   const pages=Math.max(1,Math.ceil(filtered.length/15)); const visible=filtered.slice((page-1)*15,page*15); const activeTypes=[...new Map(filtered.map(r=>[r.articleType,0])).keys()].map(value=>({value,count:filtered.filter(r=>r.articleType===value).length})).sort((a,b)=>b.count-a.count);
   const years=[...new Map(filtered.filter(r=>r.gregorianYear).map(r=>[String(r.gregorianYear),0])).keys()].map(value=>({value,count:filtered.filter(r=>String(r.gregorianYear)===value).length})).sort((a,b)=>a.value.localeCompare(b.value));
-  const exportCsv=()=>{const rows=[['ID','Title','Regulation type','ROC date','Gregorian date (derived)','CountyCode','Data status'],...filtered.map(r=>[r.sourceSequenceNumber,r.title,r.articleTypeRaw,r.rocDateRaw,r.gregorianDate??'',r.countyCodeRaw,r.hasValidDate?'valid date':'unparseable date'])];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([rows.map(row=>row.map(csv).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));a.download='urban-renewal-regulations-filtered.csv';a.click();};
+  const exportCsv=()=>{const rows=[['ID','Title','Regulation type','ROC date','Gregorian date (derived)','CountyCode','Data status'],...filtered.map(r=>[r.sourceSequenceNumber,r.title,r.articleTypeRaw,r.rocDateRaw,r.gregorianDate??'',r.countyCodeRaw,r.hasValidDate?'valid date':'unparseable date'])];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([rows.map(csvRow).join('\n')],{type:'text/csv;charset=utf-8'}));a.download='urban-renewal-regulations-filtered.csv';a.click();};
   const latest=filtered.filter(r=>r.gregorianDate).sort((a,b)=>(b.gregorianDate??'').localeCompare(a.gregorianDate??''))[0];
   return <>
     <section className="section-intro"><h2>{l('都市更新相關法規','Urban Renewal Regulations')}</h2><p>{l('以官方公開資料的標題、紀錄日期、類型與行政代碼進行查找；西元日期為由民國日期保守換算的衍生欄位。','Find official source records by title, record date, type, and administrative code. Gregorian dates are conservatively derived from ROC dates.')}</p><p className="notice">{l('本資料僅供參考，不表示法規現行有效、適用於特定更新案，亦不構成都市更新、土地、建築或其他法律意見。','This is a reference dataset. It does not establish current legal validity, applicability to a particular renewal project, or legal advice about urban renewal, land, buildings, or related matters.')}</p></section>

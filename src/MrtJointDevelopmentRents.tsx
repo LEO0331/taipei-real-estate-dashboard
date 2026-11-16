@@ -1,3 +1,4 @@
+import { csvRow } from './utils/csv';
 import { useEffect, useMemo, useState, type ReactElement } from 'react';
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Language } from './models'; import { qualityLabel } from './quality';
@@ -8,10 +9,9 @@ const base = import.meta.env.BASE_URL;
 const load = <T,>(name: string) => fetch(`${base}data/mrt-joint-development-rents/${name}`).then((response) => response.ok ? response.json() as Promise<T> : Promise.reject(response.status));
 const text = (value: string | number | null | undefined) => value === null || value === undefined || value === '' ? '—' : String(value);
 const money = (value: number | null | undefined) => value === null || value === undefined ? '—' : `$${Math.round(value).toLocaleString()}`;
-const csvValue = (value: unknown) => `"${String(value ?? '').replaceAll('"', '""')}"`;
 const download = (records: RentRecord[]) => {
   const fields: Array<[string, keyof RentRecord]> = [['ID', 'id'], ['Project', 'projectName'], ['MRT station', 'stationName'], ['Floor area (source)', 'floorAreaRaw'], ['Monthly rent per ping (source)', 'monthlyRentPerPingRaw'], ['Representative monthly rent per ping', 'monthlyRentPerPing'], ['Managing authority', 'managingAuthority'], ['Building use', 'buildingUse'], ['Building count', 'buildingCount'], ['Household count', 'householdCount'], ['Estimated monthly rent (derived)', 'estimatedMonthlyRent']];
-  const content = [fields.map(([label]) => csvValue(label)).join(','), ...records.map((record) => fields.map(([, key]) => csvValue(record[key])).join(','))].join('\n');
+  const content = [csvRow(fields.map(([label]) => label)), ...records.map((record) => csvRow(fields.map(([, key]) => record[key])))].join('\n');
   const url = URL.createObjectURL(new Blob([content], { type: 'text/csv;charset=utf-8' })); const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'mrt-joint-development-rents-filtered.csv'; anchor.click(); URL.revokeObjectURL(url);
 };
 

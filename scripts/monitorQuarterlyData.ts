@@ -13,18 +13,39 @@ export function officialUrl(raw: string) {
   if (url.origin !== 'https://data.taipei' || url.username || url.password) throw new Error('Unapproved official source origin');
   return url.href;
 }
+const maxOfficialBytes = 10_000_000;
 export async function officialFetch(url: string) {
   let target = officialUrl(url);
   for (let i = 0; i < 4; i++) {
     const r = await fetch(target, { redirect: 'manual', signal: AbortSignal.timeout(30_000) });
     if ([301, 302, 303, 307, 308].includes(r.status)) {
+      await r.body?.cancel();
       target = officialUrl(new URL(r.headers.get('location') ?? '', target).href);
       continue;
     }
-    if (!r.ok) throw new Error(`Official source HTTP ${r.status}`);
-    const bytes = new Uint8Array(await r.arrayBuffer());
-    if (bytes.length > 10_000_000) throw new Error('Source exceeds expected size');
-    return bytes;
+    if (!r.ok) {
+      await r.body?.cancel();
+      throw new Error(`Official source HTTP ${r.status}`);
+    }
+    if (!r.body) return new Uint8Array();
+    const reader = r.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let size = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > maxOfficialBytes) {
+          await reader.cancel();
+          throw new Error('Source exceeds expected size');
+        }
+        chunks.push(value);
+      }
+    } finally {
+      reader.releaseLock();
+    }
+    return Buffer.concat(chunks, size);
   }
   throw new Error('Too many source redirects');
 }

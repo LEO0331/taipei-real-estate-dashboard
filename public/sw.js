@@ -1,4 +1,4 @@
-const CACHE = 'taipei-dashboard-v44-closure';
+const CACHE = 'taipei-dashboard-v45-on-demand-land';
 const ASSETS = [
   './THIRD_PARTY_NOTICES.txt',
   './data/urban-renewal-decision/snapshot.json',
@@ -37,7 +37,6 @@ const ASSETS = [
   './data/real-estate-broker-penalties/summary.json',
   './data/municipal-idle-property-lease-tenders/records.json',
   './data/municipal-idle-property-lease-tenders/summary.json',
-  './data/municipal-public-land-inventory/records.json',
   './data/municipal-public-land-inventory/summary.json',
   './data/public-private-partnership-contracts/records.json',
   './data/public-private-partnership-contracts/summary.json',
