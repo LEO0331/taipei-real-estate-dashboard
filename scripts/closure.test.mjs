@@ -8,7 +8,7 @@ import { buildThirdPartyNotices } from './generateThirdPartyNotices.mjs';
 
 test('actual worker activation deletes owned legacy caches and preserves sibling app data', async () => {
   const handlers = new Map();
-  const current = 'taipei-dashboard-v44-closure';
+  const current = 'taipei-dashboard-v45-on-demand-land';
   const siblings = ['portfolio-v3', 'taipei-safety-map-v22', 'taipei-friendly-food-map-v12', 'taipei-dashboardish-user-cache'];
   const storage = new Map([current, 'taipei-dashboard-v1', 'taipei-dashboard-v43-civic-explorer-maintenance', ...siblings].map(name => [name, `retained:${name}`]));
   const events = [];

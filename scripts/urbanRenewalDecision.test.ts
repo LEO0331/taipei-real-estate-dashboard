@@ -5,6 +5,7 @@ import { DISTRICTS } from '../src/models.ts';
 import type { SourceHealth, UrbanRenewalSnapshot } from '../src/types/urbanRenewalDecision.ts';
 import { assignReviewTier, buildReviewCandidates, compareCandidates } from '../src/utils/urbanRenewalDecision.ts';
 import { balanced, briefingToCsv, buildReviewBriefing, compareReviewScenarios, csvCell, runReviewScenario } from '../src/utils/urbanRenewalScenario.ts';
+import { csvRow } from '../src/utils/csv.ts';
 
 function fixture(): UrbanRenewalSnapshot {
   const source: SourceHealth = { id: 'B', title: 'Official designation source', datasetId: 'official-dataset', resourceId: 'official-resource', publisher: 'Taipei', url: 'https://data.taipei/', resourceUrl: null, publishedAt: null, resourceUpdatedAt: '2024-06-13T12:19:19+08:00', metadataUpdatedAt: '2026-09-08', retrievedAt: '2026-10-19', processedAt: '2026-10-19', sha256: 'a'.repeat(64), schema: ['district'], rowCount: 75, validRowCount: 75, duplicateCount: 0, invalidDateCount: 0, missingDistrictCount: 0, geography: 'district', periodStart: '2023-02-01', periodEnd: '2024-06-30', unit: 'designation records', suitability: 'verified_analysis', limitations: [] };
@@ -114,8 +115,10 @@ test('briefing preserves provenance, safe aggregate units and protects CSV formu
   assert.match(briefing.processDefinitions.join(' '), /does not establish.*completion/);
   assert.match(briefing.processDefinitions.join(' '), /separate legal pathways/);
   assert.match(briefing.processDefinitions.join(' '), /not existing building stock/);
-  for (const value of ['=SUM(A1:A2)', '+1', '-1', '@lookup', '\t=1', '\r\n+1']) assert.ok(csvCell(value).startsWith('"\''));
-  assert.equal(csvCell('a"b'), '"a""b"');
+  for (const value of ['=SUM(A1:A2)', '+1', '-1', '@lookup', '\t=1', '\r\n+1', '  ＝1', '\u0000＋1', '－1', '＠lookup', '\t文字', '\n文字']) {
+    assert.equal(csvCell(value), `"'${value}"`);
+  }
+  assert.equal(csvRow(['臺北, "大安"\n區', -42.5, null]), '"臺北, ""大安""\n區","-42.5",""');
   assert.match(briefingToCsv(briefing), /unique_documents_not_cases/);
   assert.match(briefingToCsv(buildReviewBriefing(snapshot, runReviewScenario(snapshot, { sourceIds: [] }))), /briefing_metadata/);
   assert.ok(!/ownerName|latitude|longitude|hazardScore/.test(JSON.stringify(briefing)));

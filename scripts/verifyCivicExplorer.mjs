@@ -18,6 +18,7 @@ const port = Number(process.env.EXPLORER_TEST_PORT ?? 4287);
 const base = '/taipei-real-estate-dashboard/';
 const url = hostedUrl ?? `http://127.0.0.1:${port}${base}`;
 const output = resolve(process.env.BROWSER_OUTPUT_DIR ?? '.cache/civic-explorer');
+const publicLandPath = 'data/municipal-public-land-inventory/records.json';
 await mkdir(output, { recursive: true });
 const server = hostedUrl ? undefined : spawn(process.execPath, [
   resolve(dirname(require.resolve('vite/package.json')), 'bin/vite.js'),
@@ -67,6 +68,8 @@ try {
   browser = await chromium.launch();
   for (const language of ['en', 'zh']) for (const width of [320, 390, 1440]) {
     const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
+    const publicLandRequests = [];
+    context.on('request', request => { if (new URL(request.url()).pathname.endsWith(`/${publicLandPath}`)) publicLandRequests.push(request.url()); });
     const page = await context.newPage();
     page.on('pageerror', error => pageErrors.push({ language, width, message: error.message }));
     page.on('console', message => { if (message.type() === 'error') consoleErrors.push({ language, width, message: message.text() }); });
@@ -76,7 +79,7 @@ try {
       await context.route(url, route => route.fulfill({ status: 200, contentType: 'text/html', body: '<title>Prior cache fixture</title>' }));
       await page.goto(url);
       await page.evaluate(async () => {
-        for (const name of ['taipei-dashboard-v42-civic-explorer', 'taipei-dashboard-v43-civic-explorer-maintenance', 'portfolio-v3', 'taipei-safety-map-v22']) {
+        for (const name of ['taipei-dashboard-v42-civic-explorer', 'taipei-dashboard-v43-civic-explorer-maintenance', 'taipei-dashboard-v44-closure', 'portfolio-v3', 'taipei-safety-map-v22']) {
           const cache = await caches.open(name);
           await cache.put('./prior-cache-marker', new Response(`retained:${name}`));
         }
@@ -91,7 +94,7 @@ try {
     const prefix = `${language}/${width}`;
     await check(`${prefix}/complete-catalogue`, async () => {
       assert.equal(await page.locator('.explore-hub').count(), 5);
-      assert.equal(await page.locator('.explore-result-group li').count(), 46);
+      assert.equal(await page.locator('.explore-result-group li').count(), 47);
       await page.waitForFunction(() => document.activeElement === document.querySelector('.explore-header h1'), undefined, { timeout: 3000 });
     });
     const screenshot = `${language}-${width}.png`;
@@ -104,7 +107,7 @@ try {
     await page.keyboard.press('Enter');
     await check(`${prefix}/list-reset-focus`, async () => {
       await page.waitForFunction(() => document.activeElement === document.querySelector('.explore-results h2'), undefined, { timeout: 3000 });
-      assert.equal(await page.locator('.explore-result-group li').count(), 46);
+      assert.equal(await page.locator('.explore-result-group li').count(), 47);
     });
     const search = page.locator('.explore-controls input');
     await search.fill('no-dataset-matches-979797');
@@ -113,7 +116,7 @@ try {
     await check(`${prefix}/empty-clear-focus`, async () => {
       await page.waitForFunction(() => document.activeElement === document.querySelector('.explore-controls input'), undefined, { timeout: 3000 });
       assert.equal(await search.inputValue(), '');
-      assert.equal(await page.locator('.explore-result-group li').count(), 46);
+      assert.equal(await page.locator('.explore-result-group li').count(), 47);
     });
     await page.locator('.explore-view button').first().click();
     await page.locator('.explore-hub').nth(2).click();
@@ -146,13 +149,25 @@ try {
     await check(`${prefix}/back-entry-focus`, async () => {
       await page.waitForFunction(name => document.activeElement?.textContent?.trim() === name, entryName, { timeout: 3000 });
     });
+    if (width === 390) await check(`${prefix}/public-land-loads-on-demand`, async () => {
+      assert.equal(publicLandRequests.length, 0, 'Neither startup nor Explorer should request the inventory');
+      const label = language === 'en' ? 'Municipal Public-Use Land Inventory' : '市有公用土地清冊';
+      await page.getByRole('button', { name: entryName, exact: true }).click();
+      const destination = page.getByRole('button', { name: label });
+      await destination.focus();
+      await page.keyboard.press('Enter');
+      await page.getByRole('heading', { name: label, exact: true }).waitFor({ timeout: 15000 });
+      assert.ok(publicLandRequests.length > 0);
+      assert.ok(await page.locator('main table tbody tr').count() > 0);
+    });
     if (testCache) {
       await check('seeded-v42-cache-cleanup-on-activation', async () => {
         await page.evaluate(async () => { await Promise.race([navigator.serviceWorker.ready, new Promise((_, reject) => setTimeout(() => reject(new Error('Worker activation timeout')), 10000))]); });
-        await page.waitForFunction(async () => (await caches.keys()).includes('taipei-dashboard-v44-closure'), undefined, { timeout: 5000 });
+        await page.waitForFunction(async () => (await caches.keys()).includes('taipei-dashboard-v45-on-demand-land'), undefined, { timeout: 5000 });
         const keys = await page.evaluate(() => caches.keys());
         assert.ok(!keys.includes('taipei-dashboard-v42-civic-explorer'));
         assert.ok(!keys.includes('taipei-dashboard-v43-civic-explorer-maintenance'));
+        assert.ok(!keys.includes('taipei-dashboard-v44-closure'));
         for (const name of ['portfolio-v3', 'taipei-safety-map-v22']) {
           assert.ok(keys.includes(name));
           assert.equal(await page.evaluate(async name => (await (await caches.open(name)).match('./prior-cache-marker')).text(), name), `retained:${name}`);
@@ -163,6 +178,11 @@ try {
         await page.reload({ waitUntil: 'networkidle' });
         await page.getByRole('button', { name: /^(Explore Data|探索資料)$/, exact: true }).click();
         await page.locator('.data-explorer').waitFor();
+        const landName = /^(Municipal Public-Use Land Inventory|市有公用土地清冊)$/;
+        await page.getByRole('button', { name: landName }).click();
+        await page.getByRole('heading', { name: landName }).waitFor({ timeout: 15000 });
+        await page.waitForFunction(async path => Boolean(await caches.match(new URL(path, location.href))), publicLandPath);
+        await page.getByRole('button', { name: /^(Explore Data|探索資料)$/, exact: true }).click();
         await page.locator('.explore-back').click();
         await context.setOffline(true);
         try {
@@ -170,21 +190,44 @@ try {
           await page.getByRole('button', { name: /^(Explore Data|探索資料)$/, exact: true }).click();
           await page.locator('.data-explorer').waitFor();
           assert.equal(await page.locator('.explore-hub').count(), 5);
-          assert.equal(await page.locator('.explore-result-group li').count(), 46);
+          assert.equal(await page.locator('.explore-result-group li').count(), 47);
           const notices = await page.evaluate(async () => { const response = await fetch('./THIRD_PARTY_NOTICES.txt'); return { ok: response.ok, text: await response.text() }; });
           assert.ok(notices.ok);
           assert.ok(notices.text.includes('Permission is hereby granted'));
           assert.ok(notices.text.includes('victory-vendor@37.3.6'));
+          await page.getByRole('button', { name: landName }).click();
+          await page.getByRole('heading', { name: landName }).waitFor({ timeout: 15000 });
           return { scope: 'Warm-cache local origin only; cold offline first visit is not supported.' };
         } finally { await context.setOffline(false); }
       });
     }
     await context.close();
   }
+  if (!hostedUrl) await check('public-land-failure-stays-local-and-retries', async () => {
+    const context = await browser.newContext({ serviceWorkers: 'block' });
+    try {
+      const page = await context.newPage();
+      await page.route(`**/${publicLandPath}`, route => route.fulfill({ json: {} }), { times: 1 });
+      await page.goto(url);
+      const openLand = async () => {
+        await page.getByRole('button', { name: '探索資料', exact: true }).click();
+        await page.getByRole('button', { name: '市有公用土地清冊' }).click();
+      };
+      await openLand();
+      await page.getByRole('alert').filter({ hasText: '無法載入本機資料檔。' }).waitFor();
+      await page.getByRole('button', { name: '探索資料', exact: true }).click();
+      await page.getByRole('button', { name: '市場總覽' }).click();
+      await page.locator('.overview-panel').first().waitFor();
+      assert.equal(await page.getByText('無法載入本機資料檔。', { exact: true }).count(), 0);
+      await openLand();
+      await page.getByRole('button', { name: '重試', exact: true }).click();
+      await page.getByRole('heading', { name: '市有公用土地清冊', exact: true }).waitFor({ timeout: 15000 });
+    } finally { await context.close(); }
+  });
 } finally {
   await browser?.close();
   server?.kill();
-  const expectedChecks = 42 + (hostedUrl ? 0 : 2) + (expectedSha ? 1 : 0);
+  const expectedChecks = 44 + (hostedUrl ? 0 : 3) + (expectedSha ? 1 : 0);
   const pass = checks.length === expectedChecks && checks.every(check => check.pass) && pageErrors.length === 0 && consoleErrors.length === 0;
   const report = { checkedAt: new Date().toISOString(), url, expectedSha, scope: 'Chromium production preview; three widths, both languages, keyboard/reset/target regressions; not full WCAG or live deployment certification.', checks, screenshots, pageErrors, consoleErrors, pass };
   await writeFile(resolve(output, 'verification.json'), JSON.stringify(report, null, 2) + '\n');
